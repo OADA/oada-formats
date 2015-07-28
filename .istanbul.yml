@@ -1,0 +1,10 @@
+instrumentation:
+    root: .
+    default-excludes: true
+    excludes:
+        - gulpfile.*
+        - Gulpfile.*
+        - Gruntfile.*
+        - gruntfile.*
+        - examples/**/*.js
+    include-all-sources: true

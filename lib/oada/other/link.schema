@@ -1,0 +1,38 @@
+// This file contains JSONSchema in it.  To convert from Javascript
+// to actual JSON.parse-able JSON, contact Aaron to write a script
+// to JSON.stringify the schema, or just JSON.stringify the schema.
+// You might also want to transform the id's to fit your domain.
+
+// Links: both a versioned link and a non-versioned link are
+// valid 'links'.  Use the particular ones (versioned-link, nonversioned-link)
+// if you want to explicitly make sure it's one or the other.
+module.exports = {
+  id: "/oada/link.1",
+  description: "OADA Link object",
+
+  definitions: {
+    link: {
+      anyOf: [
+        { $ref: 'oada/link.1/definitions/nonversioned' },
+        { $ref: 'oada/link.1/definitions/versioned' },
+      ],
+    },
+
+    nonversioned: {
+      type: 'object',
+      required: [ '_id' ],
+
+    },
+
+    versioned: {
+      type: 'object',
+      required: [ '_rev', '_id' ],
+      additionalProperties: false,
+      properties: {
+        _id: { type: 'string' },
+        _rev: { type: 'string', pattern: '^[0-9]+-.+', }
+      },
+    },
+  },
+
+};

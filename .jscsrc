@@ -1,0 +1,9 @@
+{
+    "preset": "google",
+    "fileExtensions": [ ".js" ],
+    "validateIndentation": 4,
+    "maximumLineLength": 80,
+    "requireCapitalizedConstructors": true,
+    "disallowEmptyBlocks": true,
+    "excludeFiles": [ "node_modules/**", "coverage/**" ]
+}

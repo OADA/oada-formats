@@ -1,0 +1,23 @@
+// This file contains JSONSchema in it.  To convert from Javascript
+// to actual JSON.parse-able JSON, contact Aaron to write a script
+// to JSON.stringify the schema, or just JSON.stringify the schema.
+// You might also want to transform the id's to fit your domain.
+
+// Bookmarks:
+module.exports = {
+  id: "/oada/bookmarks.1",
+  description: "application/vnd.oada.bookmarks.1+json",
+
+  // None of the keys in bookmarks are required to be there.
+  required: [ ], 
+
+  // You can add any custom keys to bookmarks that you want
+  additionalProperties: true,
+
+  // Here are the standard-defined keys:
+  properties: {
+      planting: { $ref: '/oada/link#definitions/versioned-link', },
+    irrigation: { $ref: '/oada/link#definitions/versioned-link', },
+  },
+
+};

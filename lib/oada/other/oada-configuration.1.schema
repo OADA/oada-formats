@@ -1,0 +1,29 @@
+// This file contains JSONSchema in it.  To convert from Javascript
+// to actual JSON.parse-able JSON, contact Aaron to write a script
+// to JSON.stringify the schema, or just JSON.stringify the schema:
+//   JSON.stringify(require('the_schema.schema'));
+// You might also want to transform the id's to fit your domain.
+
+// Bookmarks:
+module.exports = {
+  id: "/oada/oada-configuration.1",
+  description: "application/vnd.oada.oada-configuration.1+json",
+
+  required: [ 
+    'oada_base_uri', 'authorization_endpoint', 'token_endpoint',
+    'registration_endpoint', 'token_endpoint_auth_signing_alg_values_supported' 
+  ],
+
+  // You can add any custom keys to oada-configuration that you want
+  additionalProperties: true,
+
+  // Here are the standard-defined properties:
+  properties: {
+    oada_base_uri: { type: 'string' },
+    authorization_endpoint: { type: 'string' },
+    token_endpoint: { type: 'string' },
+    registration_endpoint: { type: 'string' },
+    token_endpoint_auth_signing_alg_values_supported: { type: 'string' },
+  },
+
+};

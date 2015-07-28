@@ -1,0 +1,2 @@
+# Dont look at intrumented code
+--ignore-directory=coverage

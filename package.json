@@ -1,0 +1,41 @@
+{
+  "name": "oada-formats",
+  "version": "0.0.0",
+  "description": "Format defintions, schemas, validators, and models for data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -w",
+    "cover": "istanbul cover _mocha",
+    "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js .",
+    "style": "jscs .",
+    "clean": "rm -rf ./coverage"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OADA/oada-formats.git"
+  },
+  "keywords": [
+    "oada"
+  ],
+  "author": {
+    "name": "Aaron Ault",
+    "email": "aaron@openag.io",
+    "url": "http://openag.io"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/OADA/oada-formats/issues"
+  },
+  "homepage": "https://github.com/OADA/oada-formats",
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "istanbul": "^0.3.14",
+    "jscs": "^1.13.1",
+    "jshint": "^2.8.0",
+    "jshint-stylish": "^2.0.0",
+    "mocha": "^2.2.5"
+  }
+}
