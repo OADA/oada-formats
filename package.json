@@ -2,7 +2,7 @@
   "name": "oada-formats",
   "version": "0.0.0",
   "description": "Format defintions, schemas, validators, and models for data.",
-  "main": "index.js",
+  "main": "model.js",
   "scripts": {
     "test": "mocha -w",
     "cover": "istanbul cover _mocha",
@@ -35,7 +35,11 @@
     "istanbul": "^0.3.14",
     "jscs": "^1.13.1",
     "jshint": "^2.8.0",
-    "jshint-stylish": "^2.0.0",
+    "jshint-stylish": "^2.0.1",
     "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "lodash": "^3.10.0"
   }
 }

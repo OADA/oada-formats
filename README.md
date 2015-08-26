@@ -4,6 +4,12 @@
 [![License](http://img.shields.io/:license-Apache%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # oada-formats #
+This repo contains models for all formats whose format is known from a given media type.  
+Each "model" consists of a module with a "validate()" function, an "example()" function, 
+and optionally a schema (in JSON schema).
+
+The main "model.js" file contains mappings from media type to the required module for that
+media type.
 
 ## Installation ##
 ```shell

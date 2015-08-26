@@ -16,14 +16,58 @@
 'use strict';
 
 var expect = require('chai').expect;
-//var oadaFormats = require('../');
-var mut = require('../');
+var Promise = require('bluebird');
+var _ = require('lodash');
+
+// Library under test:
+var oada_formats = require('../model.js');
 
 describe('oada-formats', function() {
-
-    // This is probably a useless test
-    it('should be exported', function() {
-        //expect(oadaFormats).to.be.ok;
-        expect(mut).to.be.ok;
+  describe('.knownMediaTypes()', function() {
+    var all_types;
+    before(function() {
+      return oada_formats.knownMediaTypes()
+      .then(function(_all_types) {
+        all_types = _all_types;
+      });
     });
+   
+    it('should have some known types', function() {
+      expect(all_types).to.be.an('array');
+      expect(all_types).to.not.be.empty;
+    });
+  });
+
+  ///////////////////////////////////////////////////////////////////////////
+  // Make sure every format has validate() and example() functions, and
+  // that the example successfully passes validation
+  oada_formats.knownMediaTypes()
+  .then(function(all_types) {
+    describe('Each type: ', function() {
+      _.each(all_types, function(one_type) {
+
+        // For each of the media types returned, create a describe block:
+        describe(one_type+': ', function() {
+    
+          it('should return the module given the media type', function() {
+            return oada_formats
+            .byMediaType(one_type)
+            .then(function(model) {
+              expect(model.example).to.be.a('function');
+              expect(model.validate).to.be.a('function');
+            });
+          });
+    
+          it('should return an example() that passes validate()', function() {
+            return oada_formats
+            .byMediaType(one_type)
+            .then(function(model) {
+              expect(model.validate(model.example())).to.equal(true);
+            });
+          });
+        });
+      });
+    });
+  });
+
 });

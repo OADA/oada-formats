@@ -5,8 +5,8 @@
 
 // Irrigation:
 module.exports = {
-  id: "/oada/irrigation.1",
-  description: "application/vnd.oada.irrigation.1+json",
+  id: "/oada/bookmarks/irrigation.1",
+  description: "application/vnd.oada.bookmarks.irrigation.1+json",
 
   // None of the keys in irrigation are required to be there.
   required: [ ], 

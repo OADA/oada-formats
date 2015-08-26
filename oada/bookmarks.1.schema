@@ -16,8 +16,12 @@ module.exports = {
 
   // Here are the standard-defined keys:
   properties: {
-      planting: { $ref: '/oada/link#definitions/versioned-link', },
-    irrigation: { $ref: '/oada/link#definitions/versioned-link', },
+      planting: { $ref: '/oada/lib/link#definitions/versioned-link', },
+       harvest: { $ref: '/oada/lib/link#definitions/versioned-link', },
+      machines: { $ref: '/oada/lib/link#definitions/versioned-link', },
+    irrigation: { $ref: '/oada/lib/link#definitions/versioned-link', },
+       sensors: { $ref: '/oada/lib/link#definitions/versioned-link', },
+        fields: { $ref: '/oada/lib/link#definitions/versioned-link', },
   },
 
 };
