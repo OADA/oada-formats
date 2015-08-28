@@ -21,7 +21,10 @@ module.exports = {
     nonversioned: {
       type: 'object',
       required: [ '_id' ],
-
+      additionalProperties: false,
+      properties: {
+        _id: { type: 'string' },
+      },
     },
 
     versioned: {

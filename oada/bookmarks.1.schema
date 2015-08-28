@@ -9,7 +9,7 @@ module.exports = {
   description: "application/vnd.oada.bookmarks.1+json",
 
   // None of the keys in bookmarks are required to be there.
-  required: [ ], 
+  required: [ ],
 
   // You can add any custom keys to bookmarks that you want
   additionalProperties: true,
