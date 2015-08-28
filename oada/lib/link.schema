@@ -21,7 +21,7 @@ module.exports = {
     nonversioned: {
       type: 'object',
       required: [ '_id' ],
-      additionalProperties: false,
+      additionalProperties: true,
       properties: {
         _id: { type: 'string' },
       },
@@ -30,7 +30,7 @@ module.exports = {
     versioned: {
       type: 'object',
       required: [ '_rev', '_id' ],
-      additionalProperties: false,
+      additionalProperties: true,
       properties: {
         _id: { type: 'string' },
         _rev: { type: 'string', pattern: '^[0-9]+-.+', }
