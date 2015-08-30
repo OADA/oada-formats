@@ -4,7 +4,8 @@
   "description": "Format defintions, schemas, validators, and models for data.",
   "main": "model.js",
   "scripts": {
-    "test": "mocha -w",
+    "test": "mocha --colors | bunyan -o short",
+    "test-watch": "mocha -w --colors | bunyan -o short",
     "cover": "istanbul cover _mocha",
     "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js .",
     "style": "jscs .",
@@ -31,6 +32,7 @@
   },
   "homepage": "https://github.com/OADA/oada-formats",
   "devDependencies": {
+    "bunyan": "^1.4.0",
     "chai": "^3.0.0",
     "istanbul": "^0.3.14",
     "jscs": "^1.13.1",

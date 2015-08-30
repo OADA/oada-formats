@@ -27,7 +27,7 @@ module.exports = function(config) {
   };
   if (_.has(config, 'libs.log')) {
     log = config.libs.log();
-    if (log.child) { log.child({ module: 'oada-formats.factory' }); }
+    if (log.child) { log = log.child({ module: 'oada-formats' }); }
   }
 
 
@@ -47,13 +47,13 @@ module.exports = function(config) {
     require: function(opts) {
       opts = opts || {};
       if (typeof opts._mediaType !== 'string') {
-        log.error('require: No valid _medidaType passed in options.');
+        log.error('require: No valid _mediaType ('+opts._mediaType+') passed in options.');
         return null;
       }
     
       // Check if media type exists in the custom media type map:
-      log.debug('require: checking for custom path for mediaType: ', opts._medidaType);
-      var custom_override_require = _.get(media_type_map, opt._medidaType, null);
+      log.debug('require: checking for custom path for mediaType: ', opts._mediaType);
+      var custom_override_require = _.get(media_type_map, opts._mediaType, null);
       if (custom_override_require) {
         try {
           var handler = require('./' + custom_override_require);
@@ -70,7 +70,7 @@ module.exports = function(config) {
       }
   
       // Otherwise, attempt the automatic discovery of a custom-coded index.js file:
-      var predicted_path = _ModelFactory.predictRequirePathFromMediaType(opts._medidaType);
+      var predicted_path = _ModelFactory.predictRequirePathFromMediaType(opts._mediaType);
       log.debug('require: checking for custom index.js at predicted path ' + predicted_path);
       try {
         var handler = require(predicted_path + '/index.js');
@@ -84,13 +84,13 @@ module.exports = function(config) {
       // handler with the example and schema files
       log.debug('require: final attempt: checking if we can make a default handler with example and schema files');
       var handler = _ModelFactory.defaultHandler(opts);
-      if (typeof handler === 'function') {
-        log.debug('require: succeeded at creating default handler for media type ' + opts._medidaType);
-        return handler(opts);
+      if (handler) {
+        log.debug('require: succeeded at creating default handler for media type ' + opts._mediaType);
+        return handler;
       }
 
       // If we get here, all attempts at finding a handler failed.
-      log.error('require: could not find model for media type ' + opts._medidaType);
+      log.error('require: could not find model for media type ' + opts._mediaType);
       return null;
     },
 
@@ -105,12 +105,13 @@ module.exports = function(config) {
     defaultHandler: function(opts) {
       var schema = opts.schema || _ModelFactory.filePathWithExtensions('schema', opts);
       var example = opts.example || _ModelFactory.filePathWithExtensions('example', opts);
+      log.debug('defaultHandler: schema = ', schema, ', example = ', example);
 
       try {
         // The Main "model" object:
         return {
 
-          // example should be an object
+          // example should be a function that returns an object
           example: require(example),
 
           // schema is not required for a model, but this forces evaluation 
@@ -125,14 +126,16 @@ module.exports = function(config) {
               // If you make your schema file return a function that generates a schema, 
               // we'll call that function with the options from validate() at run-time 
               if (typeof schema === 'function') {
-                  schema = schema(opts);
+                schema = schema(opts);
               }
-              // TODO: use a required json-schema validator here
+              // TODO: use a json-schema validator here
             });
           },
 
         };
-      } catch(e) { }; // catch will be called if any require's fail
+      } catch(e) { 
+        log.debug('defaultHandler: error creating default handler: ', e);
+      }; // catch will be called if any require's fail
 
       log.debug('defaultHandler: unable to find example ('+example+') and schema ('+schema+') files to build handler.');
       return null; 
@@ -147,7 +150,7 @@ module.exports = function(config) {
       return './' + mediatype
         .replace(/^application\/vnd\./,'') // get rid of 'application/vnd.' if present
         .replace(/\.[0-9]+\+.*$/, '')      // get rid of '.1+json' if present
-        .replace(/\./, '/');               // replace all '.' with '/' to get a path
+        .replace(/\./g, '/');               // replace all '.' with '/' to get a path
     },
 
     versionFromMediaType: function(mediatype) {

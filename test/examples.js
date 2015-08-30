@@ -35,10 +35,11 @@ describe('examples', function() {
   it('.each', function() {
     _.each(paths_to_test, function(p) {
       describe('('+p+'):', function() {
-        it('should return a valid object', function() {
+        it('should return a valid function which returns an object', function() {
           var e = require.main.require(p);
           expect(e).to.not.equal(null);
-          expect(e).to.be.an('object');
+          expect(e).to.be.a('function');
+          expect(e()).to.be.an('object');
         });
       });
     });
