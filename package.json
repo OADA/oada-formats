@@ -36,10 +36,13 @@
     "jscs": "^1.13.1",
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.0.1",
-    "mocha": "^2.2.5"
+    "minimatch": "^2.0.10",
+    "mocha": "^2.2.5",
+    "recursive-readdir": "^1.2.1"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
+    "extend-error": "0.0.2",
     "lodash": "^3.10.0"
   }
 }

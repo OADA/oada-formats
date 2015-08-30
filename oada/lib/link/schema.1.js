@@ -7,14 +7,17 @@
 // valid 'links'.  Use the particular ones (versioned-link, nonversioned-link)
 // if you want to explicitly make sure it's one or the other.
 module.exports = {
-  id: "/oada/link.1",
+  id: "/oada/lib/link.1",
   description: "OADA Link object",
 
   definitions: {
+
+    /////////////////////////////////////////////////////////////
+    // Links:
     link: {
       anyOf: [
-        { $ref: 'oada/link.1/definitions/nonversioned' },
-        { $ref: 'oada/link.1/definitions/versioned' },
+        { $ref: '#/definitions/nonversioned' },
+        { $ref: '#/definitions/versioned' },
       ],
     },
 
@@ -36,6 +39,37 @@ module.exports = {
         _rev: { type: 'string', pattern: '^[0-9]+-.+', }
       },
     },
+
+
+    ////////////////////////////////////////////////////////////
+    // Lists of links:
+    // { 
+    //   'kdfj02ilksf': { _id: 'idfu02jk', '1-kdfj902ief' },
+    //   '0d2ijlfdsls': { _id: 'kd0f2jik", '2-0dfkjl29if' },
+    // }
+    list: {
+      versioned: {
+        type: 'object',
+        additionalProperties: {
+          $ref: '#/definitions/versioned'
+        },
+      },
+
+      nonversioned: {
+        type: 'object',
+        additionalProperties: {
+          $ref: '#/definitions/nonversioned'
+        },
+      },
+
+      list: {
+        type: 'object',
+        additionalProperties: {
+          $ref: '#/definitions/link'
+        },
+      },
+    },
+
   },
 
 };

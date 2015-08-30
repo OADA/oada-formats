@@ -5,7 +5,7 @@
 
 // Irrigation.Machines:
 module.exports = {
-  id: "/oada/irrigation.machines.1",
+  id: "/oada/irrigation/machines.1",
   description: "application/vnd.oada.irrigation.machines.1+json",
 
   // Has to implement name and list
@@ -16,13 +16,8 @@ module.exports = {
 
   // Here are the standard-defined keys:
   properties: {
-    name: { type: 'string', },
-    list: { 
-      type: 'object',
-      additionalProperties: {
-        $ref: '/oada/link#definitions/versioned-link',
-      },
-    },
+    name: { type: 'string', pattern: 'irrigation' },
+    list: { $ref: '/oada/link.1#/definitions/list/versioned' },
   },
 
 };
