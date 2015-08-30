@@ -1,5 +1,7 @@
 module.exports = function(opts) {
-  return {
+  opts = opts || {};
+  
+  var _example = {
     'as-applied': [
       {
         ApplicationDepth: '1',
@@ -86,4 +88,9 @@ module.exports = function(opts) {
       }
     ],
   };
+
+  for (var i in opts) { 
+    if (_example[i]) _example[i] = opts[i]; // override any keys with value in opts:
+  }       
+  return _example;
 };

@@ -1,6 +1,8 @@
 // Response to POST /register in oauth-dyn-reg
 module.exports = function(opts) {
-  return {
+  opts = opts || {};
+
+  var _example = {
     "client_id": "3klaxu838akahf38acucaix73",
     "client_id_issued_at": 1418423102,
     "software_version": "1.0-ga",
@@ -30,5 +32,10 @@ module.exports = function(opts) {
     "software_id": "djxkjau3n937xz7jakl3",
     "registration_provider": "registration.example.com"
   };
+
+  for (var i in opts) { 
+    if (_example[i]) _example[i] = opts[i]; // override any keys with value in opts:
+  }       
+  return _example;
 };
 
