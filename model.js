@@ -71,7 +71,7 @@ module.exports = function(config) {
   
       // Otherwise, attempt the automatic discovery of a custom-coded index.js file:
       var predicted_path = _ModelFactory.predictRequirePathFromMediaType(opts._mediaType);
-      log.debug('require: checking for custom index.js at predicted path ' + predicted_path);
+      log.debug('require: no custom path, checking for custom index.js at predicted path ' + predicted_path);
       try {
         var handler = require(predicted_path + '/index.js');
         if (typeof handler === 'function') {
@@ -82,7 +82,7 @@ module.exports = function(config) {
 
       // If we get here, the custom index.js did not exist, so next try to make a default
       // handler with the example and schema files
-      log.debug('require: final attempt: checking if we can make a default handler with example and schema files');
+      log.debug('require: no custom index.js, final attempt: checking if we can make a default handler with example and schema files');
       var handler = _ModelFactory.defaultHandler(opts);
       if (handler) {
         log.debug('require: succeeded at creating default handler for media type ' + opts._mediaType);
@@ -107,35 +107,51 @@ module.exports = function(config) {
       var example = opts.example || _ModelFactory.filePathWithExtensions('example', opts);
       log.debug('defaultHandler: schema = ', schema, ', example = ', example);
 
+      // The Main "model" object:
+      var ret = {
+        // example should be a function that returns an object
+        example: false,
+
+        // schema is not required for a model, but this forces evaluation 
+        // of require now rather than when you call validate() later, which
+        // means it will fail if the predicted schema path doesn't exist.
+        schema: false,
+
+        // validate: SHOULD RETURN A PROMISE THAT RESOLVES TO TRUE OR FALSE
+        validate: function(obj, opts) {
+          return Promise.try(function() {
+            var schema = this.schema;
+            if (!schema) return false; // no schema === invalid
+            // If you make your schema file return a function that generates a schema, 
+            // we'll call that function with the options from validate() at run-time 
+            if (typeof schema === 'function') {
+              schema = schema(opts);
+            }
+            // TODO: use a json-schema validator here
+          });
+        },
+      };
+
+      // Try to require the example:
       try {
-        // The Main "model" object:
-        return {
+        ret.example = require(example);
+      } catch(e) {
+        log.debug('defaultHandler: unable to require example '+example);
+        ret.example = false;
+      }
+      // Try to require the schema:
+      try {
+        ret.schema = require(schema);
+      } catch(e) {
+        log.debug('defaultHandler: unable to require schema '+schema);
+        ret.schema = false;
+      }
 
-          // example should be a function that returns an object
-          example: require(example),
-
-          // schema is not required for a model, but this forces evaluation 
-          // of require now rather than when you call validate() later, which
-          // means it will fail if the predicted schema path doesn't exist.
-          schema: require(schema),
-
-          // validate: SHOULD RETURN A PROMISE THAT RESOLVES TO TRUE OR FALSE
-          validate: function(obj, opts) {
-            return Promise.try(function() {
-              var schema = this.schema;
-              // If you make your schema file return a function that generates a schema, 
-              // we'll call that function with the options from validate() at run-time 
-              if (typeof schema === 'function') {
-                schema = schema(opts);
-              }
-              // TODO: use a json-schema validator here
-            });
-          },
-
-        };
-      } catch(e) { 
-        log.debug('defaultHandler: error creating default handler: ', e);
-      }; // catch will be called if any require's fail
+      // If we got either an example or a schema at our predicted path, consider it
+      // a success.
+      if (ret.example || ret.schema) {
+        return ret;
+      }
 
       log.debug('defaultHandler: unable to find example ('+example+') and schema ('+schema+') files to build handler.');
       return null; 
