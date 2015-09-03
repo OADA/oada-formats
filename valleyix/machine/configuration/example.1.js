@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(opts) {
   opts = opts || {};
 
@@ -6,7 +8,7 @@ module.exports = function(opts) {
     DeviceName: 'SF7000 - 1',
     DeviceTypeId: '24E1175E-8744-4C27-856E-00F6D6001159',
     DeviceTypeName: 'Pivot',
-    EndGunList: 
+    EndGunList:
     [
       {
        EndGunID: '64E1175E-8744-4C27-856E-00F6D600115E',
@@ -29,8 +31,10 @@ module.exports = function(opts) {
     ZeroDegreeReference: null,
   };
 
-  for (var i in opts) { 
-    if (_example[i]) _example[i] = opts[i]; // override any keys with value in opts:
-  }       
+  for (var i in opts) {
+    if (_example[i]) {
+        _example[i] = opts[i]; // override any keys with value in opts:
+    }
+  }
   return _example;
 };

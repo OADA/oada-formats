@@ -1,16 +1,17 @@
+'use strict';
+
 var expect = require('chai').expect;
 var Promise = require('bluebird');
 var recursive = Promise.promisify(require('recursive-readdir'));
-var minimatch = require('minimatch');
 var _ = require('lodash');
-var log = require('bunyan').createLogger({ 
+var log = require('bunyan').createLogger({
   name: 'test/validate.js',
   level: 'fatal' // set this to 'debug' to see more info
 });
 
-var factory = require('../model.js')({ 
-  libs: { 
-    log: function() { return log; } 
+var factory = require('../model.js')({
+  libs: {
+    log: function() { return log; }
   }
 });
 
@@ -38,8 +39,10 @@ describe('validate', function() {
       }).map(function(f) {
         var dirname = f.replace(/\/example.*\.js/, '');            // get rid of 'example.1.js'
         var version_match = f.match(/\/example\.?(.*)\.js/, '$1'); // get the '1' from 'example.1.js'
-        var version = '';                                          
-        if (version_match) version = '.' + version_match[1];       // set version = '.1' for final mediatype
+        var version = '';
+        if (version_match) {
+            version = '.' + version_match[1];       // set version = '.1' for final mediatype
+        }
         var dots = dirname.replace(/\//g, '.');                    // replace the /'s in the path with dots
         var mediatype = 'application/vnd.' + dots + version + '+json';
         return mediatype;

@@ -3,7 +3,7 @@ module.exports = {
   description: "application/vnd.oada.irrigation.1+json",
 
   // None of the keys in irrigation are required to be there.
-  required: [ ], 
+  required: [ ],
 
   // You can add any custom keys to irrigation that you want
   additionalProperties: true,
@@ -12,5 +12,4 @@ module.exports = {
   properties: {
     machines: { $ref: '/oada/lib/link.1#definitions/versioned', },
   },
-
 };

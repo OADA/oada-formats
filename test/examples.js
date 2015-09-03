@@ -1,7 +1,8 @@
+'use strict';
+
 var expect = require('chai').expect;
 var Promise = require('bluebird');
 var recursive = Promise.promisify(require('recursive-readdir'));
-var minimatch = require('minimatch');
 var _ = require('lodash');
 
 var top_level_tests = [ './oada', './valleyix' ];

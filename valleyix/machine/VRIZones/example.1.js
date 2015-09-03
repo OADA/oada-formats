@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(opts) {
   opts = opts || {};
 
@@ -24,10 +26,12 @@ module.exports = function(opts) {
         ZoneDisplayId: 3
       },
     ],
-  }; 
+  };
 
-  for (var i in opts) { 
-    if (_example[i]) _example[i] = opts[i]; // override any keys with value in opts:
-  }       
+  for (var i in opts) {
+    if (_example[i]) {
+        _example[i] = opts[i]; // override any keys with value in opts:
+    }
+  }
   return _example;
 };

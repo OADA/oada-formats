@@ -1,3 +1,5 @@
+'use strict';
+
 // application/vnd.valleyix.machine.status.1+json
 module.exports = function(opts) {
   opts = opts || {};
@@ -68,8 +70,10 @@ module.exports = function(opts) {
     Zone: 'A'
   };
 
-  for (var i in opts) { 
-    if (_example[i]) _example[i] = opts[i]; // override any keys with value in opts:
-  }       
+  for (var i in opts) {
+    if (_example[i]) {
+        _example[i] = opts[i]; // override any keys with value in opts:
+    }
+  }
   return _example;
 };

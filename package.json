@@ -1,13 +1,13 @@
 {
   "name": "oada-formats",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Format defintions, schemas, validators, and models for data.",
-  "main": "model.js",
+  "main": "formats.js",
   "scripts": {
-    "test": "mocha --colors | bunyan -o short",
-    "test-watch": "mocha -w --colors | bunyan -o short",
+    "test": "mocha",
+    "test-watch": "mocha -w",
     "cover": "istanbul cover _mocha",
-    "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js .",
+    "lint": "jshint --reporter node_modules/jshint-stylish .",
     "style": "jscs .",
     "clean": "rm -rf ./coverage"
   },
@@ -26,25 +26,34 @@
     "email": "aaron@openag.io",
     "url": "http://openag.io"
   },
+  "contributors": [
+    {
+      "name": "Andrew Balmos",
+      "email": "abalmos@balmos.org"
+    },
+    {
+      "name": "Alex Layton",
+      "email": "alex@layton.in"
+    }
+  ],
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/OADA/oada-formats/issues"
   },
   "homepage": "https://github.com/OADA/oada-formats",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "debug": "^2.2.0",
+    "extend-error": "0.0.2",
+    "glob": "^5.0.14",
+    "object-assign": "^4.0.1"
+  },
   "devDependencies": {
-    "bunyan": "^1.4.0",
     "chai": "^3.0.0",
     "istanbul": "^0.3.14",
     "jscs": "^1.13.1",
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.0.1",
-    "minimatch": "^2.0.10",
-    "mocha": "^2.2.5",
-    "recursive-readdir": "^1.2.1"
-  },
-  "dependencies": {
-    "bluebird": "^2.9.34",
-    "extend-error": "0.0.2",
-    "lodash": "^3.10.0"
+    "mocha": "^2.2.5"
   }
 }
