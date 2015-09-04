@@ -16,11 +16,14 @@
 
 var Promise = require('bluebird');
 var debug = require('debug');
-
 require('extend-error');
+
 var NoSchemaError = Error.extend('NoSchemaError');
+var SchemaMismatch = Error.extend('SchemaMismatch');
 
 module.exports = Model;
+module.exports.NoSchemaError = NoSchemaError;
+module.exports.SchemaMismatch = SchemaMismatch;
 
 function Model(options) {
     options = options || {};
@@ -32,7 +35,6 @@ function Model(options) {
     this._error = options.error || debug('oada:model:error');
 }
 
-// TODO: Should it return true/false or throw on invalid?
 Model.prototype.validate = Promise.method(function validate(data) {
     if(!this.schema) {
         var message = 'No schmea to validate model';
@@ -40,7 +42,5 @@ Model.prototype.validate = Promise.method(function validate(data) {
         throw new NoSchemaError(message);
     }
 
-    // TODO: Wire in ajv.
-    console.log(data[0]);
-    return false;
+    throw new SchemaMismatch();
 });

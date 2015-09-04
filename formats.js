@@ -18,7 +18,6 @@ var path = require('path');
 var debug = require('debug');
 var Promise = require('bluebird');
 var glob = require('glob');
-//var objectAssign = require('object-assign');
 
 var Model = require('./model');
 
@@ -40,7 +39,10 @@ function Formats(options) {
 
     // Scan the models directory for all of the avaiable mediatypes
     var subModules = glob
-        .sync('index.js', {cwd: 'models', matchBase: true})
+        .sync('index.js', {
+            cwd: path.join(__dirname, 'models'),
+            matchBase: true}
+        )
         .map(function(path) {
             return path.replace("/index.js", "");
         });
@@ -55,7 +57,8 @@ function Formats(options) {
 
     this._mtMap = {};
     for(var i = 0; i < subModules.length; i++) {
-        this._mtMap[mediaTypes[i]] = path.join('models', subModules[i]);
+        this._mtMap[mediaTypes[i]] = '.' + path.sep +
+            path.join('models', subModules[i]);
     }
 }
 
@@ -71,8 +74,9 @@ function Formats(options) {
 Formats.prototype.model = function model(mediaType, options) {
     return Promise
         .try(function() {
-            this._debug('Loading model data: ' + this._mtMap[mediaType]);
-            return require('./' + this._mtMap[mediaType]);
+            this._debug('Loading model data: ' + this._mtMap[mediaType] +
+                    ' for mediaType: ' + mediaType);
+            return require(this._mtMap[mediaType]);
         }.bind(this))
         .bind(this)
         .props()
@@ -99,12 +103,12 @@ Formats.prototype.model = function model(mediaType, options) {
 
 /**
  * Add an external library of media types
- * @param {Object} mediaTypeMap - The media type map of the external library
+ * @param {Object} map - The media type map of the external library
  */
-//Formats.prototype.use = function use(map/plugin) {
-//    objectAssign(this._mtMap, map);
-
-    // OR (?)
-
-//    plugin(this);
-//};
+Formats.prototype.use = function use(map) {
+    Object.keys(map).forEach(function(mediaType) {
+        if(typeof map[mediaType] === 'string') {
+            this._mtMap[mediaType] = map[mediaType];
+        }
+    }, this);
+};
