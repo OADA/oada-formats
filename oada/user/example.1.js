@@ -1,4 +1,4 @@
-// application/vnd.oada.bookmarks.1+json
+// application/vnd.oada.user.1+json
 module.exports = function(opts) {
   opts = opts || {};
   var _example = {

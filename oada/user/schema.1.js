@@ -1,6 +1,6 @@
 module.exports = {
-  id: "/oada/users.1",
-  description: "application/vnd.oada.users.1+json",
+  id: "/oada/user.1",
+  description: "application/vnd.oada.user.1+json",
 
   // None of the keys in bookmarks are required to be there.
   required: [ ],
