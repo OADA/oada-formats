@@ -1,17 +1,11 @@
+// application/vnd.oada.bookmarks.1+json
 module.exports = function(opts) {
   opts = opts || {};
-
   var _example = {
-    name: 'irrigation',
-    list: {
-      'dummyrandomthing': { _id: 'dummyid123AFG', _rev: '1-dummy02ijfl' },
-      'klsdfj0982ifjoow': { _id: 'df002jfk2ojsl', _rev: '3-jkfd0ijs8zk' },
-    },
+    bookmarks: { _id: 'kdjsl028ifej', _rev: '2-djfh92843hj' },
   };
-
   for (var i in opts) {
     if (_example[i]) _example[i] = opts[i]; // override any keys with value in opts:
   }
   return _example;
 };
-
