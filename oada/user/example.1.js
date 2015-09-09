@@ -3,7 +3,7 @@ module.exports = function(opts) {
   opts = opts || {};
   var _example = {
     bookmarks: { _id: 'kdjsl028ifej', _rev: '2-djfh92843hj' },
-    username: 'Frank',
+    username: 'frank',
     name: 'Farmer Frank',
     family_name: 'Frank',
     given_name: 'Farmer',
