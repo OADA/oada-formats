@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-- '0.10'
 - '0.11'
 - '0.12'
 - node
@@ -10,7 +9,7 @@ deploy:
   provider: npm
   email: aaron@openag.io
   api_key:
-    secure: 
+    secure:
   on:
     tags: true
     all_branches: true
