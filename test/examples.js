@@ -1,49 +1,43 @@
+/* Copyright 2014 Open Ag Data Alliance
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 'use strict';
 
-var expect = require('chai').expect;
 var Promise = require('bluebird');
-var recursive = Promise.promisify(require('recursive-readdir'));
-var _ = require('lodash');
+Promise.longStackTraces();
+var chai = require('chai');
+chai.use(require('chai-as-promised'));
+var expect = chai.expect;
+var Formats = require('..');
 
-var top_level_tests = [ './oada', './valleyix' ];
+var formats = new Formats();
 
-var paths_to_test = [];
+describe('Verify built in mediatypes', function() {
 
-describe('examples', function() {
+    Object.keys(formats.mediatypes).forEach(function(mediatype) {
 
-  // Get the list of all example files to test:
-  before(function() {
-    return Promise.each(top_level_tests, function(dir) {
-
-      // Recursively list all files under top-level directories
-      return recursive(dir)
-
-      // Filter that list for only the example.1.js files:
-      .then(function(files) {
-        return _.filter(files, function(f) {
-          return f.match(/example.*\.js/);
+        it('Verify ' + mediatype + ' schema and example', function() {
+            return formats
+                .model(mediatype)
+                .then(function(model) {
+                    return [model, model.example()];
+                })
+                .spread(function(model, example) {
+                    return expect(model.validate(example))
+                        .to.eventually.equal(true);
+                });
         });
-
-      // Add the remaining files onto the main array to test
-      }).then(function(files) {
-        paths_to_test = paths_to_test.concat(files);
-      });
     });
-  });
-
-  // You have to wrap this in .each because the before() isn't finished by the
-  // time we get to here due to the promise.
-  it('.each', function() {
-    _.each(paths_to_test, function(p) {
-      describe('('+p+'):', function() {
-        it('should return a valid function which returns an object', function() {
-          var e = require.main.require(p);
-          expect(e).to.not.equal(null);
-          expect(e).to.be.a('function');
-          expect(e()).to.be.an('object');
-        });
-      });
-    });
-  });
 
 });

@@ -1,3 +1,1 @@
-module.exports = {
-    example: require('./example.js'),
-};
+module.exports = {};
