@@ -1,7 +1,7 @@
 var types = require('../../../../../../types.js');
 
 module.exports = {
-    id: types.OADA_BOOKMARKS_MT,
+    id: types.OADA_BOOKMARKS_ID,
     description: 'application/vnd.oada.bookmarks.1+json',
 
     // You can add any custom keys to bookmarks that you want

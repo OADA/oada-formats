@@ -2,7 +2,7 @@ var types = require('../../../../../../../types.js');
 
 // Irrigation.Machines:
 module.exports = {
-    id: types.OADA_IRRIGATION_MACHINES_MT,
+    id: types.OADA_IRRIGATION_MACHINES_ID,
     description: 'application/vnd.oada.irrigation.machines.1+json',
 
     // Has to implement name and list

@@ -4,7 +4,7 @@ var types = require('../../../../../../types.js');
 // valid 'links'.  Use the particular ones (versioned-link, nonversioned-link)
 // if you want to explicitly make sure it's one or the other.
 module.exports = {
-    id: types.OADA_LINK_MT,
+    id: types.OADA_LINK_ID,
     description: 'OADA Link object',
 
     definitions: {
