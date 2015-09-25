@@ -1,7 +1,7 @@
-var types = require('../../../../../../types.js');
+var refs = require('../../../../../../refs.js');
 
 module.exports = {
-    id: types.OADA_CONFIGURATION_ID,
+    id: refs.OADA_CONFIGURATION_ID,
     description: 'application/vnd.oada.well-known.oada-configuration.1+json',
 
     required: [

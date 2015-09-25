@@ -1,10 +1,10 @@
-var types = require('../../../../../../types.js');
+var refs = require('../../../../../../refs.js');
 
 // Links: both a versioned link and a non-versioned link are
 // valid 'links'.  Use the particular ones (versioned-link, nonversioned-link)
 // if you want to explicitly make sure it's one or the other.
 module.exports = {
-    id: types.OADA_LINK_ID,
+    id: refs.OADA_LINK_ID,
     description: 'OADA Link object',
 
     definitions: {

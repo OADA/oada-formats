@@ -1,7 +1,7 @@
-var types = require('../../../../../../types.js');
+var refs = require('../../../../../../refs.js');
 
 module.exports = {
-    id: types.OADA_IRRIGATION_ID,
+    id: refs.OADA_IRRIGATION_ID,
     description: 'application/vnd.oada.irrigation.1+json',
 
     // You can add any custom keys to irrigation that you want
@@ -10,7 +10,7 @@ module.exports = {
     // Here are the standard-defined keys:
     properties: {
         machines: {
-            $ref: types.OADA_LINK_VERSIONED,
+            $ref: refs.OADA_LINK_VERSIONED,
         },
     },
 };

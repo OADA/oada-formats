@@ -1,7 +1,7 @@
-var types = require('../../../../../../../types.js');
+var refs = require('../../../../../../../refs.js');
 
 module.exports = {
-    id: types.OADA_DYN_REG_RESPONSE_ID,
+    id: refs.OADA_DYN_REG_RESPONSE_ID,
     description: 'application/vnd.oada.oauth-dny-reg.register-response.1+json',
 
     required: [

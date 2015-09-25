@@ -1,7 +1,7 @@
-var types = require('../../../../../../types.js');
+var refs = require('../../../../../../refs.js');
 
 module.exports = {
-    id: types.OADA_CLIENTS_ID,
+    id: refs.OADA_CLIENTS_ID,
     description: 'application/vnd.oada.clients.1+json',
     additionalProperties: true,
     required: [
@@ -14,7 +14,7 @@ module.exports = {
             pattern: 'clients'
         },
         list: {
-            $ref: types.OADA_LINK_LIST,
+            $ref: refs.OADA_LINK_LIST,
         }
     }
 };

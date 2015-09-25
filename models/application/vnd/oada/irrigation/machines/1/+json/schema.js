@@ -1,8 +1,8 @@
-var types = require('../../../../../../../types.js');
+var refs = require('../../../../../../../refs.js');
 
 // Irrigation.Machines:
 module.exports = {
-    id: types.OADA_IRRIGATION_MACHINES_ID,
+    id: refs.OADA_IRRIGATION_MACHINES_ID,
     description: 'application/vnd.oada.irrigation.machines.1+json',
 
     // Has to implement name and list
@@ -21,7 +21,7 @@ module.exports = {
             pattern: 'irrigation'
         },
         list: {
-            $ref: types.OADA_LINK_LIST
+            $ref: refs.OADA_LINK_LIST
         },
     },
 };
