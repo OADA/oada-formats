@@ -19,7 +19,7 @@ Promise.longStackTraces();
 var chai = require('chai');
 chai.use(require('chai-as-promised'));
 var expect = chai.expect;
-var Formats = require('..');
+var Formats = require('../formats.js');
 
 var formats = new Formats();
 

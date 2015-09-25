@@ -52,7 +52,7 @@ function Formats(options) {
     this.use(require('./JsonModel'));
 
     // Add the built in media types
-    this.use(require('./models'));
+    this.use(require('./formats/index.js'));
 }
 
 /**
