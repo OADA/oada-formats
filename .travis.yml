@@ -7,15 +7,14 @@ node_js:
 sudo: false
 deploy:
   provider: npm
-  email: aaron@openag.io
+  email: andrew@balmos.org
   api_key:
-    secure:
+    secure: uZvyvdrMkHD5VOCaeNxtrlcn/HPacpvRKZtOLOjmAeI/egpjzE88lSxHg6PGDdGVavK1Riw71lWPowTQtjH8x0hNdfYpXsRXG3cEQKQQTcUZlrDVbJxV/8gvHvA3a7cRCprbi6oaAzM+ByFApNY4sQh9UlbM6CYpHfTTMiYyT6lPM2CfDnzloseUfYLkNlShG0ANAKgqkUxY9P+OqQkzN45wR1numrKyZ8IuiDezH7EO+zOE8YtS8p+jE7CbVcr1Yl/xDIJDxOd8v9ZF6vMW88NFIRXhKZluT18rosPOG5wnWpTJA9VJaT9V84+cn8PpbC/IZ7/Ix2KPexFx4zWZE+6NSXqf0tTk4rZd6uidDE50kJGaUVXxZ3EuwDGgeb2t6i2nMnf+IJQzqWbC3FWfB/I6fuU11QpwtHKn07xxH5uDoVuEFBV4uhG4HjLNl9aTpgPerul7kkN5TUG3BZTqWK6+rjpdLG/DjybmDez0VfWz2GB4HaMRUk4J30yCcvINcYMo90esZCfWE/luPObpFa7lpIFTSOOxxS7f5Yh1LdFFbuNi/fWSdSlTLDA6XldsFvr4bKOyZJvpiMmjzxrfkDXMAootiObOp6kuzrixSJCH1kJSaTFFZ4LUGif6QCe9o/k0URLyV49PGaV8+YpUM1jZLu6a+Bumvfn0Rq2rvLM=
   on:
     tags: true
-    all_branches: true
     repo: OADA/oada-formats
 before_install:
- - npm install -g coveralls
+- npm install -g coveralls
 script:
 - npm run lint
 - npm run style
