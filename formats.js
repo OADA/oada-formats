@@ -28,6 +28,11 @@ module.exports.MediaTypeNotFoundError = MediaTypeNotFoundError;
 var ModelTypeNotFoundError = Error.extend('ModelTypeNotFoundError');
 module.exports.ModelTypeNotFoundError = ModelTypeNotFoundError;
 
+// TODO: This doesn't seem right?
+Format.ValidationError = Model.ValidationError;
+Format.InvalidSchemaError = Model.InvalidSchemaError;
+Format.SchemaMismatch = Model.SchemaMismatch;
+
 /**
  * Maintains and builds OADA format models
  * @constructor
