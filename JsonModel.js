@@ -47,11 +47,11 @@ module.exports = function(context) {
     JsonModel.prototype._ajv.compileAsyncP =
         Promise.promisify(JsonModel.prototype._ajv.compileAsync);
 
-    JsonModel.prototype.validate = Promise.method(function validate(data) {
+    JsonModel.prototype.validate = function validate() {
         return context.Model.prototype.validate
             .apply(this, arguments)
             .bind(this)
-            .then(function() {
+            .then(function(data) {
                 if (!this._schema) {
                     var message = 'No schmea to validate json data against';
                     this.error(message);
@@ -71,7 +71,7 @@ module.exports = function(context) {
                         }
                     });
             });
-    });
+    };
 
     JsonModel.fromPackage = function fromPackage(pack, options) {
         return Promise.try(function() {

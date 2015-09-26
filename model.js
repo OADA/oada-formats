@@ -79,16 +79,19 @@ Model.prototype.fromPackage = Promise.method(function fromPackage() {
  * A function which validates it's input as valid for this format model
  * @param {*} file - The file which is to be validated as the model
  */
-Model.prototype.validate = Promise.method(function validate(data) {
-    for (var i = 0; i < this._additionalValidators.length; i++) {
-        if (!this._additionalValidators[i](data)) {
-            this.error('Addtional validation failed');
-            throw new ValidationError('Additional validation failed');
-        }
-    }
-
-    return true;
-});
+Model.prototype.validate = function validate(data) {
+    return Promise
+        .resolve(data)
+        .bind(this)
+        .tap(function(data) {
+            for (var i = 0; i < this._additionalValidators.length; i++) {
+                if (!this._additionalValidators[i](data)) {
+                    this.error('Addtional validation failed');
+                    throw new ValidationError('Additional validation failed');
+                }
+            }
+        });
+};
 
 /**
  * Returns an specific named example

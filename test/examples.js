@@ -31,10 +31,7 @@ describe('Verify built in mediatypes', function() {
             return formats
                 .model(mediatype)
                 .then(function(model) {
-                    return [model, model.example()];
-                })
-                .spread(function(model, example) {
-                    return expect(model.validate(example))
+                    return expect(model.validate(model.example('default')))
                         .to.eventually.equal(true);
                 });
         });
@@ -46,16 +43,18 @@ describe('Verify built in mediatypes', function() {
             return formats
                 .model('application/vnd.oada.oada-configuration.1+json')
                 .then(function(model) {
-                    return [model, model.example()];
-                })
-                .spread(function(model, ex) {
-                    ex['client_assertion_signing_alg_values_supported'] = [];
+                    return model
+                        .example('default')
+                        .then(function(ex) {
+                            ex['client_assertion_signing_alg_values_supported']
+                                = [];
 
-                    return expect(model.validate(ex))
-                        .to.eventually.be
-                        .rejectedWith(Formats.Model.ValidationError,
-                            '.client_assertion_signing_alg_values_supported ' +
-                            'should have "RS256" as an element');
+                            return expect(model.validate(ex))
+                                .to.eventually.be
+                                .rejectedWith(Formats.Model.ValidationError,
+                                '.client_assertion_signing_alg_values_' +
+                                'supported should have "RS256" as an element');
+                        });
                 });
         });
 
