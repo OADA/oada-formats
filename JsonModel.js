@@ -55,13 +55,20 @@ module.exports = function(context) {
                 if (!this._schema) {
                     var message = 'No schmea to validate json data against';
                     this.error(message);
-                    throw new context.InvalidSchemaError(message);
+                    throw new context.Model.InvalidSchemaError(message);
                 }
 
                 return this._ajv
                     .compileAsyncP(this._schema)
+                    .bind(this)
                     .then(function(validate) {
-                        return validate(data);
+                        if (!validate(data)) {
+                            this.error(validate.errors);
+                            throw context.Model
+                                .ValidationError.fromErrors(validate.errors);
+                        } else {
+                            return true;
+                        }
                     });
             });
     });

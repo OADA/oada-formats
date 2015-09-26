@@ -112,7 +112,8 @@ describe('JsonModel', function() {
             .model('test/1')
             .then(function(model) {
                 return expect(model.validate({a: 'b'}))
-                    .to.eventually.equal(false);
+                    .to.eventually.be.rejectedWith(Model.ValidationError,
+                            '.a should match pattern "^a.+$"');
             });
     });
 
@@ -132,11 +133,14 @@ describe('JsonModel', function() {
         return formats
             .model('test/2+json')
             .then(function(model) {
-                return Promise.join([
+                return Promise.all([
                     expect(model.validate({}))
-                        .to.eventually.equal(false),
+                        .to.eventually.be.rejectedWith(Model.ValidationError,
+                            '.b should have required property .b'),
                     expect(model.validate({b:{a:'c'}}))
-                        .to.eventually.equal(false),
+                        .to.eventually.be.rejectedWith(Model.ValidationError,
+                            '.b.a should match pattern "^a.+$"')
+
                 ]);
             });
     });
@@ -157,13 +161,16 @@ describe('JsonModel', function() {
         return formats
             .model('test/3')
             .then(function(model) {
-                return Promise.join([
+                return Promise.all([
                     expect(model.validate({}))
-                        .to.eventually.equal(false),
+                        .to.eventually.be.rejectedWith(Model.ValidationError,
+                            '.c should have required property .c'),
                     expect(model.validate({b:{a: 'c'}}))
-                        .to.eventually.equal(false),
+                        .to.eventually.be.rejectedWith(Model.ValidationError,
+                            '.c should have required property .c'),
                     expect(model.validate({c:{b:{a: 'c'}}}))
-                        .to.eventually.equal(false),
+                        .to.eventually.be.rejectedWith(Model.ValidationError,
+                            '.c.b.a should match pattern "^a.+$"')
                 ]);
             });
     });

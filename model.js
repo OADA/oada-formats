@@ -24,9 +24,25 @@ var InvalidSchemaError = Error.extend('InvalidSchemaError');
 var SchemaMismatch = Error.extend('SchemaMismatch');
 
 module.exports = Model;
-module.exports.ValidationError = ValidationError;
-module.exports.InvalidSchemaError = InvalidSchemaError;
-module.exports.SchemaMismatch = SchemaMismatch;
+Model.ValidationError = ValidationError;
+Model.InvalidSchemaError = InvalidSchemaError;
+Model.SchemaMismatch = SchemaMismatch;
+
+Model.ValidationError.fromErrors = function fromErrors(errors) {
+    errors = Array.isArray(errors) ? errors : [errors];
+
+    var message = '';
+    _.forEach(errors, function(error) {
+        message  = ', ' + error.dataPath + ' ' +
+            error.message;
+    });
+    message = message.replace(/^[, ]+/, '');
+
+    var e = new ValidationError(message);
+    e.errors = _.clone(errors);
+
+    return e;
+};
 
 /**
  * A format model. Contains _schema, _examples, and validation.
