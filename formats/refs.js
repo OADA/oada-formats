@@ -18,4 +18,6 @@ module.exports = {
     OADA_IRRIGATION_ID: 'oada-formats://application/vnd.oada.irrigation.1+json',
 
     OADA_IRRIGATION_MACHINES_ID: 'oada-formats://application/vnd.oada.irrigation.machines.1+json',
+
+    OADA_USER_ID: 'oada-formats://application/vnd.oada.user.1+json',
 };
