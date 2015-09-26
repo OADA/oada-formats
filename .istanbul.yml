@@ -2,6 +2,7 @@ instrumentation:
     root: .
     default-excludes: true
     excludes:
+        - tools/**/*.js
         - gulpfile.*
         - Gulpfile.*
         - Gruntfile.*

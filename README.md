@@ -74,27 +74,27 @@ The `JsonModel` can be used to add new json models easily.
    at the root of the mediatype directory structure will be loaded in as the
    schema.
 
-# OADA Models
+# OADA Formats
 
 - [application/vnd.oada.bookmarks.1+json](#user-content-applicationvndoadabookmarks1json)
   * [Schema](#schema)
   * [Example](#example)
-- [application/vnd.oada.clients.1+json](#application-vndoadaclients1-json)
+- [application/vnd.oada.clients.1+json](#user-content-applicationvndoadaclients1json)
   * [Schema](#schema)
   * [Example](#example)
-- [application/vnd.oada.irrigation.1+json](#application-vndoadairrigation1-json)
+- [application/vnd.oada.irrigation.1+json](#user-content-applicationvndoadairrigation1json)
   * [Schema](#schema)
   * [Example](#example)
-- [application/vnd.oada.irrigation.machines.1+json](#application-vndoadairrigationmachines1-json)
+- [application/vnd.oada.irrigation.machines.1+json](#user-content-applicationvndoadairrigationmachines1json)
   * [Schema](#schema)
   * [Example](#example)
-- [application/vnd.oada.link.1+json](#application-vndoadalink1-json)
+- [application/vnd.oada.link.1+json](#user-content-applicationvndoadalink1json)
   * [Schema](#schema)
   * [Example](#example)
-- [application/vnd.oada.oada-configuration.1+json](#application-vndoadaoada-configuration1-json)
+- [application/vnd.oada.oada-configuration.1+json](#user-content-applicationvndoadaoada-configuration1json)
   * [Schema](#schema)
   * [Example](#example)
-- [application/vnd.oada.oauth-dyn-reg.register-response.1+json](#application-vndoadaoauth-dyn-regregister-response1-json)
+- [application/vnd.oada.oauth-dyn-reg.register-response.1+json](#user-content-applicationvndoadaoauth-dyn-regregister-response1json)
   * [Schema](#schema)
   * [Example](#example)
 
@@ -531,5 +531,3 @@ The `JsonModel` can be used to add new json models easily.
 }
 ```
 
-
-[valleyix-formats]: http://github.com/oada/valleyix-formats

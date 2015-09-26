@@ -29,9 +29,9 @@ var ModelTypeNotFoundError = Error.extend('ModelTypeNotFoundError');
 module.exports.ModelTypeNotFoundError = ModelTypeNotFoundError;
 
 // TODO: This doesn't seem right?
-Format.ValidationError = Model.ValidationError;
-Format.InvalidSchemaError = Model.InvalidSchemaError;
-Format.SchemaMismatch = Model.SchemaMismatch;
+Formats.ValidationError = Model.ValidationError;
+Formats.InvalidSchemaError = Model.InvalidSchemaError;
+Formats.SchemaMismatch = Model.SchemaMismatch;
 
 /**
  * Maintains and builds OADA format models

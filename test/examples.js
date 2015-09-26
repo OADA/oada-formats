@@ -40,20 +40,21 @@ describe('Verify built in mediatypes', function() {
     describe('application/vnd.oada.oada-configration.1+json', function() {
 
         it('should support RS256', function() {
+            var key = 'client_assertion_signing_alg_values_supported';
+
             return formats
                 .model('application/vnd.oada.oada-configuration.1+json')
                 .then(function(model) {
                     return model
                         .example('default')
-                        .then(function(ex) {
-                            ex['client_assertion_signing_alg_values_supported']
-                                = [];
+                        .then(function(example) {
+                            example[key] = [];
 
-                            return expect(model.validate(ex))
+                            return expect(model.validate(example))
                                 .to.eventually.be
                                 .rejectedWith(Formats.Model.ValidationError,
-                                '.client_assertion_signing_alg_values_' +
-                                'supported should have "RS256" as an element');
+                                '.' + key + ' should have "RS256" as an ' +
+                                'element');
                         });
                 });
         });
