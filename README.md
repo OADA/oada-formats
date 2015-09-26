@@ -531,3 +531,4 @@ The `JsonModel` can be used to add new json models easily.
 }
 ```
 
+[valleyix-formats]: http://github.com/oada/valleyix-formats
