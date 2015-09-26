@@ -21,8 +21,8 @@ var Promise = require('bluebird');
 var markdownToc = require('markdown-toc');
 var Formats = require('../formats.js');
 
-function generateDocs(mediatypes, filename) {
-    var formats = new Formats();
+function generateDocs(mediatypes, filename, formats) {
+    formats = formats ? formats : new Formats();
     var docs = '';
 
     return Promise
