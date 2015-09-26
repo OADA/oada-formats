@@ -40,4 +40,24 @@ describe('Verify built in mediatypes', function() {
         });
     });
 
+    describe('application/vnd.oada.oada-configration.1+json', function() {
+
+        it('should support RS256', function() {
+            return formats
+                .model('application/vnd.oada.oada-configuration.1+json')
+                .then(function(model) {
+                    return [model, model.example()];
+                })
+                .spread(function(model, ex) {
+                    ex['client_assertion_signing_alg_values_supported'] = [];
+
+                    return expect(model.validate(ex))
+                        .to.eventually.be
+                        .rejectedWith(Formats.Model.ValidationError,
+                            '.client_assertion_signing_alg_values_supported ' +
+                            'should have "RS256" as an element');
+                });
+        });
+
+    });
 });
