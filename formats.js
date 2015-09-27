@@ -71,6 +71,8 @@ function Formats(options) {
 Formats.prototype.model = function model(mediatype) {
     this.debug('Trying to load ' + mediatype);
 
+    mediatype = mediatype.toLowerCase();
+
     return Promise
         .bind(this)
         .then(function() {
