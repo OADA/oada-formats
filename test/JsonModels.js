@@ -136,7 +136,7 @@ describe('JsonModel', function() {
                 return Promise.all([
                     expect(model.validate({}))
                         .to.eventually.be.rejectedWith(Model.ValidationError,
-                            '.b should have required property .b'),
+                            '.b is a required property'),
                     expect(model.validate({b:{a:'c'}}))
                         .to.eventually.be.rejectedWith(Model.ValidationError,
                             '.b.a should match pattern "^a.+$"')
@@ -164,10 +164,10 @@ describe('JsonModel', function() {
                 return Promise.all([
                     expect(model.validate({}))
                         .to.eventually.be.rejectedWith(Model.ValidationError,
-                            '.c should have required property .c'),
+                            '.c is a required property'),
                     expect(model.validate({b:{a: 'c'}}))
                         .to.eventually.be.rejectedWith(Model.ValidationError,
-                            '.c should have required property .c'),
+                            '[\'b\'] should NOT have additional properties'),
                     expect(model.validate({c:{b:{a: 'c'}}}))
                         .to.eventually.be.rejectedWith(Model.ValidationError,
                             '.c.b.a should match pattern "^a.+$"')

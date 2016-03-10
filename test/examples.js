@@ -40,7 +40,7 @@ describe('Verify built in mediatypes', function() {
     describe('application/vnd.oada.oada-configration.1+json', function() {
 
         it('should support RS256', function() {
-            var key = 'client_assertion_signing_alg_values_supported';
+            var key = 'token_endpoint_auth_signing_alg_values_supported';
 
             return formats
                 .model('application/vnd.oada.oada-configuration.1+json')
