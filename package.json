@@ -1,6 +1,6 @@
 {
   "name": "oada-formats",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Format defintions, schemas, validators, and models for data.",
   "main": "formats.js",
   "scripts": {
