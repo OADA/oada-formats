@@ -4,7 +4,7 @@ module.exports = {
     'authorization_endpoint': 'https://oada.example.com/auth',
     'token_endpoint': 'https://oada.example.com/token',
     'registration_endpoint': 'https://oada.example.com/register',
-    'client_assertion_signing_alg_values_supported': [
+    'token_endpoint_auth_signing_alg_values_supported': [
         'RS256'
     ],
     'scopes_supported': [{

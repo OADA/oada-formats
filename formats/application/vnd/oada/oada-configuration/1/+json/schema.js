@@ -9,7 +9,7 @@ module.exports = {
         'authorization_endpoint',
         'token_endpoint',
         'registration_endpoint',
-        'client_assertion_signing_alg_values_supported'
+        'token_endpoint_auth_signing_alg_values_supported'
     ],
 
     // You can add any custom keys to oada-configuration that you want
@@ -33,7 +33,7 @@ module.exports = {
             type: 'string',
             pattern: '^https://.*'
         },
-        'client_assertion_signing_alg_values_supported': {
+        'token_endpoint_auth_signing_alg_values_supported': {
             type: 'array',
             minItems: 1,
             uniqueItems: true,
