@@ -32,4 +32,8 @@ module.exports = {
         _id: '9sdkf2lk',
         _rev: '4-lfdu029kjds'
     },
+    'sensor-hubs': {
+        _id: 'xks84x8s',
+        _rev: '1-Rjsuf73fs8d'
+    }
 };

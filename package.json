@@ -4,8 +4,8 @@
   "description": "Format defintions, schemas, validators, and models for data.",
   "main": "formats.js",
   "scripts": {
-    "test": "mocha",
-    "test-watch": "mocha -w",
+    "test": "mocha -t 5000",
+    "test-watch": "mocha -w -t 5000",
     "cover": "istanbul cover _mocha",
     "lint": "jshint --reporter node_modules/jshint-stylish .",
     "style": "jscs .",
@@ -48,7 +48,9 @@
     "extend-error": "0.0.2",
     "glob": "^5.0.14",
     "lodash": "^3.10.1",
-    "object-assign": "^4.0.1"
+    "lodash.clonedeep": "^4.3.1",
+    "object-assign": "^4.0.1",
+    "schema.org-validator": "^0.4.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",

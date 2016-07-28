@@ -19,21 +19,20 @@ module.exports = {
 
         nonversioned: {
             type: 'object',
-            required: [
-                '_id'
-            ],
-            additionalProperties: true,
+            additionalProperties: false,
             properties: {
                 _id: {
                     type: 'string'
                 },
             },
+            required: [
+                '_id'
+            ],
         },
 
         versioned: {
             type: 'object',
-            required: ['_rev', '_id'],
-            additionalProperties: true,
+            additionalProperties: false,
             properties: {
                 _id: {
                     type: 'string'
@@ -43,30 +42,28 @@ module.exports = {
                     pattern: '^[0-9]+-.+'
                 }
             },
+            required: [
+                '_id',
+                '_rev'
+            ],
         },
 
         list: {
-            versioned: {
-                type: 'object',
-                additionalProperties: {
-                    $ref: '#/definitions/versioned'
-                },
-            },
-
-            nonversioned: {
-                type: 'object',
-                additionalProperties: {
-                    $ref: '#/definitions/nonversioned'
-                },
-            },
-
-            list: {
-                type: 'object',
-                additionalProperties: {
+            type: 'object',
+            patternProperties: {
+                ".": {
                     $ref: '#/definitions/link'
-                },
+                }
             },
         },
 
+        versionedList: {
+            type: 'object',
+            patternProperties: {
+                ".": {
+                    $ref: '#/definitions/versioned'
+                }
+            }
+        }
     },
 };

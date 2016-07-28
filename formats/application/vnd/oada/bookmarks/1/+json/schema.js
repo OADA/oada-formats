@@ -19,7 +19,12 @@ module.exports = {
             $ref: refs.OADA_LINK_VERSIONED,
         },
         irrigation: {
-            $ref: refs.OADA_LINK_VERSIONED,
+            anyOf: [{
+                $ref: refs.OADA_LINK_VERSIONED
+            },
+            {
+                $ref: refs.OADA_IRRIGATION_ID
+            }]
         },
         sensors: {
             $ref: refs.OADA_LINK_VERSIONED,
@@ -31,7 +36,20 @@ module.exports = {
             $ref: refs.OADA_LINK_VERSIONED,
         },
         clients: {
-            $ref: refs.OADA_LINK_VERSIONED,
+            anyOf: [{
+                $ref: refs.OADA_LINK_VERSIONED
+            },
+            {
+                $ref: refs.OADA_CLIENTS_1_1_ID
+            }]
         },
+        'sensor-hubs': {
+            anyOf: [{
+                $ref: refs.OADA_LINK_VERSIONED
+            },
+            {
+                $ref: refs.OADA_SENSOR_HUBS_ID
+            }]
+        }
     },
 };
