@@ -14,10 +14,10 @@ module.exports = {
             type: 'string'
         },
         sensorType: {
-           type: 'object',
-           properties: {
-               name: {
-                   type: 'string'
+            type: 'object',
+            properties: {
+                name: {
+                    type: 'string'
                 },
                 subType: {
                     type: 'string'
@@ -88,4 +88,4 @@ module.exports = {
             }
         }
     }
-}
+};

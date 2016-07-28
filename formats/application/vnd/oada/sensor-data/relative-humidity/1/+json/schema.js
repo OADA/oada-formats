@@ -14,7 +14,9 @@ module.exports = {
             dataType: {
                 properties: {
                     definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/relative-humidity/1/\\+json$',
+                        pattern: '^https\\:\\/\\/github.com/oada-formats/' +
+                                 'tree/master/formats/application/vnd/oada/' +
+                                 'sensor-data/relative-humidity/1/\\+json$',
                     },
                     name: {
                         pattern: '^relative-humidity$'
@@ -45,4 +47,4 @@ module.exports = {
             }
         }
     }]
-}
+};

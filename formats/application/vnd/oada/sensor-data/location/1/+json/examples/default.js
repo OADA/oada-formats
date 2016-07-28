@@ -1,6 +1,7 @@
 module.exports = {
     dataType: {
-        definition: 'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/location/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/location/1/+json',
         name: 'location'
     },
     context: {
@@ -51,4 +52,4 @@ module.exports = {
             }
         }
     }
-}
+};

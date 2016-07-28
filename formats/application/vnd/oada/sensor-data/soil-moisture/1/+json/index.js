@@ -1,4 +1,6 @@
-var ValidationError = require('../../../../../../../../model.js').ValidationError;
+'use strict';
+var ValidationError =
+    require('../../../../../../../../model.js').ValidationError;
 
 module.exports = {
     additionalValidators: [
@@ -16,7 +18,7 @@ module.exports = {
                 return value;
             }, '');
 
-            if (errorKey != '') {
+            if (errorKey !== '') {
                 throw ValidationError.fromErrors({
                     keyword: 'require',
                     dataPath: '.templates.' + errorKey,
@@ -27,4 +29,4 @@ module.exports = {
             }
         }
     ]
-}
+};

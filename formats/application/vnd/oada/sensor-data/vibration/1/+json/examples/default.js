@@ -1,7 +1,7 @@
 module.exports = {
     dataType: {
-        definition:
-            'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/vibration/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/vibration/1/+json',
         name: 'vibration'
     },
     context: {
@@ -49,4 +49,4 @@ module.exports = {
             value: 'on'
         }
     }
-}
+};

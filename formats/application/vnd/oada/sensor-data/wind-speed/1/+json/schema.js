@@ -14,7 +14,9 @@ module.exports = {
             dataType: {
                 properties: {
                     definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/wind-speed/1/\\+json$',
+                        pattern: '^https\\:\\/\\/github.com/oada-formats/' +
+                            'tree/master/formats/application/vnd/oada/' +
+                            'sensor-data/wind-speed/1/\\+json$',
                     },
                     name: {
                         pattern: '^wind-speed$'
@@ -34,4 +36,4 @@ module.exports = {
             }
         }
     }]
-}
+};

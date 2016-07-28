@@ -1,7 +1,7 @@
 module.exports = {
     dataType: {
-        definition:
-            'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/heading/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/heading/1/+json',
         name: 'heading'
     },
     context: {
@@ -35,4 +35,4 @@ module.exports = {
             value: 1.90399323,
         }
     }
-}
+};

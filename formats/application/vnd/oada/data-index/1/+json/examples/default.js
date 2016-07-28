@@ -29,4 +29,4 @@ module.exports = {
             _rev: '2-ofjk9023kk'
         }
     }
-}
+};

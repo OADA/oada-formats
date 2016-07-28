@@ -1,6 +1,7 @@
 module.exports = {
     dataType: {
-        definition: 'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/soil-moisture/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/soil-moisture/1/+json',
         name: 'soil-moisture'
     },
     context: {
@@ -70,4 +71,4 @@ module.exports = {
             }
         }
     }
-}
+};

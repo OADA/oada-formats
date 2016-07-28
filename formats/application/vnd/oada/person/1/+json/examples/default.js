@@ -9,4 +9,4 @@ module.exports = {
         _id: 'akdfj93fad',
         _rev: '34-kdfjaklsdhx'
     }
-}
+};

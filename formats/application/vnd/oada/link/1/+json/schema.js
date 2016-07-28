@@ -51,7 +51,7 @@ module.exports = {
         list: {
             type: 'object',
             patternProperties: {
-                ".": {
+                '.': {
                     $ref: '#/definitions/link'
                 }
             },
@@ -60,7 +60,7 @@ module.exports = {
         versionedList: {
             type: 'object',
             patternProperties: {
-                ".": {
+                '.': {
                     $ref: '#/definitions/versioned'
                 }
             }

@@ -1,6 +1,7 @@
 module.exports = {
     dataType: {
-        definition: 'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/wind-speed/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/wind-speed/1/+json',
         name: 'wind-speed'
     },
     context: {
@@ -40,4 +41,4 @@ module.exports = {
             mean: 10.502938
         }
     }
-}
+};

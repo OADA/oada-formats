@@ -9,4 +9,4 @@ module.exports = {
             _rev: '1-dmfj290fj2klf'
         }
     }
-}
+};

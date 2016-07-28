@@ -57,4 +57,4 @@ module.exports = {
             _rev: '1-idjf02ojl'
         }
     }
-}
+};

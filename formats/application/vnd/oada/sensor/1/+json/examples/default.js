@@ -46,4 +46,4 @@ module.exports = {
             _id: 'k0jdf2kl3fjl', _rev: '4-kjdtf0i2j3f'
         }
     }
-}
+};

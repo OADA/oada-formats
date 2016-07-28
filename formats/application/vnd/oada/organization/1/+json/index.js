@@ -1,5 +1,7 @@
+'use strict';
+
 var cloneDeep = require('lodash.clonedeep');
-var SchemaOrgValidator = require('schema.org-validator')
+var SchemaOrgValidator = require('schema.org-validator');
 var ValidationError = require('../../../../../../../model.js').ValidationError;
 
 var sov = new SchemaOrgValidator({schemas: ['Organization']});
@@ -22,4 +24,4 @@ module.exports = {
             }
         }
     ]
-}
+};

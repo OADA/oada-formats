@@ -114,7 +114,7 @@ module.exports = {
         data: {
             type: 'object',
             patternProperties: {
-                ".": {
+                '.': {
                     allOf: [{
                         type: 'object',
                         properties: {

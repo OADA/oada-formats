@@ -1,6 +1,7 @@
 module.exports = {
     dataType: {
-        definition: 'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/cloud-cover/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/cloud-cover/1/+json',
         name: 'cloud-cover'
     },
     context: {
@@ -34,4 +35,4 @@ module.exports = {
             value: 10.90399323,
         }
     }
-}
+};

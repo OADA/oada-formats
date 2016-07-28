@@ -1,6 +1,7 @@
 module.exports = {
     dataType: {
-        definition: 'https://github.com/oada-formats/tree/master/formats/application/vnd/oada/sensor-data/rainfall/1/+json',
+        definition: 'https://github.com/oada-formats/tree/master/formats/' +
+                    'application/vnd/oada/sensor-data/rainfall/1/+json',
         name: 'rainfall'
     },
     context: {
@@ -32,4 +33,4 @@ module.exports = {
             freezing: true
         }
     }
-}
+};

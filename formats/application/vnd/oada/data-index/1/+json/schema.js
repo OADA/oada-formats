@@ -14,7 +14,7 @@ module.exports = {
         'timehash-1': {
             additionalProperties: false,
             patternProperties: {
-                "^\d+0{1}$": {
+                '^\d+0{1}$': {
                     $ref: refs.OADA_LINK,
                 }
             }
@@ -22,7 +22,7 @@ module.exports = {
         'timehash-2': {
             additionalProperties: false,
             patternProperties: {
-                "^\d+0{2}$": {
+                '^\d+0{2}$': {
                     $ref: refs.OADA_LINK,
                 }
             }
@@ -30,7 +30,7 @@ module.exports = {
         'timehash-3': {
             additionalProperties: false,
             patternProperties: {
-                "^\d+0{3}$": {
+                '^\d+0{3}$': {
                     $ref: refs.OADA_LINK,
                 }
             }
@@ -38,7 +38,7 @@ module.exports = {
         'timehash-4': {
             additionalProperties: false,
             patternProperties: {
-                "^\d+0{4}$": {
+                '^\d+0{4}$': {
                     $ref: refs.OADA_LINK,
                 }
             }
@@ -46,7 +46,7 @@ module.exports = {
         'timehash-5': {
             additionalProperties: false,
             patternProperties: {
-                "^\d+0{5}$": {
+                '^\d+0{5}$': {
                     $ref: refs.OADA_LINK,
                 }
             }
@@ -54,7 +54,7 @@ module.exports = {
         'timehash-6': {
             additionalProperties: false,
             patternProperties: {
-                "^\d+0{6}$": {
+                '^\d+0{6}$': {
                     $ref: refs.OADA_LINK,
                 }
             }
@@ -62,7 +62,7 @@ module.exports = {
         'timehash-7': {
             type: 'object',
             patternProperties: {
-                "^[0-9]+0{7}$": {
+                '^[0-9]+0{7}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -71,7 +71,7 @@ module.exports = {
         'timehash-8': {
             type: 'object',
             patternProperties: {
-                "^[0-9]+0{8}$": {
+                '^[0-9]+0{8}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -80,7 +80,7 @@ module.exports = {
         'timehash-9': {
             type: 'object',
             patternProperties: {
-                "^[0-9]+0{9}$": {
+                '^[0-9]+0{9}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -91,7 +91,7 @@ module.exports = {
         'geohash-1': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{1}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{1}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -100,7 +100,7 @@ module.exports = {
         'geohash-2': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{2}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{2}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -109,7 +109,7 @@ module.exports = {
         'geohash-3': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{3}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{3}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -118,7 +118,7 @@ module.exports = {
         'geohash-4': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{4}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{4}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -127,7 +127,7 @@ module.exports = {
         'geohash-5': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{5}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{5}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -136,7 +136,7 @@ module.exports = {
         'geohash-6': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{6}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{6}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -145,7 +145,7 @@ module.exports = {
         'geohash-7': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{7}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{7}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -154,7 +154,7 @@ module.exports = {
         'geohash-8': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{8}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{8}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -163,7 +163,7 @@ module.exports = {
         'geohash-9': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{9}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{9}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -172,7 +172,7 @@ module.exports = {
         'geohash-10': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{10}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{10}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -181,7 +181,7 @@ module.exports = {
         'geohash-11': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{11}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{11}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
@@ -190,7 +190,7 @@ module.exports = {
         'geohash-12': {
             type: 'object',
             patternProperties: {
-                "^[0-9bcdefghjkmnpqrstuvwxyz]{12}$": {
+                '^[0-9bcdefghjkmnpqrstuvwxyz]{12}$': {
                     $ref: refs.OADA_LINK,
                 }
             },
