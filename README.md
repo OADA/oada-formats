@@ -9,8 +9,8 @@ Since the OADA API uses content type strings to identify types, the formats here
 are organized by media type: if you receive a file via the OADA API, you should
 be able to use it's content-type to look up details on its format here.
 
-*If you want to look at some of the formats, start clicking through 
-[them here](./formats/application/vnd/oada)*
+
+## If you want to look at known formats, look for folders named "examples" [in here](./formats/application/vnd/oada).
 
 We believe it is simplest to learn about a format by seeing examples of that
 format.  Therefore, all formats included here should have a least one example,
