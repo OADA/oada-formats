@@ -3,6 +3,26 @@
 [![Dependency Status](https://david-dm.org/oada/oada-formats.svg)](https://david-dm.org/oada/oada-formats)
 [![License](http://img.shields.io/:license-Apache%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
+# [Announcing](https://www.purdue.edu/newsroom/releases/2016/Q3/open-ag-data-alliance,-servi-tech-launch-real-time-connections-api-for-weather,-soil-moisture-data.html) Sensor Hub and Field Sensor formats!
+
+[generic sensor data model](./formats/application/vnd/oada/sensor-data/generic/1/+json/examples/default.js),
+[air-temperature](./formats/application/vnd/oada/sensor-data/air-temperature/1/+json/examples/default.js),
+[barometric-pressure](./formats/application/vnd/oada/sensor-data/barometric-pressure/1/+json/examples/default.js),
+[cloud-cover](./formats/application/vnd/oada/sensor-data/cloud-cover/1/+json/examples/default.js),
+[dew-point](./formats/application/vnd/oada/sensor-data/dew-point/1/+json/examples/default.js),
+[heading](./formats/application/vnd/oada/sensor-data/heading/1/+json/examples/default.js),
+[location](./formats/application/vnd/oada/sensor-data/location/1/+json/examples/default.js),
+[rainfall](./formats/application/vnd/oada/sensor-data/rainfall/1/+json/examples/default.js),
+[relative-humidity](./formats/application/vnd/oada/sensor-data/relative-humidity/1/+json/examples/default.js),
+[soil-moisture](./formats/application/vnd/oada/sensor-data/soil-moisture/1/+json/examples/default.js),
+[soil-temperature](./formats/application/vnd/oada/sensor-data/soil-temperature/1/+json/examples/default.js),
+[solar-radiation](./formats/application/vnd/oada/sensor-data/solar-radiation/1/+json/examples/default.js),
+[vibration](./formats/application/vnd/oada/sensor-data/vibration/1/+json/examples/default.js),
+[wind-direction](./formats/application/vnd/oada/sensor-data/wind-direction/1/+json/examples/default.js),
+[wind-speed](./formats/application/vnd/oada/sensor-data/wind-speed/1/+json/examples/default.js),
+[sensor-hub](./formats/application/vnd/oada/sensor-hub/1/+json/examples/default.js),
+[sensor](./formats/application/vnd/oada/sensor/1/+json/examples/default.js)
+
 # oada-formats
 The purpose of this repo is to act as an inventory of known ag data formats.
 Since the OADA API uses content type strings to identify types, the formats here
