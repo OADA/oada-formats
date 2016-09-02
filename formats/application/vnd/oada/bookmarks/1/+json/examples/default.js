@@ -28,10 +28,24 @@ module.exports = {
         _id: '0kdfj2jl',
         _rev: '7-kk0all2oald'
     },
+
+    // clients holds info about the integration partner's clients,
+    // including which hubs go with which clients.  Expect this to
+    // link to a data-index with an unordered "list" key under it,
+    // and each client document may either be an organization or
+    // a person.  Each of those types of documents can have a "bookmarks"
+    // key in them, so when you reach the level that owns a particular
+    // sensor-hub, the 'sensor-hubs' key will show up in that bookmarks
+    // document.  In other words, if all you're interested are the sensor
+    // hubs, just travel down the client/bookmarks graph until you find
+    // a bookmarks with a sensor-hub.
     clients: {
         _id: '9sdkf2lk',
         _rev: '4-lfdu029kjds'
     },
+
+    // A "sensor-hub" is a device which would aggregate physical sensors together
+    // and act as a gateway to the cloud.
     'sensor-hubs': {
         _id: 'xks84x8s',
         _rev: '1-Rjsuf73fs8d'
