@@ -4,12 +4,23 @@
 [![License](http://img.shields.io/:license-Apache%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # oada-formats
+The purpose of this repo is to act as an inventory of known ag data formats.
+Since the OADA API uses content type strings to identify types, the formats here
+are organized by media type: if you receive a file via the OADA API, you should
+be able to use it's content-type to look up details on its format here.
+
+We believe it is simplest to learn about a format by seeing examples of that
+format.  Therefore, all formats included here should have a least one example,
+and most of the details about any given format exist as comments
+directly in the examples.  You can also supply a schema to do validation, but 
+the examples should still be the main source of knowledge about the format.
+
 This repo contains models for all formats whose format is known from a given
 media type. Each model consists of a module with `validate()`, `schema()`, and
 `example()` functions. Some base model types, e.g., JsonModel, are available for
 use.
 
-`oada-foramts` exposes a `Formats` class that acts as a repository of models.
+`oada-formats` exposes a `Formats` class that acts as a repository of models.
 The `model()` function is a factory function for various mediatype models. The
 `use()` function can be used to extend the model types and model repository. See
 [valleyix-formats][valleyix-formats] for an example. `oada-formats` comes with
@@ -53,7 +64,7 @@ model.schema().then(console.log);
 # Adding JSON Models
 
 The `JsonModel` can be used to add new json models easily.
-[valleyix-formats][valleyix-formatas] is a good example.
+[valleyix-formats][valleyix-formats] is a good example.
 
 1. Build a directory structure where each folder in the hierarchy is the next
    word of the format's mediatype, split on '/' and '.'.
@@ -75,6 +86,10 @@ The `JsonModel` can be used to add new json models easily.
    schema.
 
 # OADA Formats
+
+NOTE: all oada-defined formats (i.e. that start with "application/vnd.oada") endeavour to use duck 
+typing for it's key names: if you see a particular key in any of the formats, that
+key should mean the same thing every time it's used.
 
 - [application/vnd.oada.bookmarks.1+json](#user-content-applicationvndoadabookmarks1json)
   * [Schema](#schema)
