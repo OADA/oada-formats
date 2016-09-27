@@ -40,4 +40,5 @@ module.exports = {
     OADA_SENSOR_DATA_WIND_SPEED_ID: 'oada-formats://application/vnd.oada.sensor-data.wind-speed.1+json',
     OADA_SENSOR_DATA_HEADING_ID: 'oada-formats://application/vnd.oada.sensor-data.heading.1+json',
     OADA_SENSOR_DATA_VIBRATION_ID: 'oada-formats://application/vnd.oada.sensor-data.vibration.1+json',
+
 };
