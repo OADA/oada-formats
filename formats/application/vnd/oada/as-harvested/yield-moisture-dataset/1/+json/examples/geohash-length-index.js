@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'fj0o2i3jl3k2',
   _rev: '6-kldjf2io3lfke',
   _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
@@ -27,7 +27,6 @@
       // Links back to same type of document for further indexing to a single geohash
       _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
     },
-  }
-}
-
+  },
+};
 

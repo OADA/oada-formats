@@ -30,6 +30,7 @@ module.exports = {
     OADA_SENSOR_DATA_LOCATION_ID: 'oada-formats://application/vnd.oada.sensor-data.location.1+json',
     OADA_SENSOR_DATA_AIR_TEMPERATURE_ID: 'oada-formats://application/vnd.oada.sensor-data.air-temperature.1+json',
     OADA_SENSOR_DATA_BAROMETRIC_PRESURE_ID: 'oada-formats://application/vnd.oada.sensor-data.barometric-presure.1+json',
+    OADA_SENSOR_DATA_BAROMETRIC_PRESSURE_ID: 'oada-formats://application/vnd.oada.sensor-data.barometric-pressure.1+json',
     OADA_SENSOR_DATA_CLOUD_COVER_ID: 'oada-formats://application/vnd.oada.sensor-data.cloud-cover.1+json',
     OADA_SENSOR_DATA_DEW_POINT_ID: 'oada-formats://application/vnd.oada.sensor-data.dew-point.1+json',
     OADA_SENSOR_DATA_RAINFALL_ID: 'oada-formats://application/vnd.oada.sensor-data.rainfall.1+json',

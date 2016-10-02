@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: '9f84u9f',
   _rev: '2-kd0ijf3',
   _meta: { '_metaid': '9f84u9f', '_rev': '5-lj0i2kld' },

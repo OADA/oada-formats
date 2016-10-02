@@ -1,8 +1,8 @@
 var refs = require('../../../../../../../refs.js');
 
 module.exports = {
-    id: refs.OADA_SENSOR_DATA_RELATIVE_HUMIDITY_ID,
-    description: 'application/vnd.oada.sensor-data.relative-humidity.1+json',
+    id: refs.OADA_SENSOR_DATA_BAROMETRIC_PRESSURE_ID,
+    description: 'application/vnd.oada.sensor-data.barometric-pressure.1+json',
 
     additionalProperties: true,
 
@@ -14,10 +14,10 @@ module.exports = {
             dataType: {
                 properties: {
                     definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats',
+                        pattern: '^https\\:\\/\\/github.com/oada-formats'
                     },
                     name: {
-                        pattern: '^relative-humidity$'
+                        pattern: '^barometric-pressure$'
                     }
                 }
             },

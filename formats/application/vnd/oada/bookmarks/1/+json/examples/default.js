@@ -1,5 +1,7 @@
 // application/vnd.oada.bookmarks.1+json
 module.exports = {
+    _type: 'application/vnd.oada.bookmarks.1_json',
+    context: {},
     planting: {
         _id: '09ijfofj',
         _rev: '2-djfh92843hj'

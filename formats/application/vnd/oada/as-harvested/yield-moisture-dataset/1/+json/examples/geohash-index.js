@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'lkdjf02ijfelw', 
   _rev: '4-kdfj20io3jflksd',
   _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
@@ -15,7 +15,7 @@
 
   // geohash-index holds a list of geohash strings of a particular length
   // that represent groups of data:
-  geohash-index: {
+  'geohash-index': {
 
     '9jfk289': { _id: 'ifjo2ifkl23', _rev: '2-ihdofi223' },
     '9jfk290': { _id: 'ifjo2ifkl23', _rev: '2-ihdofi223' },
@@ -26,5 +26,5 @@
       _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
     },
   },
-}
+};
 

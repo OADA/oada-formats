@@ -1,7 +1,9 @@
-{
+module.exports = {
   _id: '290fijklf3',
   _rev: '7-9ijkljf0j2ifkl3f',
   _type: 'application/vnd.oada.harvest.1+json',
+
+  context: {},
 
   // The 'as-harvested' key holds the original as-harvested data.  This 
   // can be collections of time-series harvest data or data that is 
@@ -33,4 +35,4 @@
     // - application/vnd.oada.tiled-maps.1+json
     _type: 'application/vnd.oada.tiled-maps.1+json',
   },
-}
+};

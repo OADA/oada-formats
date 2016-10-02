@@ -1,4 +1,4 @@
-{
+module.exports = {
 
   _id: '92jfik23o3iwe',
   _rev: '1-kdufj02ifj2klfklwef',
@@ -40,4 +40,4 @@
     'mdlfkwjefoli': { _id: 'klfj02i3', _rev: '2-ofjk9023kk' },
   },
 
-}
+};

@@ -1,4 +1,4 @@
-{
+module.exports = {
   // Refer to vnd.oada.sensor-data.generic.1+json for details on this
   // format.
   _id: 'd0f2hfhhf9qh23233',

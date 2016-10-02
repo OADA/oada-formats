@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: "92jfik23o3iwe",
   _rev: "1-kdufj02ifj2klfklwef",
   _meta: { _metaid: "92jfik23o3iwe", _rev: "1-kfj029i3jfk2l3" },
@@ -11,9 +11,10 @@
   givenName: 'Bob', // in the US, this is the first name
   familyName: 'Smith', // in the US, this is the last name
   email: 'bob@schmob.com',
-  memberOf: { _id: 'kdj02lfsd' }, // link to an organization if this person belongs to one
-                                  // note schema.org defines this key, and OADA is adding
-                                  // that it can be a link to an organization
+  memberOf: { _id: 'kdj02lfsd', // link to an organization if this person belongs to on://github.com/oada/oada-formats 
+              _type: 'application/vnd.oada.organization.1+json',
+            },                  // note schema.org defines this key, and OADA is adding
+                                // that it can be a link to an organization
 
   // A person can have their own bookmarks document, even if they are not a user
   // with login priviledges.  If, for example, a particular sensor hub is associated
@@ -21,5 +22,5 @@
   // If that person later becomes a user with login priviledges, that user can 
   // simply re-use the same bookmarks link.  If they are already a user, then
   // this link should be the same as that user's bookmarks document.
-  bookmarks: { _id: 'kj0f2iklj23', _rev: 'kjf02i3klj' },
+  bookmarks: { _id: 'kj0f2iklj23', _rev: '2-kjf02i3klj', _type: 'application/vnd.oada.bookmarks.1+json' },
 }

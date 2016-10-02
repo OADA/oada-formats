@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'kfj20ikejldss',
   _rev: '9-kfjo2i3jfelkfas',
   _type: 'application/vnd.oada.as-harvested.1+json',

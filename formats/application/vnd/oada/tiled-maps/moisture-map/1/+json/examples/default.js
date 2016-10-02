@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'k2fjo23lf3',
   _rev: '9-9034i2f3n33f',
   _type: 'application/vnd.oada.tiled-maps.moisture-map.1+json',
@@ -73,7 +73,7 @@
   // only should include geohash strings here which actually contain
   // data.  Absence of a known geohash string simply means there is 
   // no data there.
-  geohash-data: {
+  'geohash-data': {
 
     // The string keys under geohash-data are geohashes
     '023jf2d': {
@@ -98,22 +98,19 @@
 
     // Example data point for a different geohash.
     '023jf2e': {
-    template: '123',
-    geohash: '023jf2e',
-    weight: {
-      sum: 123123.4124,
-      'sum-of-squares': 1412413.234234,
-      count: 1243,
-    },
-    area: {
-      sum: 1451341.34233,
-      'sum-of-squares': 134134124.3413412,
-      count: 1243,
-    },
-  },
-},
-        },
+      template: '123',
+      geohash: '023jf2e',
+      weight: {
+        sum: 123123.4124,
+        'sum-of-squares': 1412413.234234,
+        count: 1243,
+      },
+      area: {
+        sum: 1451341.34233,
+        'sum-of-squares': 134134124.3413412,
+        count: 1243,
       },
     },
   },
-}
+};
+

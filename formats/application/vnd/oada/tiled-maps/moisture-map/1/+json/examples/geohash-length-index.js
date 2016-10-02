@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'fj0o2i3jl3k2',
   _rev: '6-kldjf2io3lfke',
   _type: 'application/vnd.oada.tiled-maps.moisture-map.1+json',
@@ -23,6 +23,6 @@
       _type: 'application/vnd.oada.tiled-maps.moisture-map.1+json',
     },
   }
-}
+};
 
 

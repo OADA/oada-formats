@@ -1,4 +1,4 @@
-j{ 
+module.exports = { 
   _id: 'ifjo2ifkl23', 
   _rev: '2-ihdofi223',
   // The data in the tile and the original 'yield-moisture' document
@@ -12,7 +12,7 @@ j{
   context: {
     // you must have these two keys:
     'harvest': 'as-harvested',
-    'as-harvested': 'yield-moisture-dataset'
+    'as-harvested': 'yield-moisture-dataset',
     // In this case, these points are all for corn:
     'crop-index': 'corn',
     // and the size of the tile is a 7-character geohash:
@@ -84,4 +84,4 @@ j{
       },
     },
   },
-}
+};

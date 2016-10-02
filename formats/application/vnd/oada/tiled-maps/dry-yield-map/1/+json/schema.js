@@ -1,13 +1,17 @@
-var schemaUtil = require('../../../../../../../lib/schema-util.js');
-var      vocab = require('../../../../../../oada-vocab');
+var schemaUtil = require('../../../../../../../../lib/schema-util.js');
+var      vocab = require('../../../../../../../../lib/oada-vocab');
 
 var versionedLink = schemaUtil.versionedLink;
 var  requireValue = schemaUtil.requireValue;
+var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
+var restrictItemsTo = schemaUtil.restrictItemsTo;
 
 module.exports = schemaUtil.oadaSchema({
-  description: `The "dry-yield-map" document contains harvest data at the given crop's
-                trade moisture, aggregated at various zoom levels for mapping and
-                fast statistical calculation.`,
+  description: 
+
+`The "dry-yield-map" document contains harvest data at the given crop's
+trade moisture, aggregated at various zoom levels for mapping and
+fast statistical calculation.`,
 
   indexing: [ 'crop-index', 'geohash-length-index', 'geohash-index' ],
 
@@ -50,8 +54,9 @@ module.exports = schemaUtil.oadaSchema({
       collection: vocab('geohash-data'),
       restrictToSchema: vocabTermsToSchema([
         'template', 'geohash', 'area', 'weight', 'moisture',
-      ],
-      required: [ 'area', 'weight' ],
+      ],{
+        required: [ 'area', 'weight' ]
+      }),
     }),
   },
 });

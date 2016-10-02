@@ -1,4 +1,4 @@
-{
+module.exports = {
   // Refer to vnd.oada.sensor-data.generic.1+json for details on this
   // format.
   _id: 'd0f2hfhhf9qh23233',
@@ -32,7 +32,7 @@
       units: {
         datum: 'WGS84',
       },
-    }
+    },
 
   },
 
@@ -63,7 +63,7 @@
     'e2jr2039fijlfjwlefwlke': {
       id: 'e2jr2039fijlfjwlefwlke',
       template: '1',
-      time: 1456376031.90398423',
+      time: 1456376031.90398423,
       value: {
         latitude: -41.0902384932,
         longitude: 83.920938432,
@@ -73,4 +73,4 @@
     },
   },
 
-}
+};

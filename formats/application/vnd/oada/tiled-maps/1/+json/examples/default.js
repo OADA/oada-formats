@@ -1,5 +1,5 @@
-{
-  _id: 
+module.exports = {
+  _id:  '029jfilwkjfo2i3ledkf',
   _rev: '5-kdfj02jfi32k3',
   _type: 'application/vnd.oada.tiled-maps.1+json',
 
@@ -18,4 +18,4 @@
   // moisture: readings of moisture recorded at harvest
   'moisture-map':  { _id: 'k2fjo23lf3', _rev: '10-0f2jo3ijf3' },
 
-}
+};

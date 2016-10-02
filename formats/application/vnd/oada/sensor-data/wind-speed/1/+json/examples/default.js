@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'd0f2hfhhf9qh23233',
   _rev: '4-kdjf02if32jof3l',
   _meta: { _metaid: 'd0f2hfhhf9qh23233', _rev: '2-dkfj023if2jfjwlf' },
@@ -6,7 +6,7 @@
 
   dataType: {
     definition: 'https://github.com/oada-formats',
-    name: 'wind-direction',
+    name: 'wind-speed',
   },
 
   context: {

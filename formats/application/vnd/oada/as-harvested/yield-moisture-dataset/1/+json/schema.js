@@ -1,16 +1,16 @@
-var schemaUtil = require('../../../../../../schema-util');
-var      vocab = require('../../../../../../vocab');
+var schemaUtil = require('../../../../../../../../lib/schema-util');
+var      vocab = require('../../../../../../../../lib/oada-vocab');
 
-var oadaSchema = schemaUtil.oadaSchema;
-var enumSchema = schemaUtil.enumSchema;
-var restrictItems = schemaUtil.restrictItems;
+var restrictItemsTo = schemaUtil.restrictItemsTo;
 var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
 var requireValue = schemaUtil.requireValue;
 
-module.exports = oadaSchema({
-  description: `The "yield-moisture" document contains as-harvested yield-moisture data.
-                This is where a typical "yield map" from an existing FMIS software would
-                go.  We encourage geospatial indexing here (rather than field-based).`,
+module.exports = schemaUtil.oadaSchema({
+  description: 
+  
+`The "yield-moisture" document contains as-harvested yield-moisture data.
+This is where a typical "yield map" from an existing FMIS software would
+go.  We encourage geospatial indexing here (rather than field-based).`,
 
   // oadaSchema will take care of representing all these indexing schemes by adding
   // their keys to context and to the base schema properties
