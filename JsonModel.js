@@ -53,7 +53,7 @@ module.exports = function(context) {
             .bind(this)
             .then(function(data) {
                 if (!this._schema) {
-                    var message = 'No schmea to validate json data against';
+                    var message = 'No schema to validate json data against';
                     this.error(message);
                     throw new context.Model.InvalidSchemaError(message);
                 }

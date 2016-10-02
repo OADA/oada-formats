@@ -24,6 +24,7 @@ module.exports = {
                 _id: {
                     type: 'string'
                 },
+                _type: { type: 'string' },
             },
             required: [
                 '_id'
@@ -40,7 +41,8 @@ module.exports = {
                 _rev: {
                     type: 'string',
                     pattern: '^[0-9]+-.+'
-                }
+                },
+                _type: { type: 'string' },
             },
             required: [
                 '_id',

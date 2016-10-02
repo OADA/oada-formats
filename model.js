@@ -33,8 +33,8 @@ Model.ValidationError.fromErrors = function fromErrors(errors) {
 
     var message = '';
     _.forEach(errors, function(error) {
-        message  = ', ' + error.dataPath + ' ' +
-            error.message;
+        if (message.length > 0) message += ',\n';
+        message  += error.dataPath + ' ' + error.message;
     });
     message = message.replace(/^[, ]+/, '');
 

@@ -49,6 +49,7 @@
     "glob": "^5.0.14",
     "lodash": "^3.10.1",
     "lodash.clonedeep": "^4.3.1",
+    "nconf": "^0.8.4",
     "object-assign": "^4.0.1",
     "schema.org-validator": "^0.4.1"
   },
@@ -61,6 +62,7 @@
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.0.1",
     "markdown-toc": "^0.11.7",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "node-find-files": "0.0.4"
   }
 }

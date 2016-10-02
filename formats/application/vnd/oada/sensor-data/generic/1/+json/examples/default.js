@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: 'd0f2hfhhf9qh23233',
   _rev: '4-kdjf02if32jof3l',
   _meta: { _metaid: 'd0f2hfhhf9qh23233', _rev: '2-dkfj023if2jfjwlf' },
@@ -20,7 +20,7 @@
   // by timehash-4, it is indexed both by the sensor hub which reported the
   // data and by the particular timehash that the data belongs to.
   context: {
-    'timehash-4': '1456370000',
+    'timehash-4': 1456370000,
     'sensor-hub': { _id: '9f84u9f' },
   },
 
@@ -146,8 +146,8 @@
       id: 'd02fijflwlkflfsjkdf',
       template: '1',
       // use time-start and time-end for windows of time
-      time-start: 1456376030.90398423,
-      time-end: 1456376031.90398423,
+      'time-start': 1456376030.90398423,
+      'time-end': 1456376031.90398423,
       // for time windows, instead of value, you can use stat names:
       max: 101329.90398423,
       mean: 101325.90398423,

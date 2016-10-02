@@ -1,55 +1,44 @@
-var refs = require('../../../../../../refs.js');
+var schemaUtil = require('../../../../../../../lib/schema-util.js');
+var versionedLink = schemaUtil.versionedLink;
+var      vocab = require('../../../../../../../lib/oada-vocab');
 
-module.exports = {
-    id: refs.OADA_BOOKMARKS_ID,
-    description: 'application/vnd.oada.bookmarks.1+json',
+module.exports = schemaUtil.oadaSchema({
+  description: `bookmarks is the top-level document returned by the OADA API`,
+  properties: {
+    _type: 'application/vnd.oada.bookmarks.1+json',
 
-    // You can add any custom keys to bookmarks that you want
-    additionalProperties: true,
+    context: {},
 
-    // Here are the standard-defined keys:
-    properties: {
-        planting: {
-            $ref: refs.OADA_LINK_VERSIONED,
-        },
-        harvest: {
-            $ref: refs.OADA_LINK_VERSIONED,
-        },
-        machines: {
-            $ref: refs.OADA_LINK_VERSIONED,
-        },
-        irrigation: {
-            anyOf: [{
-                $ref: refs.OADA_LINK_VERSIONED
-            },
-            {
-                $ref: refs.OADA_IRRIGATION_ID
-            }]
-        },
-        sensors: {
-            $ref: refs.OADA_LINK_VERSIONED,
-        },
-        fields: {
-            $ref: refs.OADA_LINK_VERSIONED,
-        },
-        sales: {
-            $ref: refs.OADA_LINK_VERSIONED,
-        },
-        clients: {
-            anyOf: [{
-                $ref: refs.OADA_LINK_VERSIONED
-            },
-            {
-                $ref: refs.OADA_CLIENTS_1_1_ID
-            }]
-        },
-        'sensor-hubs': {
-            anyOf: [{
-                $ref: refs.OADA_LINK_VERSIONED
-            },
-            {
-                $ref: refs.OADA_SENSOR_HUBS_ID
-            }]
-        }
-    },
-};
+    planting: versionedLink([ 
+      'application/vnd.oada.planting.1+json' 
+    ]),
+
+    harvest: versionedLink([ 
+      'application/vnd.oada.harvest.1+json' 
+    ]),
+
+    machines: versionedLink([
+      'application/vnd.oada.machines.1+json',
+    ]),
+
+    irrigation: versionedLink([
+      'application/vnd.oada.irrigation.1+json',
+    ]),
+
+    sensors: versionedLink([
+      'application/vnd.oada.sensors.1+json',
+    ]),
+
+    fields: versionedLink([
+      'application/vnd.oada.fields.1+json',
+    ]),
+
+    clients: versionedLink([
+      'application/vnd.oada.clients.1+json',
+    ]),
+
+    'sensor-hubs': versionedLink([
+      'application/vnd.oada.sensor-hubs.1+json',
+    ]),
+  },
+});

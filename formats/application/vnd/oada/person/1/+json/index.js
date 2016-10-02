@@ -12,12 +12,17 @@ module.exports = {
             var obj = cloneDeep(d);
             delete obj.memberOf;
             delete obj.bookmarks;
+            delete obj._id;
+            delete obj._rev;
+            delete obj._type;
+            delete obj._meta;
 
-            if (sov.validate(obj, 'Person').length) {
+            var results = sov.validate(obj, 'Person');
+            if (results.length) {
                 throw ValidationError.fromErrors({
                     keyword: 'require',
                     dataPath: '.',
-                    message: 'Must be a valid Schema.org Person'
+                    message: 'Must be a valid Schema.org Person. Results = ' + JSON.stringify(results, false, '  '),
                 });
             } else {
                 return true;

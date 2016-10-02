@@ -1,4 +1,4 @@
-{
+module.exports = {
   _id: "92jfik23o3iwe",
   _rev: "1-kdufj02ifj2klfklwef",
   _meta: { _metaid: "92jfik23o3iwe", _rev: "1-kfj029i3jfk2l3" },
@@ -30,8 +30,8 @@
   installation: {
     time: 1449328934, // approximate time the sensor was installed
     location: { // normal OADA location object.  If only lat/lon, assume sensor is stationary.
-      latitude: '-40.4893054',
-      longitude: '80.90238423',
+      latitude: -40.4893054,
+      longitude: 80.90238423,
     },
     depth: { // soil moisture probes have an associated depth of installation
       units: 'm',
@@ -42,8 +42,8 @@
     'k0d2fjkl2f3': {
       time: 1449328934,
       location: { // normal OADA location object
-        latitude: '-40.4893054',
-        longitude: '80.90238423',
+        latitude: -40.4893054,
+        longitude: 80.90238423,
       },
       depth: { // soil moisture probes have an associated depth of installation
         units: 'm',
