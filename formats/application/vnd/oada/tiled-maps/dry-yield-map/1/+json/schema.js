@@ -1,5 +1,5 @@
 var schemaUtil = require('../../../../../../../../lib/schema-util.js');
-var      vocab = require('../../../../../../../../lib/oada-vocab');
+var      vocab = require('../../../../../../../../vocabs/oada');
 
 var versionedLink = schemaUtil.versionedLink;
 var  requireValue = schemaUtil.requireValue;

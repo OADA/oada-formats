@@ -1,5 +1,5 @@
 var schemaUtil = require('../../../../../../../../lib/schema-util');
-var      vocab = require('../../../../../../../../lib/oada-vocab');
+var      vocab = require('../../../../../../../../vocabs/oada');
 
 var restrictItemsTo = schemaUtil.restrictItemsTo;
 var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;

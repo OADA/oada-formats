@@ -1,6 +1,6 @@
 var schemaUtil = require('../../../../../../../lib/schema-util.js');
 var versionedLink = schemaUtil.versionedLink;
-var      vocab = require('../../../../../../../lib/oada-vocab');
+var      vocab = require('../../../../../../../vocabs/oada');
 
 module.exports = schemaUtil.oadaSchema({
   description: `bookmarks is the top-level document returned by the OADA API`,
