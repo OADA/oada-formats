@@ -34,6 +34,7 @@
 
 var _ = require('lodash');
 var libvocab = require('../../lib/vocab');
+var oadavocab = require('../oada'); // this gets oada vocab terms defined so we can use them
 var register = libvocab.register;
 var enumSchema = libvocab.enumSchema;
 var vocab = libvocab.vocab;
@@ -49,22 +50,22 @@ var sameAs = libvocab.sameAs;
 //----------------------------------------------------------------------------
 
 register('name', {
-  description: `name is a string specifying how a to refer to a given object.`,
+  description: `name is a string specifying how a to refer to the object which contains it.`,
   type: 'string',
 });
 
 register('primus_gfs_id', {
-  description: ``,
+  description: `Not clear on this one yet.`,
   type: 'string',
 });
 
 register('contacts', {
-  description: `contacts is a list of names.`,
+  description: `Contacts is a list of objects, each of which has the name of a person to contact.`,
   type: 'array',
 });
 
 register('phone', {
-  description: `phone describes the phone number with country code and area code.`,
+  description: `A phone number.`,
   type: 'string',
 });
 
@@ -76,12 +77,12 @@ register('registration_number', {
 
 register('version', {
   description: `version describes the the version of the audit being performed`,
-  type: '',
+  type: 'string',
 });
 
 register('products_observed', {
   description: ``,
-  type: '',
+  type: 'array',
 });
 
 register('auditor', {
@@ -92,10 +93,9 @@ register('auditor', {
   ]),
 });
 
-// Not sure on the certification id
 register('certification_id', {
-  description: ` `,
-  type:
+  description: `Not sure on this one yet.`,
+  type: 'string',
 })
 
 register('certification_body', {
