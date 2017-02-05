@@ -192,9 +192,9 @@ register('organization', {
 //----------------------------------------------------------------------------
 
 register('product', {
-  desciption: `product describes the particular type of item being evaluated in
-               the audit. May describe the fruit, vegetable, etc. as well as other descriptors
-               such as 'chopped', 'pitted', 'organic', etc.`,
+  description: `product describes the particular type of item being evaluated in
+                the audit. May describe the fruit, vegetable, etc. as well as other descriptors
+                such as 'chopped', 'pitted', 'organic', etc.`,
   propertySchema: enumSchema([
     'name',
   ]),
@@ -379,7 +379,7 @@ register('url', {
 });
 
 register('file', {
-  desccription: `an object with a url at the moment, perhaps more complex later.`,
+  description: `an object with a url at the moment, perhaps more complex later.`,
   propertySchema: enumSchema([
     'url',
   ]),
