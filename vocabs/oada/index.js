@@ -33,7 +33,7 @@
 
 
 var _ = require('lodash');
-var libvocab = require('../../lib/vocab');
+var libvocab = require('../../lib/vocab')('oada');
 var register = libvocab.register;
 var enumSchema = libvocab.enumSchema;
 var vocab = libvocab.vocab;
