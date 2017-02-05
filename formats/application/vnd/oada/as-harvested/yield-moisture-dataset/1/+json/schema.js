@@ -8,9 +8,9 @@ var requireValue = schemaUtil.requireValue;
 module.exports = schemaUtil.oadaSchema({
   description: 
   
-`The "yield-moisture" document contains as-harvested yield-moisture data.
-This is where a typical "yield map" from an existing FMIS software would
-go.  We encourage geospatial indexing here (rather than field-based).`,
+'The "yield-moisture" document contains as-harvested yield-moisture data. '+
+'This is where a typical "yield map" from an existing FMIS software would '+
+'go.  We encourage geospatial indexing here (rather than field-based).',
 
   // oadaSchema will take care of representing all these indexing schemes by adding
   // their keys to context and to the base schema properties

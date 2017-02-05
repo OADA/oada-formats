@@ -9,9 +9,9 @@ var restrictItemsTo = schemaUtil.restrictItemsTo;
 module.exports = schemaUtil.oadaSchema({
   description: 
 
-`The "dry-yield-map" document contains harvest data at the given crop's
-trade moisture, aggregated at various zoom levels for mapping and
-fast statistical calculation.`,
+'The "dry-yield-map" document contains harvest data at the given crop\'s '+
+'trade moisture, aggregated at various zoom levels for mapping and '+
+'fast statistical calculation.',
 
   indexing: [ 'crop-index', 'geohash-length-index', 'geohash-index' ],
 

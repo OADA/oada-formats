@@ -4,10 +4,10 @@ var versionedLink = schemaUtil.versionedLink;
 var  requireValue = schemaUtil.requireValue;
 
 module.exports = schemaUtil.oadaSchema({
-  description: `The "as-harvested" key holds the original data logged during harvest.  This can
-                be collections of time-series harvest data or data that is already geospatially 
-                referenced.  A typical "yield map" exported from an FMIS system would go here.  
-                Think of this like the "raw" data that is used to generate tiled maps.`,
+  description: 'The "as-harvested" key holds the original data logged during harvest.  This can '+
+               'be collections of time-series harvest data or data that is already geospatially '+
+               'referenced.  A typical "yield map" exported from an FMIS system would go here.  '+
+               'Think of this like the "raw" data that is used to generate tiled maps.',
 
   properties: {
     _type: 'application/vnd.oada.as-harvested.1+json',

@@ -3,7 +3,7 @@ var versionedLink = schemaUtil.versionedLink;
 var      vocab = require('../../../../../../../vocabs/oada');
 
 module.exports = schemaUtil.oadaSchema({
-  description: `bookmarks is the top-level document returned by the OADA API`,
+  description: 'bookmarks is the top-level document returned by the OADA API',
   properties: {
     _type: 'application/vnd.oada.bookmarks.1+json',
 

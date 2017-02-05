@@ -6,7 +6,7 @@ var versionedLink = schemaUtil.versionedLink;
 module.exports = schemaUtil.oadaSchema({
   description: 
 
-`A harvest document holds links to information related to harvest.`,
+'A harvest document holds links to information related to harvest.',
 
   properties: {
     _type: 'application/vnd.oada.harvest.1+json',
