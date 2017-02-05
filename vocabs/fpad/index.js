@@ -56,7 +56,7 @@ register('name', {
 });
 
 register('description', {
-  description: `a strint description of an object, usually longer than 'name'`,
+  description: `a string description of an object, usually longer than 'name'`,
   type: 'string'
 });
 
