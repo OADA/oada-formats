@@ -1,5 +1,4 @@
-calculation of the 95% minor must compliance
-rts = {
+module.exports = {
   _type: 'application/vnd.fpad.audit.globalgap.1+json',
 
   // certificationid identifies a particular chain of documents that culinates
@@ -161,9 +160,10 @@ rts = {
       criteria: [ 'A physical sign at each field/orchard, greenhouse/yard/plot/livestock building/pen, or other farm area/location', 
         'A farm map, which also identifies the location of water sources, storage/handling facilities, ponds, stables, etc. and that could be cross-referenced to the identification system.', 
       ],
+      globalgap_level: 'major_must'
       score: {
-        level: "Total Compliance", 
-        yes_no_na: 'yes',
+        value: 'yes',
+        units: 'yes-no-n_a',
       },
       justification: "Site map was available for review. Broken down by Field ID. Variety and acreage is listed on legend indicating which applies to each block. Fuel and drip water line indicated on map.",
     },
