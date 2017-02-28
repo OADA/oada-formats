@@ -18,7 +18,9 @@
 module.exports = {
   // All primus GFS audits should have this type:
   _type: 'application/vnd.fpad.audit.primusgfs.1+json',
- 
+
+  // A unique identifier for this certification chain of documents.  All documents
+  // that reference the same inspection should have the same certificationid
   certificationid: {
     id_source: 'scheme',
     id: '00000 - Cert: 0', // labeled as "Primus GFS ID" in the audit report
@@ -42,7 +44,7 @@ module.exports = {
     organizationid: {
       id_source: "certifying_body", // the certifying body already described in this document
       id: "PA−PGFS−000−0",
-    }, 
+    },
     name: "Noel Produce Masters",
     // The value below starts and ends with brackets [], indicating this 
     // is a list of things.  Each thing is surrounded by braces { }
@@ -66,31 +68,30 @@ module.exports = {
                 +"tools, etc. were observed and applicable documents.They were observed approx.10 "
                 +"people in the activity.", 
     operation: {
-      type: 'Harvest Crew',
-      // if type is Harvest Crew, key = "crew", if it is anything else, key = "facility"
-      crew: {
+      type: 'harvest',
+      operator: { // the harvest crew
         contacts: [ 
           { name: "Sam Noel" } 
         ],
         name: "Noel Produce - Linked to Greenhouse Noel Produce Masters",
-        // Open question: does shipper belong inside the harvest crew,  or as it's own thing at same level as "crew"
-        shipper: { name: "Noel's Happy Tomato" },
-        location: {
-          address: "124 Nonexistent Street",
-          city: "Lafayette",
-          state: "IN",
-          postal_code: "47907", 
-          country: "USA",
-        },
       },
-      products_observed : [ 
-        { name: "Tomatoes" },
-      ],
-      similar_products_not_observed: [ 
-        { name: "Tomatoes Organic" },
-      ],
-      products_applied_for_but_not_observed: [ ], // empty array, or just leave the key off if none
+      // Open question: does shipper belong inside the harvest crew,  or as it's own thing at same level as "crew"
+      shipper: { name: "Noel's Happy Tomato" },
+      location: {
+        address: "124 Nonexistent Street",
+        city: "Lafayette",
+        state: "IN",
+        postal_code: "47907", 
+        country: "USA",
+      }
     },
+    products_observed : [ 
+      { name: "Tomatoes" },
+    ],
+    similar_products_not_observed: [ 
+      { name: "Tomatoes Organic" },
+    ],
+    products_applied_for_but_not_observed: [ ], // empty array, or just leave the key off if none
   },
 
   conditions_during_audit: {
