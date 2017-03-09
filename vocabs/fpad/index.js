@@ -528,7 +528,7 @@ register('corrective_action', {
   description: 'corrective_action is the corrective action details associated with '+
                'a particular control point as found in the corrective actions report.',                               
   propertySchema: enumSchema([                                                                                        
-    'score', 'organization_response', 'organization_comments', 'decision'                                             
+    'score', 'organization_response', 'organization_comments', 'decision', 'files',                                             
   ]), 
 }); 
 
