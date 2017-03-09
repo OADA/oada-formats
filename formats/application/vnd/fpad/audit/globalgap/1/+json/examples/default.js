@@ -67,8 +67,8 @@ module.exports = {
       first_area: { value: 70, units: "acres" },
       further_area: { value: 10.67, units: 'acres' },
       operations: [ 
-        { name: 'growing', covering_type: 'uncovered', }
-        { name: 'harvest' }   // if harvest is excluded, then don't include it in the array
+        { operation_type: 'growing', covering_type: 'uncovered', }
+        { operation_type: 'harvest' }   // if harvest is excluded, then don't include it in the array
       ],
     }],
     
