@@ -39,7 +39,7 @@ module.exports = {
     name: "Noel Produce Masters",
     contacts: [ { name: "Sam Noel" } ],
     location: {
-      description: "(All sites in same area), Pesticide storage"
+      description: "(All sites in same area), Pesticide storage",
       street_address: "44641 SW Plumlee Rd.",
       city: "Nowhere",
       state: "Florida",
@@ -52,7 +52,7 @@ module.exports = {
     notification: 'announced', //or 'unannounced'
     description: '',
     operations: [
-      { name: 'handling' }, // if handling is "no", then don't include it in the array
+      { operation_type: 'handling' }, // if handling is "no", then don't include it in the array
     ],
     
     // Called "Crops audited" in global gap, but same as "products_observed" in primus
@@ -67,8 +67,8 @@ module.exports = {
       first_area: { value: 70, units: "acres" },
       further_area: { value: 10.67, units: 'acres' },
       operations: [ 
-        { name: 'growing', covering_type: 'uncovered', }
-        { name: 'harvest' }   // if harvest is excluded, then don't include it in the array
+        { operation_type: 'growing', covering_type: 'uncovered', },
+        { operation_type: 'harvest' }   // if harvest is excluded, then don't include it in the array
       ],
     }],
     
@@ -79,16 +79,16 @@ module.exports = {
     production_sites: [
       { 
         name: 'The Big Ranch', 
-      id: '1234', 
-      products_observed: [ { 
+        id: '1234', 
+        products_observed: [ { 
           name: "Blueberries",
           organic: true,
-          area: { value: 70, units: "acres" },
+          area: { value: '70', units: "acres" },
           location: {
             description: '', //any accompanying text description; often used to supply directions
             city: '',
           },
-        }],
+        } ],
       },
     ],
     
@@ -152,15 +152,15 @@ module.exports = {
         },
       ],
     },
-  },
+  ],
   
   control_points: {
     'AF 1.1.1': {
-      question_name: "Is there a reference system for each field, orchard, greenhouse, yard, plot, livestock building/pen, and/or other area/location used in production?",
+      name: "Is there a reference system for each field, orchard, greenhouse, yard, plot, livestock building/pen, and/or other area/location used in production?",
       criteria: [ 'A physical sign at each field/orchard, greenhouse/yard/plot/livestock building/pen, or other farm area/location', 
         'A farm map, which also identifies the location of water sources, storage/handling facilities, ponds, stables, etc. and that could be cross-referenced to the identification system.', 
       ],
-      globalgap_level: 'major_must'
+      globalgap_level: 'major_must',
       score: {
         value: 'yes',
         units: 'yes-no-n_a',

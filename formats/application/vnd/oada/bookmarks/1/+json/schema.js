@@ -40,5 +40,9 @@ module.exports = schemaUtil.oadaSchema({
     'sensor-hubs': versionedLink([
       'application/vnd.oada.sensor-hubs.1+json',
     ]),
+
+    sales: versionedLink([
+      'application/vnd.oada-sales.1+json',
+    ]),
   },
 });

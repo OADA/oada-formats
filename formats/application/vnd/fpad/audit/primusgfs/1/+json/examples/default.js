@@ -68,7 +68,7 @@ module.exports = {
                 +"tools, etc. were observed and applicable documents.They were observed approx.10 "
                 +"people in the activity.", 
     operation: {
-      type: 'harvest',
+      operation_type: 'harvest',
       operator: { // the harvest crew
         contacts: [ 
           { name: "Sam Noel" } 

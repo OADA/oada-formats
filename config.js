@@ -1,7 +1,7 @@
 // Eliminating the original nconf here so it can compile to browser.
 
 var config = {
-  strict: false,
+  strict: true,
 };
 
 module.exports = {

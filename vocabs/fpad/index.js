@@ -44,6 +44,49 @@ var sameAs = libvocab.sameAs;
 // defined in libvocab, and is how you should interact with the vocab built
 // here.
 
+//----------------------------------------------------------------------------
+// id's:
+//----------------------------------------------------------------------------
+
+register('id', { 
+  description: 'An id is a string which should be reasonably unique to represent the '+
+               ' object it belongs to.',
+  type: 'string',
+});
+
+register('id_source', {
+  description: 'An id_source is a representation of who assigned the id: i.e. who do you '+
+               'go ask to figure out what a particular ID goes to.',
+  anyOf: [
+    enumSchema([ 'certifying_body', 'scheme' ]),                    // one of these strings
+    { propertySchema: enumSchema([ 'certifying_body', 'scheme' ]) } // or one of these objects
+  ],
+});
+
+register('sourced_id', {
+  description: 'A sourced_id is not used directly, but rather is the template for '+
+               'things like organizationid and certificationid.',
+  propertySchema: enumSchema([
+    'id', 'id_source', 
+  ]),
+});
+
+register('certificationid', sameAs('sourced_id', {
+  description: 'certificationid is an id which spans all documents for a single certification '+
+               'process.  i.e. the audit, corrective actions, and final certificate all share '+
+               'the same certificationid',
+}));
+
+// Basic data:
+register('value', {
+  description: 'a numeric or qualitative value, represented as a string',
+  type: 'string',
+});
+
+register('units', {
+  description: 'the units used to interpret the associated value.',
+  type: 'string',
+});
 
 //----------------------------------------------------------------------------
 // Scheme info:
@@ -66,21 +109,37 @@ register('version', {
   type: 'string',
 });
 
+register('option', {
+  description: 'option is used as an indicator of type of audit for a given '+
+                'audit version.  Introduced for GlobalGAP audit.',
+  type: 'string',
+});
+
+register('module', {
+  description: 'module is not a key that is used anywhere, but each item in '+
+               'the modules array should look like a module defined here.',
+  propertySchema: enumSchema([ 'name' ], {  // each module should have a name
+    // and the known "name" values are one of these strings for Global GAP:
+    propertySchemaDefault: enumSchema[ 'All Farm Base', 'Crops Base', 'Fruit and Vegetables' ] 
+  }),
+});
+
+register('modules', {
+  description: 'modules is an array of object whose names describe the various modules '+
+               'of which this audit is comprised.  It currently is only known to exist '+
+               'in GlobalGAP audits.',
+  items: vocab('module'),
+});
 
 register('scheme', {
   description: 'the set of descriptors for identifying the current audit scheme '+
                 'for this document.',
-  propertySchema: enumSchema([
-    'name', 'version',
-  ])
+  propertySchema: enumSchema([ 'name', 'version' ]),
+  properties: {
+    // known names of scheme owners:    
+    name: vocab('name', enumSchema([ 'PrimusGFS' ]) ),
+  },
 });
-
-register('registration_number', {
-  description: '"registration_number" is the number given to the certifying body '+
-                'when they register with the scheme owner.',
-  type: 'string',
-});
-
 
 
 //----------------------------------------------------------------------------
@@ -90,9 +149,7 @@ register('registration_number', {
 register('person', {
   description: 'person is a key that never appears anywhere, but anywhere a person-type '+
                 'of thing exists (auditor, contact, etc.) it is one of these things.',
-  propertySchema: enumSchema([
-    'name',
-  ])
+  propertySchema: enumSchema([ 'name', ])
 });
 
 register('auditor', sameAs('person', {
@@ -104,9 +161,11 @@ register('certifying_body', {
   description: 'specifies the credentials of the '+
                 'organization is performing the audit along with the specific individual '+
                 'performing the audit.',
-  propertySchema: enumSchema([
-    'registration_number', 'name', 'auditor',
-  ]),
+  propertySchema: enumSchema([ 'name', 'auditor', ]),
+  properties: {
+    // known certifying_body names:
+    name: vocab('name', enumSchema([ 'Primus Auditing Operations' ]) ),
+  },
 });
 
 register('contact', sameAs('person', {
@@ -119,19 +178,6 @@ register('contacts', {
   type: 'array',
   items: vocab('contact'),
 });
-
-register('primus_gfs_id', {
-  description: 'This id registers the combined organization and a set of '+
-                'products with PrimusGFS.',
-  type: 'string',
-});
-
-register('certification_number', {
-  description: 'consecutive audits under the same primus_gfs_id are assigned a '+
-               '"certification" number that increments by one with each audit.',
-  type: 'string',
-});
-
 
 
 //----------------------------------------------------------------------------
@@ -177,6 +223,22 @@ register('location', {
   ]),
 });
 
+register('organizationid', sameAs('sourced_id', {
+  description: 'organizationid identifies the organization which is the subject of the '+
+               'audit/certification.',
+}));
+
+register('otherids', {
+  description: 'otherids represents an array of alternative sourced id\'s for a given '+
+               'object.  Introduced for GlobalGAP since the scheme owner (GlobalGAP) '+
+               'has an ID for an organization, and the certifying body also has an '+
+               'ID for an organization.  The main ID (for the scheme owner) should '+
+               'go in the regular organizationid field, but the certifying_body\'s '+
+               'ID should go in this otherids field.',
+  items: vocab('organizationid'),
+});
+
+
 register('organization', {
   description: 'organization contains information about the organization under '+
                 'audit.',
@@ -191,19 +253,45 @@ register('organization', {
 // Scope of audit:
 //----------------------------------------------------------------------------
 
+register('notification', {
+  description: 'notification describes whether the target of the audit was notified in '+
+               'advance that this audit would take place.  "announced" or "unannounced".',
+  type: 'string',
+  value: enumSchema(['announced', 'unannounced' ]),
+});
+
+register('organic', {
+  description: 'organic is a true/false value indicating if a particular product is considered '+
+               'organic or not.',
+  type: 'boolean'
+});
+
+register('area', {
+  description: 'area describes a quantity of area such as acres or hectares.',
+  allOf: [
+    { propertySchema: enumSchema(['value', 'units']), }, // has value and units
+    { 
+      properties: {                                      // and these are the known units
+        'units': enumSchema(['acres', 'ac', 'hectares', 'ha']),
+      },
+    },
+  ],
+});
+
 register('product', {
   description: 'product describes the particular type of item being evaluated in '+
                 'the audit. May describe the fruit, vegetable, etc. as well as other descriptors '+
                 'such as "chopped", "pitted", "organic", etc.',
   propertySchema: enumSchema([
-    'name',
+    'name', // from PrimusGFS
+    'organic', 'area', 'location' // from GlobalGAP
   ]),
 });
 
 register('products_observed', {
   description: 'The set of products evaluated in the audit.',
   type: 'array',
-  items: vocab('product'), // TODO: need a means of listing known product names
+  items: vocab('product'),
 });
 
 register('similar_products_not_observed', sameAs('products_observed', {
@@ -219,7 +307,8 @@ register('products_applied_for_but_not_observed', sameAs('products_observed', {
 register('operation_type', enumSchema({
   description: 'type of a given operation',
   type: 'string',
-  known: [ 'Harvest Crew', 'Packinghouse', 'Cold Storage' ],
+  known: [ 'harvest', 'packinghouse', 'cold storage',
+           'growing', 'handling', ], // added these two for GlobalGAP, which also has harvest
 }));
 
 register('shipper', {
@@ -230,31 +319,60 @@ register('shipper', {
   ]),
 });
 
-register('crew', {
-  description: 'crew is used to detail the information about operations of type '+
-                '"Harvest Crew". For facility-related operation types, the "crew" key is replaced '+
-                'by the "facility" key.',
+register('operator', {
+  description: 'operator is used to detail the information about the crew or on-site operators '+
+               'for a given operation.',
   propertySchema: enumSchema([
     'contacts', 'name', 'location',
   ]),
 });
 
-
 register('operation', {
-  description: 'an object describing the operation that is under audit',
+  description: 'an object describing the operation that is under audit. '+
+               'For GlobalGAP, this is just an object with a name.  For '+
+               'PrimusGFS, this is holds description',
   propertySchema: enumSchema([
-    'operation_type', 'crew', 'shipper'
+    'operation_type', 'operator', 'shipper', 'location', 'name',
   ]),
+});
+
+register('production_site', {
+  description: 'A production_site is defined for GlobalGAP and describes the products '+
+               'grown, harvested, or handled at multiple locations for the same audit.',
+  propertySchema: enumSchema([ 'name', 'id', 'products_observed' ]), // id is the Ranch ID in GlobalGAP
+});
+
+register('production_sites', {
+  description: 'production_sites is an array of object, each of which are a production site.',
+  items: vocab('production_site'),
+});
+
+register('parallel_production', {
+  description: 'parallel_production is defined for GlobalGAP as to whether the site '+
+               'is growing other things in addition to those under audit.',
+  type: 'boolean'
+});
+
+register('parallel_ownership', {
+  description: 'parallel_ownership is defined for GlobalGAP as to whether the site '+
+               'is growing things owned by someone other than the party under audit',
+  type: 'boolean'
 });
 
 register('scope', {
   description: 'scope describes the breadth of the audit in terms of operations, '+
                 'personnel, products, etc.',
   propertySchema: enumSchema([
-    'description', 'operation', 'products_observed',
+    'description', 'notification', 'operation', 'products_observed',
     'similar_products_not_observed', 'products_applied_for_but_not_observed',
+    'production_sites', 'parallel_production', 'parallel_ownership', // introduced for GlobalGAP
   ]),
 });
+
+
+//------------------------------------------------------------------
+// Conditions at the time of audit:
+//------------------------------------------------------------------
 
 register('start', {
   description: 'start describes the date and time when the audit started',
@@ -266,11 +384,20 @@ register('end', {
   type: 'string',
 });
 
+register('duration', {
+  description: 'duration describes how long an audit took to perform.  Introduced for '
+              +'GlobalGAP audits since that is how they specify it instead of start/end.',
+  propertySchema: enumSchema(['value', 'units']),
+  properties: { 
+    units: enumSchema(['hours']), // known units for duration
+  }
+});
+
 register('FSMS_observed_date', {
   description: 'the period (beginning and ending times) of the FSMS portion of '+
                 'the audit.',
   propertySchema: enumSchema([
-    'start', 'end',
+    'start', 'end', 'duration',
   ]),
 });
 
@@ -278,18 +405,13 @@ register('operation_observed_date', {
   description: 'the period (beginning and ending times) of the '+
                 'walk-through/field operations portion of the audit.',
   propertySchema: enumSchema([
-    'start', 'end',
+    'start', 'end', 'duration',
   ]),
 });
 
-register('value', {
-  description: 'a numeric or qualitative value, represented as a string',
-  type: 'string',
-});
-
-register('units', {
-  description: 'the units used to interpret the associated value.',
-  type: 'string',
+register('conditions_during_audit', {
+  description: 'describes conditions when the audit took place.  Date audit started/finished, etc.',
+  propertySchema: enumSchema([ 'FSMS_observed_date', 'operation_observed_date' ]),
 });
 
 register('compliance', {
@@ -312,6 +434,51 @@ register('datum', {
   ]),
 });
 
+register('is_compliant', {
+  description: 'GlobalGAP has an overall true/false compliance for an audit score',
+  type: 'boolean',
+});
+
+register('yes', sameAs('datum', {
+  description: 'yes is used to represent the summary count of "yes" answers in the audit',
+  properties: { units: enumSchema(['count']) },
+}));
+
+register('no', sameAs('datum', {
+  description: 'no is used to represent the summary count of "no" answers in the audit',
+  properties: { units: enumSchema(['count']) },
+}));
+
+register('n_a', sameAs('datum', {
+  description: 'n_a is used to represent the summary count of "Not Applicable" answers '+
+               'in the audit',
+  properties: { units: enumSchema(['count']) },
+}));
+
+register('globalgap_level', {
+  description: 'globalgap_level is not actually a key that is used, but rather '+
+               'describes a class of objects which represent a level\'s summary '+
+               'score',
+  anyOf: [
+    { propertySchema: enumSchema(['yes', 'no', 'n_a', 'is_compliant' ]), },
+    enumSchema(['major_must', 'minor_must', 'recommended']),
+  ],
+});
+
+register('minor_musts', sameAs('globalgap_level', {
+  description: 'The summary score for all minor-must level questions',
+}));
+
+register('major_musts', sameAs('globalgap_level', {
+  description: 'The summary score for all major-must level questions',
+}));
+
+register('globalgap_levels', {
+  description: 'GlobalGAP has particular levels of major_musts and minor_must that '+
+               'are entirely unique to GlobalGAP, hence the name.',
+  propertySchema: enumSchema(['major_musts', 'minor_musts'])
+});
+
 register('preliminary', sameAs('datum', {
   description: 'A prelimiary score for an audit',
 }));
@@ -326,6 +493,13 @@ register('score', sameAs('datum', {
   propertySchema: enumSchema([
     'preliminary', 'final', 'value', 'units', 'possible'
   ]),
+  properties: {
+    units: enumSchema([ // known score audits:
+      'yes-no-n_a',     // yes | no | n_a
+      'count',          
+      '%',              
+    ]),
+  },
 }));
 
 register('control_pointid', {
@@ -391,11 +565,23 @@ register('files', {
   items: vocab('file'),
 });
 
+register('justification', {
+  description: 'justification is an explanation by the auditor of why they scored a '+
+               'control_point the way they did',
+  type: 'string',
+});
+
+register('criteria', {
+  description: 'criteria is an arrray of strings representing the various criteria '+
+               'needed for the certifying body to pass/fail a given control point',
+  items: { type: 'string' },
+});
+
 register('control_point', {
   description: 'control_point is a single question/item to be addressed by the '+
                 'auditor.',
   propertySchema: enumSchema([
-    'name', 'score', 'comments', 'files',
+    'name', 'score', 'comments', 'files', 'justification', 'criteria', 'globalgap_level',
   ]),
 });
 
