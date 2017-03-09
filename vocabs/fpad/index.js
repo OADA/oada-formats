@@ -502,6 +502,37 @@ register('score', sameAs('datum', {
   },
 }));
 
+register('organization_response', {
+  description: 'organization_response is the organizations response to a non-compliant '+                              
+               'control point.',
+  type: 'string',
+  pattern: '*', 
+})      
+      
+register('organization_comments', {                                                                                   
+  description: 'organization_comments contain any additional comments or directions '+                                
+               'regarding their solution for the failed control point.',                                              
+  type: 'string',
+  pattern: '*',                                                                                                       
+})      
+      
+register('decision', {                                                                                                
+  description: 'decision is the certifying bodys determination for whether the organizations '+                        
+               'corrective actions are satisfactory.',
+  propertySchema: enumSchema([
+    'value', 'units'                                                                                                  
+  ]),   
+})    
+    
+register('corrective_action', {                                                                                       
+  description: 'corrective_action is the corrective action details associated with '+
+               'a particular control point as found in the corrective actions report.',                               
+  propertySchema: enumSchema([                                                                                        
+    'score', 'organization_response', 'organization_comments', 'decision'                                             
+  ]), 
+}); 
+
+
 register('control_pointid', {
   description: 'control_pointid is the id associated with a particular control '+
                 'point.',
