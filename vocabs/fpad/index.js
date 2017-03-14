@@ -491,7 +491,7 @@ register('score', sameAs('datum', {
   description: 'score presents the quanititative performance of a control point, '+
                 'section, or overall audit.',
   propertySchema: enumSchema([
-    'preliminary', 'final', 'value', 'units', 'possible'
+    'preliminary', 'final', 'value', 'units', 'possible', 'compliance'
   ]),
   properties: {
     units: enumSchema([ // known score audits:
