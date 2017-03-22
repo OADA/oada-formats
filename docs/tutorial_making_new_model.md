@@ -5,7 +5,6 @@ For this tutorial, we'll be making a model to represent a simple shopping list u
 someone suggests a better example :).
 
 ## Step 1: make an example JSON document that represents the core of what you want.
------------------------------------------------------------------------------------
 ```javascript
 module.exports = {
   // The person who made the list:
@@ -30,7 +29,6 @@ Some comments:
 
 
 ## Step 2: figure out a common vocabulary from your example(s) to aid in duck typing.
------------------------------------------------------------------------------------
 
 Odds are good that you'll end up making a few models for things that you want to fit 
 together.  We've found that building a vocabulary of key names makes it much simpler
@@ -148,7 +146,6 @@ register('products', {
 ```
 
 ## Step 3: make a format using your new vocab:
-----------------------------------------------
 Decide what you want your format's content-type string to be.  In this example,
 let's say it should be `application/vnd.test.grocerylist.1+json`.  By our convention
 (which you don't have to use if you don't want to), that's the first verion of
@@ -175,7 +172,6 @@ module.exports = schemaUtil.oadaSchema({
 ```
 
 ## Step 4: Done!
----------------------------------------------------------
 There you go: now run the tests `npm run test` and it will verify automtically
 that all the files you wrote actually compile under node, and it will
 verify that the example you gave passes the schema you wrote.  If you pass

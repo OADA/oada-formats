@@ -29,6 +29,8 @@ Since the OADA API uses content type strings to identify types, the formats here
 are organized by media type: if you receive a file via the OADA API, you should
 be able to use it's content-type to look up details on its format here.
 
+[Tutorial for making your own new model](./docs/tutorial_making_new_model.md)
+
 
 ## If you want to look at known formats, look for folders named "examples" [in here](./formats/application/vnd/oada).
 
@@ -42,8 +44,6 @@ This repo contains models for all formats whose format is known from a given
 media type. Each model consists of a module with `validate()`, `schema()`, and
 `example()` functions. Some base model types, e.g., JsonModel, are available for
 use.
-
-[Tutorial for making a new model](./docs/tutorial_making_new_model.md)
 
 `oada-formats` exposes a `Formats` class that acts as a repository of models.
 The `model()` function is a factory function for various mediatype models. The
