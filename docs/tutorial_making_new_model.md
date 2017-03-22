@@ -1,5 +1,5 @@
 # Tutorial on Making a New Model with `oada-formats`
-===================================================
+---------------------------------------------------
 
 For this tutorial, we'll be making a model to represent a simple shopping list until
 someone suggests a better example :).
