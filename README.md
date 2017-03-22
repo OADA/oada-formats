@@ -43,6 +43,8 @@ media type. Each model consists of a module with `validate()`, `schema()`, and
 `example()` functions. Some base model types, e.g., JsonModel, are available for
 use.
 
+[Tutorial for making a new model](./docs/tutorial_making_new_model.md)
+
 `oada-formats` exposes a `Formats` class that acts as a repository of models.
 The `model()` function is a factory function for various mediatype models. The
 `use()` function can be used to extend the model types and model repository. See

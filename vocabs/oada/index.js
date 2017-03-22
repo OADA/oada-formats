@@ -200,8 +200,10 @@ register('width', sameAs('generic-data-value', {
 }));
 
 register('time', sameAs('generic-data-value', {
-    description: 'time is a data type which holds a reading of...time...',
+  description: 'time is a data type which holds a reading of...time...',
+  properties: {
     'units': enumSchema( [ 'unix-timestamp', 'sec' ] ),
+  },
 }));
 
 
