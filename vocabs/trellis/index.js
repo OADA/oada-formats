@@ -111,7 +111,8 @@ register('version', {
 
 register('option', {
   description: 'option is used as an indicator of type of audit for a given '+
-                'audit version.  Introduced for GlobalGAP audit.',
+                'audit version.  Introduced for GlobalGAP audit, also present '+
+                'in CanadaGAP audit.',
   type: 'string',
 });
 
@@ -134,10 +135,10 @@ register('modules', {
 register('scheme', {
   description: 'the set of descriptors for identifying the current audit scheme '+
                 'for this document.',
-  propertySchema: enumSchema([ 'name', 'version' ]),
+  propertySchema: enumSchema([ 'name', 'version', 'option' ]),
   properties: {
     // known names of scheme owners:    
-    name: vocab('name', enumSchema([ 'PrimusGFS' ]) ),
+    name: vocab('name', enumSchema([ 'PrimusGFS', 'GlobalGAP', 'CanadaGAP', 'SQFI' ]) ),
   },
 });
 
@@ -149,7 +150,7 @@ register('scheme', {
 register('person', {
   description: 'person is a key that never appears anywhere, but anywhere a person-type '+
                 'of thing exists (auditor, contact, etc.) it is one of these things.',
-  propertySchema: enumSchema([ 'name', ])
+  propertySchema: enumSchema([ 'name', 'email', 'location', 'phone' ])
 });
 
 register('auditor', sameAs('person', {
@@ -168,10 +169,25 @@ register('certifying_body', {
   },
 });
 
+register('contact_type', enumSchema({
+  description: 'Indicates if this particular contact person has some special role '+
+               'in the organization such as "Food Safety Program Coordinator" or '+
+               '"Recall Coordinator."  Introduced for CanadaGAP Audit',
+  type: 'string',
+  known: [ 'Food Safety Program Coordinator', 'Recall Coordinator', 'Responsible For Operation' ],
+}));
+
 register('contact', sameAs('person', {
   description: 'contact describes an individuals who may be contacted in '+
                 'reference to this audit.',
+  propertySchema: enumSchema([ 'contact_type' ]), // adds contact_type to the properties from 'Person'
 }));
+
+register('contact_types', {
+  description: 'Allows one person to be multiple contact types.  Introduced for CanadaGAP audits.',
+  type: 'array',
+  items: vocab('contact'),
+});
 
 register('contacts', {
   description: 'contacts is a list of contact people for an organization.',
@@ -215,6 +231,12 @@ register('phone', {
   type: 'string',
 });
 
+register('email', {
+  description: 'email address for an organization or contact',
+  type: 'string',
+});
+
+
 register('location', {
   description: 'location describes the postal address used to identify where '+
                 'something is.',
@@ -228,6 +250,7 @@ register('organizationid', sameAs('sourced_id', {
                'audit/certification.',
 }));
 
+
 register('otherids', {
   description: 'otherids represents an array of alternative sourced id\'s for a given '+
                'object.  Introduced for GlobalGAP since the scheme owner (GlobalGAP) '+
@@ -238,12 +261,47 @@ register('otherids', {
   items: vocab('organizationid'),
 });
 
+register('job_title', {
+  description: 'The title of this person within their organization.',
+  type: 'string',
+});
+
+register('job_description', {
+  description: 'A description of what this person does or is responsible for within '+
+               'an organization.',
+  type: 'string',
+});
+
+register('reports_to', {
+  description: 'An array of all the ID strings of the people to whom this person reports',
+  type: 'array',
+  items: vocab('id'),
+});
+
+register('orgchart_person', sameAs('person', {
+  description: 'An orgchart_person has all the possible properties of a person, '+
+               'but also can have job_title, job_description, and reports_to.',
+  propertySchema: enumSchema(['job_title', 'job_description', 'reports_to' ]),
+});
+
+register('orgchart', {
+  description: 'orgchart is a tricky one.  It is intended to represent the reporting '+
+               'structure within an organization.  Introduced for the CanadaGAP audit. '+
+               'It is a flat object with keys that represent the "id" of a person.  Each '+
+               'value in this outer object is a single person, and may have name, job_title, and '+
+               'job_description.  If this person reports to someone else, the reports_to '+
+               'key should be included in their object as well (an array of all the people '+
+               'they report to), thus creating a directed graph of relationships.',
+  patternProperties: {
+    '*': vocab('orgchart_person')
+  },
+});
 
 register('organization', {
   description: 'organization contains information about the organization under '+
                 'audit.',
   propertySchema: enumSchema([
-    'name', 'contacts', 'location', 'phone',
+    'name', 'contacts', 'location', 'phone', 'orgchart',
   ]),
 });
 
