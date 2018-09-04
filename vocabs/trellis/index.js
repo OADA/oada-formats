@@ -560,6 +560,13 @@ register('score', sameAs('datum', {
   },
 }));
 
+register('certificate_validity_period', {
+  description: 'certificate_validity_period denotes the period of time (beginning date'+
+              ' to end date) through which the audit is valid.',
+  type: 'string,
+  pattern: '*',
+})
+
 register('organization_response', {
   description: 'organization_response is the organizations response to a non-compliant '+                              
                'control point.',
