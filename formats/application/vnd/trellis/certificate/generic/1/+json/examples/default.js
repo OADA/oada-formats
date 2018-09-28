@@ -39,7 +39,7 @@ module.exports = {
   // certifying body: info about who performed the audit
   certifying_body: { 
     name: "Primus Auditing Operations",
-    auditor: { name: "Aaron Auditor Ault" },
+    signee: { name: "Aaron Auditor Ault" },
   },
 
   // Organization contains information about the party being audited.
