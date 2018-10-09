@@ -34,27 +34,37 @@ module.exports = {
   // scheme: info about the type of audit
   scheme: {
     name: "CanadaGAP", 
-    version: "7.0",
-    option: "B", // Known options: A1, A2, A3, B, C, and D
+    version: "7.1",
+    options: [ 'B', 'C' ], // Known options: A1, A2, A3, B, C, and D
   },
   
   // certifying body: info about who performed the audit
   certifying_body: { 
     name: "Audits R Us",
-    auditor: { name: "Audrey Auditor" },  
+    auditor: { 
+      name: "Audrey Auditor", 
+      conflict_of_interest: false,  // whether the auditor has a conflict of interest (true) or not (false)
+      number_prior_audits_this_organization: '2', // how many times this auditor has previously audited this operation
+      number_prior_consecutive_audits_this_organization: '0', // hwo many times consecutively, not including this audit
+    },  
+    reviewer: {
+      name: 'Richard Reviewer',
+      review_date: '2018-06-03T13:01:01Z-06:00',
+    },
   },
 
   // Organization contains information about the party being audited.
   organization: {
+    GLN: '1234567890128', // if available, this is the global location number assigned by GS1
     // organizationid is the id of this organization withing the certifying body
     organizationid: {
       id_source: "certifying_body", // the certifying body already described in this document
-      id: "PA−PGFS−000−0", // some unique string that identifies this organization within the certification body.
-                           // it may be the same as the name itself if the certification body does not have
-                           // such an ID.  However, it must be an exact and case sensitive match to the
-                           // certification body's records, and be the only known string which represents this
-                           // organzation at that certiciation body (i.e. you can't have "BOB'S PRODUCE" and "Bob's Produce"
-                           // which refer in reality to the same organization but are different ID strings.
+      id: "Noel_Produce", // some unique string that identifies this organization within the certification body.
+                          // it may be the same as the name itself if the certification body does not have
+                          // such an ID.  However, it must be an exact and case sensitive match to the
+                          // certification body's records, and be the only known string which represents this
+                          // organzation at that certiciation body (i.e. you can't have "BOB'S PRODUCE" and "Bob's Produce"
+                          // which refer in reality to the same organization but are different ID strings.
     },
     name: "Noel Produce Masters", // this is the same as the "legal operating name" or "group name" in CanadaGAP
     contacts: [ 
@@ -68,6 +78,7 @@ module.exports = {
       },
     ],
     location: {
+      name: 'The Big Farm', // For CanadaGAP, this refers to the "name of audited location (for multi-site certification)
       street_address: "123 Nonexistent Street",
       postal_code: "00000",
       city: "Nowhere",
@@ -79,7 +90,7 @@ module.exports = {
     email: "sam@noelproduce.com", // organization-wide email.  Can also have email in the individual people
     orgchart: {
       9kjfie: { // must be same as 'id' inside the object
-        id: '9kjfie',  // an identifier to uniquely identify this person within this object, or globally
+        id: '9kjfie',  // an identifier to uniquely identify this person within this object, or globally. 
         name: 'Jill Noel',
         job_title: 'CEO',
         job_description: 'runs the place',
@@ -100,39 +111,60 @@ module.exports = {
       start: "2016-04-08T10:00:00Z-06:00", // combined audit date and start/end times
       end: "2016-04-08T11:30:00Z-06:00",
     },
+    individuals_present: [
+      { name: 'Sam Noel', },
+    ],
+    // This is a free-form text explanation (from canadagap) only for why the audit duration
+    // was less than the minimum requirement.
+    audit_duration_rationale: 'Sunspots', 
   },
 
   // Scope: what sorts of things does this audit cover (operation, products, etc.)  
   scope: {
-    notification: "announced", // either announced or unannounced
-    description: "Harvest crew audit of GFS activities, personnel, sanitation, crop area, "
-                +"tools, etc. were observed and applicable documents.They were observed approx.10 "
-                +"people in the activity.", 
-    operation: {
-      operation_type: 'harvest',
-      operator: { // the harvest crew
-        contacts: [ 
-          { name: "Sam Noel" } 
-        ],
-        name: "Noel Produce - Linked to Greenhouse Noel Produce Masters",
-      },
-      // Open question: does shipper belong inside the harvest crew,  or as it's own thing at same level as "crew"
-      shipper: { name: "Noel's Happy Tomato" },
-      location: {
-        address: "124 Nonexistent Street",
-        city: "Lafayette",
-        state: "IN",
-        postal_code: "47907", 
-        country: "USA",
-      }
+    notification: "announced", // either "announced" or "unannounced"
+    is_multisite: false,
+
+    operations: [
+      { operation_type: 'production' },
+      { operation_type: 'storage' },
     },
+    operations_applied_for_but_not_observed: [
+      { operation_type: 'packing', }
+    ],
+
     products_observed : [ 
-      { name: "Tomatoes" },
+      { name: "tomatoes" },
     ],
-    similar_products_not_observed: [ 
-      { name: "Tomatoes Organic" },
+    products_applied_for_but_not_observed: [
+      { name: 'kiwi' },
     ],
-    products_applied_for_but_not_observed: [ ], // empty array, or just leave the key off if none
+
+    // applicable_sites_description is a free-form text description of sites applicable to this audit.
+    applicable_sites_description: 'Whole operation (production sites, packing house with storage)',
+  },
+
+  previous_certification: {
+    conditions_during_audit: {
+      operation_observed_date: {
+        start: '2014-08-13T11:00:00Z-06:00',  // date of previous audit
+      },
+    },
+    certifying_body: { name: "Audits R Us 2", } // who did the previous audit
+    scheme: {
+      name: "CanadaGAP", 
+      version: "7.1",
+      options: [ 'B', 'C' ], // Known options: A1, A2, A3, B, C, and D
+    },
+    scope: {
+      operations: [
+        operation_type: 'harvest',
+      ],
+      operations_applied_for_but_not_observed: [],
+      products_observed: [
+        { name: 'tomatoes' },
+      ],
+      products_applied_for_but_not_observed: [],
+    },
   },
 
   score: {
@@ -149,8 +181,193 @@ module.exports = {
       value: '100', 
       units: "%" 
     },
-    // This can also have "value" and "units" at the top level if there is a "current" score
+    canadagap_isautofail: false, // true/false based on "autofail" section
+    subtotals: [
+      {
+        name: '1', // CanadaGAP: 1, 2a, 2b, 3, 4, 5, 6, 7
+        sectionids: [ 'A', 'B', 'C', 'D', ],
+        weighting_factor: '0.15', // must be a string for signature to be consistent
+        score: {
+          preliminary: { value: '17', units: 'points', },
+          final:       { value: '19', units: 'points', },
+          possible:    { value: '19', units: 'points', },
+        },
+      },
+      // other subtotals are same structure as the first one
+    ],
   },
+
+  sections: [
+
+    // This section with ID "autofail" is unique to CanadaGAP:
+    { 
+      sectionid: 'autofail', // special section in CanadaGAP
+      name: 'Automatic Failure Items',
+      score: {
+        canadagap_isautofail: false,
+      }
+      control_pointids: [ 
+        'autofail.1', 'autofail.2', 'autofail.3', 'autofail.4', 
+        'autofail.5', 'autofail.6', 'autofail.7', 'autofail.8' 
+      ],
+    },
+
+    // Note: CanadaGAP splits section "A" into 2 sections, and uses those two
+    // sections independently in the subtotal weightings.  Therefore, they should
+    // each be considered their own section here, with ID's "A1-3" and "A4-5"
+    {
+      sectionid: 'A',
+      name: 'Food Safety Program Maintenance and Review',
+      sections: [
+        {
+          sectionid: 'A1-3',
+          name: 'Food Safety Program Maintenance and Review - Questions 1-3',
+          score: {
+            preliminary: { value: '8.0', units: 'points', },
+            final:       { value: '8.0', units: 'points', },
+            possible:    { value: '8.0', units: 'points', }
+          },
+          sections: [
+            {
+              sectionid: 'A1-3.1', // labeled "A1" in spreadsheet
+              name: 'A1',
+              score: {
+                preliminary: { value: '4.0', units: 'points', },
+                final:       { value: '4.0', units: 'points', },
+                possible:    { value: '4.0', units: 'points', }
+              },
+              control_pointids: [ 'A1-3.1.1', 'A1-3.1.2', 'A1-3.1.3' ],
+            },
+            {
+              sectionid: 'A1-3.2', // labeled "A2" in spreadsheet
+              name: 'A2',
+              score: {
+                preliminary: { value: '2.0', units: 'points', },
+                final:       { value: '2.0', units: 'points', },
+                possible:    { value: '2.0', units: 'points', }
+              },
+              control_pointids: [ 'A1-3.2.1' ],
+            },
+            {
+              sectionid: 'A1-3.3', // labeled "A3" in spreadsheet
+              name: 'A3',
+              score: {
+                preliminary: { value: '2.0', units: 'points', },
+                final:       { value: '2.0', units: 'points', },
+                possible:    { value: '2.0', units: 'points', }
+              },
+              control_pointids: [ 'A1-3.3.1' ],
+            },
+          ],
+        },
+        {
+          sectionid: 'A4-5',
+          name: 'Food Safety Program Maintenance and Review - Questions 4-5',
+          score: {
+            preliminary: { value: '0.0', units: 'points', },
+            final:       { value: '0.0', units: 'points', },
+            possible:    { value: '0.0', units: 'points', }
+          },
+          sections: [
+            {
+              sectionid: 'A4-5.4', // labeled "A4" in spreadsheet
+              name: 'A4',
+              score: {
+                preliminary: { value: '4.0', units: 'points', },
+                final:       { value: '4.0', units: 'points', },
+                possible:    { value: '4.0', units: 'points', }
+              },
+              control_pointids: [ 'A4-5.4.1', 'A4-5.4.2', ],
+            },
+            {
+              sectionid: 'A4-5.5', // labeled "A5" in spreadsheet
+              name: 'A5',
+              score: {
+                preliminary: { value: '0.0', units: 'points', },
+                final:       { value: '0.0', units: 'points', },
+                possible:    { value: '0.0', units: 'points', }
+              },
+              control_pointids: [ 'A4-5.5.1' ],
+            },
+            {
+              sectionid: 'A1-3.3', // labeled "A3" in spreadsheet
+              name: 'A3',
+              score: {
+                preliminary: { value: '0.0', units: 'points', },
+                final:       { value: '0.0', units: 'points', },
+                possible:    { value: '0.0', units: 'points', }
+              },
+              control_pointids: [ 'A1-3.3.1' ],
+            },
+          ],
+        },
+      ],
+    },
+
+    // This is an example of an entire section marked as "n/a".  In this
+    // case, you would ignore the answers in the individual control points
+    // for that section.  The score field's
+    {
+      sectionid: 'B',
+      name: 'Commodity Starter Products',
+      score: {
+        preliminary: { value: 'n/a', units: 'n_a', },
+        final:       { value: 'n/a', units: 'n_a', },
+      },
+      control_pointids: [ 'B.1', 'B.2' ],
+    },
+
+    {
+      sectionid: 'C',
+      name: 'Premises',
+      score: {
+        preliminary: { value: '33.0', units: 'points', },
+        final:       { value: '33.0', units: 'points', },
+        possible:    { value: '38.0', units: 'points', }
+      },
+      sections: [
+        {
+          sectionid: 'C1-2',
+          name: 'Premises - Production Sites - Questions 1-2',
+          sections: [
+            {
+              sectionid: 'C1-2.1', // Listed as "C1" in spreadsheet
+              name: 'C1',
+              control_pointids: [ 'C1-2.1.1',  ],
+              score: {
+                preliminary: { value: '2.0', units: 'points', },
+                final:       { value: '2.0', units: 'points', },
+                possible:    { value: '2.0', units: 'points', },
+              },
+            },
+            {
+              sectionid: 'C1-2.2', // Listed as "C2" in spreadsheet
+              name: 'C2',
+              control_pointids: [ 'C1-2.2.1', 'C1-2.2.2', 'C1-2.2.3', ],
+              score: {
+                preliminary: { value: '12.0', units: 'points', },
+                final:       { value: '12.0', units: 'points', },
+                possible:    { value: '12.0', units: 'points', },
+              },
+            },
+          ],
+        },
+
+      ],
+    },
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
 
   // This part describes the overall structure of the document.  Odds are good that all PrimusGFS harvest crew reports
   // have the same sections and control points.  Note that a section may contain other sections, or it may contain control pointids.

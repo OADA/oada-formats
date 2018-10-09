@@ -89,7 +89,7 @@ register('units', {
 });
 
 //----------------------------------------------------------------------------
-// Scheme info:
+// Top-level key: scheme
 //----------------------------------------------------------------------------
 
 register('name', {
@@ -115,6 +115,10 @@ register('option', {
                 'in CanadaGAP audit.',
   type: 'string',
 });
+register('options', {
+  description: 'If an audit covers multiple scheme options, you can make an array of them.',
+  type: 'string',
+});
 
 register('module', {
   description: 'module is not a key that is used anywhere, but each item in '+
@@ -135,7 +139,7 @@ register('modules', {
 register('scheme', {
   description: 'the set of descriptors for identifying the current audit scheme '+
                 'for this document.',
-  propertySchema: enumSchema([ 'name', 'version', 'option' ]),
+  propertySchema: enumSchema([ 'name', 'version', 'option', 'options' ]),
   properties: {
     // known names of scheme owners:    
     name: vocab('name', enumSchema([ 'PrimusGFS', 'GlobalGAP', 'CanadaGAP', 'SQFI' ]) ),
@@ -144,30 +148,65 @@ register('scheme', {
 
 
 //----------------------------------------------------------------------------
-// Certifying Body info:
+// Top-level key: certifying_body
 //----------------------------------------------------------------------------
 
 register('person', {
   description: 'person is a key that never appears anywhere, but anywhere a person-type '+
                 'of thing exists (auditor, contact, etc.) it is one of these things.',
-  propertySchema: enumSchema([ 'name', 'email', 'location', 'phone' ])
+  propertySchema: enumSchema([ 'name', 'email', 'location', 'phone', 'fax' ])
+});
+
+register('conflict_of_interest', {
+  description: 'conflict_of_interest indicates if a particular person (auditor) has a '+
+               'known conflict of interest for creating a certification for an organization',
+  type: 'boolean',
+);
+register('number_prior_audits_this_organization', {
+  description: 'Introduced for CanadaGAP, this is the auditor\'s attestation of how many '+
+               'times they have audited this operation before.',
+  type: 'string',
+  pattern: '^[0-9]+$', // a string that is just a number
+});
+register('number_prior_consecutive_audits_this_organization', sameAs('number_prior_consecutive_audits_this_organization', {
+  description: 'Introduced for CanadaGAP, this is the auditor\'s attestation of how many '+
+               'consecutive times they have audited this operation, excluding the current audit.',
 });
 
 register('auditor', sameAs('person', {
   description: '"auditor" is the person performing the audit for the certifying '+
                 'body',
+  propertySchema: enumSchema([
+    'conflict_of_interest', 'number_prior_audits_this_organization', // added all these for CanadaGAP
+    'number_prior_consecutive_audits_this_organization',
+  ]),
 }));
+
+register('reviewer', sameAs('person', {
+  description: 'Introduced for CanadaGAP audit.  Represents the person who reviewed the audit '+
+               'within the certifiation body.',
+});
+
+register('review_date', {
+  description: 'Introduced for CanadaGAP.  Indicates when the review of the audit was performed.',
+  type: 'string', // ISO time string like 2018-06-03T13:01:02Z-06:00
+});
 
 register('certifying_body', {
   description: 'specifies the credentials of the '+
                 'organization is performing the audit along with the specific individual '+
                 'performing the audit.',
-  propertySchema: enumSchema([ 'name', 'auditor', ]),
+  propertySchema: enumSchema([ 'name', 'auditor', 'reviewer', 'review_date' ]),
   properties: {
     // known certifying_body names:
     name: vocab('name', enumSchema([ 'Primus Auditing Operations' ]) ),
   },
 });
+
+
+//----------------------------------------------------------------------------
+// Top-level key: organization
+//----------------------------------------------------------------------------
 
 register('contact_type', enumSchema({
   description: 'Indicates if this particular contact person has some special role '+
@@ -176,29 +215,22 @@ register('contact_type', enumSchema({
   type: 'string',
   known: [ 'Food Safety Program Coordinator', 'Recall Coordinator', 'Responsible For Operation' ],
 }));
-
-register('contact', sameAs('person', {
-  description: 'contact describes an individuals who may be contacted in '+
-                'reference to this audit.',
-  propertySchema: enumSchema([ 'contact_type' ]), // adds contact_type to the properties from 'Person'
-}));
-
 register('contact_types', {
   description: 'Allows one person to be multiple contact types.  Introduced for CanadaGAP audits.',
   type: 'array',
-  items: vocab('contact'),
+  items: vocab('contact_type'),
 });
+register('contact', sameAs('person', {
+  description: 'contact describes an individuals who may be contacted in '+
+                'reference to this audit.',
+  propertySchema: enumSchema([ 'contact_type', 'contact_types' ]), // adds contact_type and contact_types to the properties from 'Person'
+}));
 
 register('contacts', {
   description: 'contacts is a list of contact people for an organization.',
   type: 'array',
   items: vocab('contact'),
 });
-
-
-//----------------------------------------------------------------------------
-// Organization info:
-//----------------------------------------------------------------------------
 
 register('street_address', {
   description: 'The street name and mailbox number of a postal address.',
@@ -231,6 +263,12 @@ register('phone', {
   type: 'string',
 });
 
+register('fax', {
+  description: 'fax number for a person or organization',
+  type: 'string',
+});
+
+
 register('email', {
   description: 'email address for an organization or contact',
   type: 'string',
@@ -242,6 +280,7 @@ register('location', {
                 'something is.',
   propertySchema: enumSchema([
     'postal_code', 'street_address', 'city', 'state', 'country',
+    'name', // name was added for canadaGAP to refer to the "name of audited location (for multi-site certification)"
   ]),
 });
 
@@ -250,6 +289,11 @@ register('organizationid', sameAs('sourced_id', {
                'audit/certification.',
 }));
 
+register('GLN', {
+  description: 'A Global Location Number, assigned by GS1.  Usually exists in "organization".',
+  type: 'string',
+  pattern: '^[0-9]{13}$', // 13 digits
+});
 
 register('otherids', {
   description: 'otherids represents an array of alternative sourced id\'s for a given '+
@@ -301,15 +345,15 @@ register('organization', {
   description: 'organization contains information about the organization under '+
                 'audit.',
   propertySchema: enumSchema([
-    'name', 'contacts', 'location', 'phone', 'orgchart',
+    'organizationid', 'GLN', 'name', 'contacts', 'location', 'phone', 'fax', 'orgchart',
   ]),
 });
 
 
 
-//----------------------------------------------------------------------------
-// Scope of audit:
-//----------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////
+// Top-level key: scope
+////////////////////////////////////////////////////////////////////
 
 register('notification', {
   description: 'notification describes whether the target of the audit was notified in '+
@@ -341,9 +385,15 @@ register('product', {
                 'the audit. May describe the fruit, vegetable, etc. as well as other descriptors '+
                 'such as "chopped", "pitted", "organic", etc.',
   propertySchema: enumSchema([
-    'name', // from PrimusGFS
     'organic', 'area', 'location' // from GlobalGAP
   ]),
+  properties: {
+    name: vocab('name', enumSchema([
+      // these are just the known possible products and the set here should never
+      // be considered exhaustive.  Pull requests welcome to build out this list.
+      'tomatoes', 'peppers', 'zucchini',
+    ]),
+  }
 });
 
 register('products_observed', {
@@ -366,7 +416,9 @@ register('operation_type', enumSchema({
   description: 'type of a given operation',
   type: 'string',
   known: [ 'harvest', 'packinghouse', 'cold storage',
-           'growing', 'handling', ], // added these two for GlobalGAP, which also has harvest
+           'growing', 'handling',  // added these two for GlobalGAP, which also has harvest
+           'u-pick', 'storage', 'packing - production site', // added six more here from CanadaGAP
+           'repacking', 'brokerage', 'wholesale'],
 }));
 
 register('shipper', {
@@ -393,6 +445,16 @@ register('operation', {
     'operation_type', 'operator', 'shipper', 'location', 'name',
   ]),
 });
+register('operations', {
+  description: 'An audit that covers multiple type of operations (packing, harvest, etc.) '+
+               'can have an array of operations instead of just one.',
+  type: 'array',
+  items: vocab('operation'),
+});
+register('operations_applied_for_but_not_observed', sameAs('operations', {
+  description: 'Introdued for CanadaGAP audit.  Refers to activities that the audit '+
+               'will cover but were not observed during the audit.',
+}));
 
 register('production_site', {
   description: 'A production_site is defined for GlobalGAP and describes the products '+
@@ -408,12 +470,24 @@ register('production_sites', {
 register('parallel_production', {
   description: 'parallel_production is defined for GlobalGAP as to whether the site '+
                'is growing other things in addition to those under audit.',
-  type: 'boolean'
+  type: 'boolean',
 });
 
 register('parallel_ownership', {
   description: 'parallel_ownership is defined for GlobalGAP as to whether the site '+
                'is growing things owned by someone other than the party under audit',
+  type: 'boolean',
+});
+
+register('applicable_sites_description', {
+  description: 'Introduced for CanadaGAP, this holds a free-form string describing which  '+
+               'types of sites this audit applies to.',
+  type: 'string',
+});
+
+register('is_multisite', {
+  description: 'Introduced for CanadaGAP, this is a true/false that indicates if operation '+
+               'is multi-site.',
   type: 'boolean'
 });
 
@@ -424,8 +498,24 @@ register('scope', {
     'description', 'notification', 'operation', 'products_observed',
     'similar_products_not_observed', 'products_applied_for_but_not_observed',
     'production_sites', 'parallel_production', 'parallel_ownership', // introduced for GlobalGAP
+    'applicable_sites_description', // introduced for CanadaGAP
   ]),
 });
+
+
+////////////////////////////////////////////////////////////////////
+// Top-level key: previous_certification
+////////////////////////////////////////////////////////////////////
+
+register('previous_certification', {
+  description: 'Introduced for CanadaGAP.  This represents information about the previous certificate '+
+               'and audit that the operation/organization has on file.  For CanadaGAP, it is supposed '+
+               'to be the previous CanadaGAP certificate/audit info, not just any previous info.',
+  propertySchema: enumSchema([
+    'conditions_during_audit', 'certifying_body', 'certificationid', 'scheme', 'scope',
+  ]),
+});
+
 
 
 //------------------------------------------------------------------
@@ -434,12 +524,12 @@ register('scope', {
 
 register('start', {
   description: 'start describes the date and time when the audit started',
-  type: 'string',
+  type: 'string', // ISO time string like 2018-06-03T13:01:02Z-06:00
 });
 
 register('end', {
   description: 'end describes the date and time when the audit was completed.',
-  type: 'string',
+  type: 'string', // ISO time string like 2018-06-03T13:01:02Z-06:00
 });
 
 register('duration', {
@@ -467,9 +557,22 @@ register('operation_observed_date', {
   ]),
 });
 
+
+register('individuals_present', {
+  description: 'List of people present during the audit (part of conditions_during_audit)',
+  type: 'array',
+  items: vocab('person'),
+});
+register('audit_duration_rationale', {
+  description: 'Introduced for CanadaGAP, this is a free-form string explaining why '+
+               'the duration of an audit does not meet the minimum duration requirements.',
+  type: 'string',
+});
 register('conditions_during_audit', {
   description: 'describes conditions when the audit took place.  Date audit started/finished, etc.',
-  propertySchema: enumSchema([ 'FSMS_observed_date', 'operation_observed_date' ]),
+  propertySchema: enumSchema([ 
+    'FSMS_observed_date', 'operation_observed_date', 'individuals_present', 'audit_duration_rationale',
+  ]),
 });
 
 register('compliance', {
@@ -545,19 +648,57 @@ register('final', sameAs('datum', {
   description: 'The final score for an audit',
 }));
 
-register('score', sameAs('datum', {
-  description: 'score presents the quanititative performance of a control point, '+
-                'section, or overall audit.',
+register('canadagap_isautofail', {
+  description: 'If the audit is scored as autofail, this key should be set to '+
+               'true in the score section.  Otherwise it can either be missing '+
+               'or set to false.',
+  type: 'boolean',
+});
+
+register('score_core', sameAs('datum', {
+  description: 'Do not use score_core in an audit schema.  It exists to avoid '+
+               'recursive definition of score and subtotals.'
   propertySchema: enumSchema([
-    'preliminary', 'final', 'value', 'units', 'possible', 'compliance'
+    'preliminary', 'final', 'value', 'units', 'possible', 'compliance',
+    'globalgap_levels', 'canadagap_isautofail',
   ]),
   properties: {
     units: enumSchema([ // known score audits:
+      'n/a',            // n/a is only possible option if units are set to n/a
+      'yes-no',         // yes | no
       'yes-no-n_a',     // yes | no | n_a
-      'count',          
+      'yes-no-n_a-inc', // yes | no | n_a | inc (incomplete)  introduced for CanadaGAP
+      'count', 
+      'points',
       '%',              
     ]),
   },
+}));
+
+register('weighting_factor', {
+  description: 'Introduced for CanadaGAP.  Represents the weight used to combine sections '+
+               'into a total score.',
+  type: 'string', // must be a string for signatures to work appropriately
+  pattern: '^-?[0-9]+(.[0-9]+)?', // formatted as a number
+});
+
+register('subtotals', {
+  description: 'Introduced for CanadaGAP.  Represents the sub totals for various combinations '+
+               'of sections as specified by CanadaGAP, as well as the weighting_factor for that '+
+               'combination of sections toward the overall score.',
+  propertySchema: enumSchema([
+    'name', 'sectionids', 'weighting_factor'
+  ]),
+  properties: {
+    score: vocab('score_core'), // avoids recursive definition
+  },
+});
+
+register('score', sameAs('score_core', {
+  description: 'score presents the quanititative performance of a control point, '+
+                'section, or overall audit.',
+  propertySchema: enumSchema([ 'subtotals' ]), // adds subtotals to set of possible keys
+                                               // introduced for CanadaGAP.
 }));
 
 register('organization_response', {
@@ -609,8 +750,19 @@ register('sectionid', {
   description:  'sectionid is the string id associated with a particular '+
                  'section. sectionid is constructed by prefixing the id with any parent sections, '+
                  'separated by periods (e.g., sectionid \'2.3\' is a section that is inside of a '+
-                 'parent section with sectionid \'2\').',
+                 'parent section with sectionid \'2\').  Note that CanadaGAP also has '+
+                 'a special sectionid of "autofail" for their autofail items.  All other sectionids '+
+                 'that we have seen are of the form '+
+                 '<number_or_letter>.<number_or_letter>.<number_or_letter>... with 1 or more numbers',
   type: 'string',
+});
+
+
+register('sectionids', {
+  description: 'An array of section id strings that '+
+               'belong to a subtotal.'
+  type: 'array',
+  items: vocab('sectionid'),
 });
 
 register('section', {
@@ -625,7 +777,7 @@ register('section', {
 });
 
 register('sections', {
-  description: 'sections is a list of sections objects, used for organizing '+
+  description: 'sections is a list of section objects, used for organizing '+
                'control points into groupings.',
   type: 'array',
   items: vocab('section'),
