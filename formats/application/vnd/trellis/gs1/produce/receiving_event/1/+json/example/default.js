@@ -1,6 +1,6 @@
 module.exports = {
 
-  _type: 'application/vnd.gs1.produce.receiving_event.1+json',
+  _type: 'application/vnd.treliis.gs1.produce.receiving_event.1+json',
   orginator: '1234567890128',
   trading_partner: '3214567890821',
   activity_type: 'purchase_order',

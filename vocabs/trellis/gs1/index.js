@@ -7,7 +7,7 @@
 
 
 var _ = require('lodash');
-var libvocab = require('../../lib/vocab')('gs1'); // vocab module is 'gs1'
+var libvocab = require('../../../lib/vocab')('gs1'); // vocab module is 'gs1'
 var register = libvocab.register;
 var enumSchema = libvocab.enumSchema;
 var vocab = libvocab.vocab;

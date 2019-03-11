@@ -1,5 +1,5 @@
-var schemaUtil = require('../../../../../../../../lib/schema-util');
-var      vocab = require('../../../../../../../../vocabs/gs1');
+var schemaUtil = require('../../../../../../../../../lib/schema-util');
+var      vocab = require('../../../../../../../../../vocabs/trellis/gs1');
 
 var restrictItemsTo = schemaUtil.restrictItemsTo;
 var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
@@ -13,7 +13,7 @@ module.exports = schemaUtil.oadaSchema({ //reusing OADA schema validation logic
 
   properties: {
     // gs1 receiving event requires this _type on the schema it produces
-    _type: 'application/vnd.gs1.produce.receiving_event.1+json',
+    _type: 'application/vnd.treliis.gs1.produce.receiving_event.1+json',
 
     // orginator is the GLN of the orginating party
     orginator: vocab('orginator'),
