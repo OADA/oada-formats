@@ -29,7 +29,7 @@ register('id', {
 
 register('event_location', { 
   description: 'An event_location is the GLN which should be unique to represent an '+
-               ' origin such as growser, supllier, plant/manufacturer, distributor, ' +
+               ' origin such as grower, supllier, plant/manufacturer, distributor, ' +
                ' or a retailor',
   type: 'string',
 });
@@ -48,7 +48,7 @@ register('gln', {
 
 register('event_location', sameAs('gln', {
   description: 'An event_location is the GLN which should be unique to represent an '+
-  ' origin such as growser, supllier, plant/manufacturer, distributor, ' +
+  ' origin such as grower, supllier, plant/manufacturer, distributor, ' +
   ' or a retailor',
 }));
 
@@ -100,8 +100,8 @@ register('trading_items', {
 
 // business event related data:
 
-register('orginator', sameAs('gln', {
-  description: 'gln of the data orginator and the data owner',
+register('originator', sameAs('gln', {
+  description: 'gln of the data originator and the data owner',
 }));
 
 register('trading_partner', sameAs('gln', {
@@ -115,7 +115,7 @@ register('activity_type', {
 });
 
 register('activity_no', {
-  description: 'defines a unique identifer to implicated the transaction id of the business event - purchase order id etc',
+  description: 'defines a unique identifer to implicate the transaction id of the business event - purchase order id etc',
   type: 'string'
 });
 
@@ -125,7 +125,7 @@ register('trading_partner_type', {
   value: enumSchema(['grower', 'supplier','manufacturer','processor','distributor','retailor' ]),
 });
 
-register('orginator_type', sameAs('trading_partner_type', {
+register('originator_type', sameAs('trading_partner_type', {
   description: 'trading_partner_type of the originating trading partner',
 }));
 
@@ -139,7 +139,7 @@ register('timestamp', {
 });
 
 register('activity_no', {
-  description: 'defines a unique identifer to implicated the transaction id of the business event - purchase order id etc',
+  description: 'defines a unique identifer to implicate the transaction id of the business event - purchase order id etc',
   type: 'string'
 }); 
 
@@ -153,13 +153,13 @@ register('contents_of_shipment', sameAs('trading_items', {
 
 register('receiving_event', {
   description: 'business event of trading party receiving items',
-  propertySchema: enumSchema([ 'orginator', 'trading_partner', 'activity_type','orginator_type','receiver_type','timestamp',
+  propertySchema: enumSchema([ 'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
                               'activity_no','contents_of_receipt'])
 });
 
 register('shipping_event', {
   description: 'business event of trading party shipping items',
-  propertySchema: enumSchema([ 'orginator', 'trading_partner', 'activity_type','orginator_type','receiver_type','timestamp',
+  propertySchema: enumSchema([ 'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
                               'activity_no','contents_of_shipment'])
 });
 
@@ -173,7 +173,7 @@ register('transformation_output', sameAs('trading_items', {
 
 register('transformation_event', {
   description: 'business event of trading party transforming trading items to produce new items=, i.e fresh to frozen',
-  propertySchema: enumSchema([ 'orginator', 'trading_partner', 'activity_type','orginator_type','receiver_type','timestamp',
+  propertySchema: enumSchema([ 'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
                               'activity_no','transformation_input','transformation_output'])
 });
 
