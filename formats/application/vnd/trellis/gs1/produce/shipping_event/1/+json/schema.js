@@ -13,7 +13,7 @@ module.exports = schemaUtil.oadaSchema({ //reusing OADA schema validation logic
 
   properties: {
     // gs1 receiving event requires this _type on the schema it produces
-    _type: 'application/trellis.vnd.gs1.produce.receiving_event.1+json',
+    _type: 'application/trellis.vnd.gs1.produce.shipping_event.1+json',
 
     // originator is the GLN of the orginating party
     originator: vocab('originator'),
