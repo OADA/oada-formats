@@ -28,11 +28,6 @@ module.exports.MediaTypeNotFoundError = MediaTypeNotFoundError;
 var ModelTypeNotFoundError = Error.extend('ModelTypeNotFoundError');
 module.exports.ModelTypeNotFoundError = ModelTypeNotFoundError;
 
-// TODO: This doesn't seem right?
-Formats.ValidationError = Model.ValidationError;
-Formats.InvalidSchemaError = Model.InvalidSchemaError;
-Formats.SchemaMismatch = Model.SchemaMismatch;
-
 /**
  * Maintains and builds OADA format models
  * @constructor
@@ -59,6 +54,11 @@ function Formats(options) {
     // Add the built in media types
     this.use(require('./formats/index.js'));
 }
+
+Formats.ValidationError = Model.ValidationError;
+Formats.InvalidSchemaError = Model.InvalidSchemaError;
+Formats.SchemaMismatch = Model.SchemaMismatch;
+
 
 /**
  * Factory function for a media type model.

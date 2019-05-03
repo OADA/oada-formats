@@ -8,33 +8,45 @@ var requireValue = schemaUtil.requireValue;
 module.exports = schemaUtil.oadaSchema({
   description: 
   
-'A PrimusGFS audit is like a generic audit, but more restrictive.  Certain keys '+
-'are marked as "required" here that should always exist if you have a PrimusGFS '+
-'audit.',
+'This is the scehma for a CanadaGAP audit.  Please refer to the example and '+
+'the accompanying spreadsheet for how this translates into an actual audit'.
 
   properties: {
     // oadaSchema requires this _type on the schema it produces
-    _type: 'application/vnd.trellis.audit.primusgfs.1+json',
+    _type: 'application/vnd.trellis.audit.canadagap.1+json',
 
     // certificationid is the same across audit, corrective actions, and certificate
+    // CanadaGAP does not define a scheme-wide identification scheme, so this
+    // will be assigned by the certification body
     certificationid: vocab('certificationid'),
   
     // scheme: info about the type of audit
     scheme: vocab('scheme', {
-      // PrimusGFS must be a valid 'scheme',
-      // also it must have name set to 'PrimusGFS' and have a version
       also: {
-        required: ['name','version'],
+        required: ['name','version', 'options'],
         properties: {
-          name: requireValue('PrimusGFS'),
+          name: requireValue('CanadaGAP'),
         },
       }
     }),
-    
+
     // certifying body: info about who performed the audit
     certifying_body: vocab('certifying_body', {
       also: {
         required: ['name', 'auditor'],
+        // The line below means that of all the keys possible under
+        // certifying_body, canadagap is known to have name, auditor, 
+        // and reviewer keys.  The line above (require:) means that
+        // of those, the auditor and the name are required.
+        patternProperties: enumSchema([ 'name', 'auditor', 'reviewer' ], {
+          also: {
+            properties: {
+// STOPPED HERE: reviewing how I intended to use the "known" keyword to distinguish
+// CanadaGAP typical audit from others...
+              auditor: { 
+            }
+          }
+        ),
       }
     }),
   

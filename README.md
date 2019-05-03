@@ -3,30 +3,10 @@
 [![Dependency Status](https://david-dm.org/oada/oada-formats.svg)](https://david-dm.org/oada/oada-formats)
 [![License](http://img.shields.io/:license-Apache%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-# [Announcing](https://www.purdue.edu/newsroom/releases/2016/Q3/open-ag-data-alliance,-servi-tech-launch-real-time-connections-api-for-weather,-soil-moisture-data.html) Sensor Hub and Field Sensor formats!
-
-[generic sensor data model](./formats/application/vnd/oada/sensor-data/generic/1/+json/examples/default.js),
-[air-temperature](./formats/application/vnd/oada/sensor-data/air-temperature/1/+json/examples/default.js),
-[barometric-pressure](./formats/application/vnd/oada/sensor-data/barometric-pressure/1/+json/examples/default.js),
-[cloud-cover](./formats/application/vnd/oada/sensor-data/cloud-cover/1/+json/examples/default.js),
-[dew-point](./formats/application/vnd/oada/sensor-data/dew-point/1/+json/examples/default.js),
-[heading](./formats/application/vnd/oada/sensor-data/heading/1/+json/examples/default.js),
-[location](./formats/application/vnd/oada/sensor-data/location/1/+json/examples/default.js),
-[rainfall](./formats/application/vnd/oada/sensor-data/rainfall/1/+json/examples/default.js),
-[relative-humidity](./formats/application/vnd/oada/sensor-data/relative-humidity/1/+json/examples/default.js),
-[soil-moisture](./formats/application/vnd/oada/sensor-data/soil-moisture/1/+json/examples/default.js),
-[soil-temperature](./formats/application/vnd/oada/sensor-data/soil-temperature/1/+json/examples/default.js),
-[solar-radiation](./formats/application/vnd/oada/sensor-data/solar-radiation/1/+json/examples/default.js),
-[vibration](./formats/application/vnd/oada/sensor-data/vibration/1/+json/examples/default.js),
-[wind-direction](./formats/application/vnd/oada/sensor-data/wind-direction/1/+json/examples/default.js),
-[wind-speed](./formats/application/vnd/oada/sensor-data/wind-speed/1/+json/examples/default.js),
-[sensor-hub](./formats/application/vnd/oada/sensor-hub/1/+json/examples/default.js),
-[sensor](./formats/application/vnd/oada/sensor/1/+json/examples/default.js)
-
 # oada-formats
 The purpose of this repo is to act as an inventory of known ag data formats.
 Since the OADA API uses content type strings to identify types, the formats here
-are organized by media type: if you receive a file via the OADA API, you should
+are organized by content type: if you receive a file via the OADA API, you should
 be able to use it's content-type to look up details on its format here.
 
 [Tutorial for making your own new model](./docs/tutorial_making_new_model.md)
@@ -51,39 +31,76 @@ The `model()` function is a factory function for various mediatype models. The
 [valleyix-formats][valleyix-formats] for an example. `oada-formats` comes with
 OADA defined formats pre-loaded by default.
 
+## OADA-specific Extensions and Helpers ##
+In building the various schemas that we have thus far, we have put together
+some helpful functions and concepts such as:
+* vocabularies, 
+* graph-based indexing, 
+* "known" values for lists, 
+* and strict vs. non-strict validation.  
+
+These have turned into rather more complex topics than originally intended. 
+While you do not have to use them to define your own formats (you just need 
+to define an example and validation() function or json-schema), we have found
+them helpful, and you will find the see concepts throughout this repo.
+
+For a more complete deep-dive into what they mean and how they work,
+please [refer to this explanation](./docs/oada-tools.md).
+
+
 ## Installation ##
 ```shell
 npm install oada-formats
 ```
 
 ## Usage ##
+
+If you have an application in which you would like to validate an OADA
+schema, here is how you would use this library to load a schema and
+then validate a document against it (note that the `example()` function
+returns an actual document that should validate):
+
 ```js
-var Formats = require('oada-formats');
+import Formats from 'oada-formats';
+// Make a validator, tell it to use your package
+const formats = new Formats();
 
-var formats = new Formats();
-formats.use(require('your-favorite-model=package'));
-
+// Now select a model (from the _type field of an OADA resource, for example)
 formats
   .model('application/vnd.oada.bookmarks.1+json')
-  .then(function(model) {
-    return model.validate(model.example());
-  })
+
+  // Once the model has loaded, promise returns it and you can call validate
+  .then(model => model.validate(model.example()))
+
+  // which will return a promise that is eventually true, or it throws the error
   .then(/* success */)
   .catch(Format.ValidationError, function(error) {
     console.log(error.errors);
   });
 ```
 
+And here is a more advanced example of all the various things you can do with 
+a model, as well as how to extend with your own custom formats:
+
 ```js
-var Formats = require('oada-formats');
+import Formats from 'oada-formats';
+// If you are just using OADA and nothing custom, you don't need to
+// use this next line.  It is only for adding your own custom extensions:
+import someModelPackage from 'your-favorite-model-package';
 
-var formats = new Formats();
+const formats = new Formats();
+// And here is how you tell it to use your custom extensions:
+formats.use(someModelPackage);
 
-var model = formats.model('application/vnd.oada.link.1+json');
-
-model.examples().then(console.log);
-model.example('default').then(console.log);
-model.schema().then(console.log);
+formats.model('application/vnd.oada.as-harvested.yield-moisture-dataset.1+json')
+.then(model => {
+  // You can get all of the exmaples for a particular format:
+  model.examples().then(console.log);
+  // You can get a particular example for a format:
+  model.example('default').then(console.log);
+  // You can get the JSON schema itself for a particular format
+  model.schema().then(console.log);
+});
 ```
 
 # Adding JSON Models
@@ -92,7 +109,7 @@ The `JsonModel` can be used to add new json models easily.
 [valleyix-formats][valleyix-formats] is a good example.
 
 1. Build a directory structure where each folder in the hierarchy is the next
-   word of the format's mediatype, split on '/' and '.'.
+   word of the format's mediatype, split on `/` and `.`.
 2. At the root of the directory structure there must be an index.js that exposes
    a plain old object. It may have any property names, however, `JsonModel` will
    load the values of properties `examples` and `schema` as the format's
@@ -104,471 +121,10 @@ The `JsonModel` can be used to add new json models easily.
    http or database.
 3. If there is not an `examples` property then any `js` or `json` file in an
    `examples` directory at the root of the mediatype directory structure will be
-   loaded in as the examples. The example name will be the filename less it's
+   loaded in as the examples. The example name will be the filename without it's
    file extension.
 4. If there is not a `schema` property then a `schema.js` or `schema.json` file
    at the root of the mediatype directory structure will be loaded in as the
    schema.
 
-# OADA Formats
 
-NOTE: all oada-defined formats (i.e. that start with "application/vnd.oada") endeavour to use duck 
-typing for it's key names: if you see a particular key in any of the formats, that
-key should mean the same thing every time it's used.
-
-- [application/vnd.oada.bookmarks.1+json](#user-content-applicationvndoadabookmarks1json)
-  * [Schema](#schema)
-  * [Example](#example)
-- [application/vnd.oada.clients.1+json](#user-content-applicationvndoadaclients1json)
-  * [Schema](#schema)
-  * [Example](#example)
-- [application/vnd.oada.irrigation.1+json](#user-content-applicationvndoadairrigation1json)
-  * [Schema](#schema)
-  * [Example](#example)
-- [application/vnd.oada.irrigation.machines.1+json](#user-content-applicationvndoadairrigationmachines1json)
-  * [Schema](#schema)
-  * [Example](#example)
-- [application/vnd.oada.link.1+json](#user-content-applicationvndoadalink1json)
-  * [Schema](#schema)
-  * [Example](#example)
-- [application/vnd.oada.oada-configuration.1+json](#user-content-applicationvndoadaoada-configuration1json)
-  * [Schema](#schema)
-  * [Example](#example)
-- [application/vnd.oada.oauth-dyn-reg.register-response.1+json](#user-content-applicationvndoadaoauth-dyn-regregister-response1json)
-  * [Schema](#schema)
-  * [Example](#example)
-
-# application/vnd.oada.bookmarks.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.bookmarks.1+json",
-  "description": "application/vnd.oada.bookmarks.1+json",
-  "additionalProperties": true,
-  "properties": {
-    "planting": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "harvest": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "machines": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "irrigation": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "sensors": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "fields": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "sales": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    },
-    "clients": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "planting": {
-    "_id": "09ijfofj",
-    "_rev": "2-djfh92843hj"
-  },
-  "harvest": {
-    "_id": "908uf2jh",
-    "_rev": "33-kdfj092jle"
-  },
-  "machines": {
-    "_id": "0kdfj20j",
-    "_rev": "8-kdjs90fj2oi"
-  },
-  "irrigation": {
-    "_id": "0jk2iopw",
-    "_rev": "4-d98ohf29efk"
-  },
-  "sales": {
-    "_id": "0kdfj20j",
-    "_rev": "99-kdjf92lsdf"
-  },
-  "sensors": {
-    "_id": "kd02ufjk",
-    "_rev": "3-kdsfjoiwefj"
-  },
-  "fields": {
-    "_id": "0kdfj2jl",
-    "_rev": "7-kk0all2oald"
-  },
-  "clients": {
-    "_id": "9sdkf2lk",
-    "_rev": "4-lfdu029kjds"
-  }
-}
-```
-
-# application/vnd.oada.clients.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.clients.1+json",
-  "description": "application/vnd.oada.clients.1+json",
-  "additionalProperties": true,
-  "required": [
-    "name",
-    "list"
-  ],
-  "properties": {
-    "name": {
-      "type": "string",
-      "pattern": "clients"
-    },
-    "list": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/list"
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "name": "clients",
-  "list": {
-    "0jfl290ijfklwsdf": {
-      "_id": "321cba",
-      "_rev": "90-k2983wfhjdsdf"
-    },
-    "kl9ojksfh92hkwef": {
-      "_id": "389dfj",
-      "_rev": "2-kdfj29eflwdfsd"
-    }
-  }
-}
-```
-
-# application/vnd.oada.irrigation.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.irrigation.1+json",
-  "description": "application/vnd.oada.irrigation.1+json",
-  "additionalProperties": true,
-  "properties": {
-    "machines": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/versioned"
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "machines": {
-    "_id": "dummyid123AFG",
-    "_rev": "1-dummy02ijfl"
-  }
-}
-```
-
-# application/vnd.oada.irrigation.machines.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.irrigation.machines.1+json",
-  "description": "application/vnd.oada.irrigation.machines.1+json",
-  "required": [
-    "name",
-    "list"
-  ],
-  "additionalProperties": true,
-  "properties": {
-    "name": {
-      "type": "string",
-      "pattern": "irrigation"
-    },
-    "list": {
-      "$ref": "oada-formats://application/vnd.oada.link.1+json#/definitions/list"
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "name": "irrigation",
-  "list": {
-    "dummyrandomthing": {
-      "_id": "dummyid123AFG",
-      "_rev": "1-dummy02ijfl"
-    },
-    "klsdfj0982ifjoow": {
-      "_id": "df002jfk2ojsl",
-      "_rev": "3-jkfd0ijs8zk"
-    }
-  }
-}
-```
-
-# application/vnd.oada.link.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.link.1+json",
-  "description": "OADA Link object",
-  "definitions": {
-    "link": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/nonversioned"
-        },
-        {
-          "$ref": "#/definitions/versioned"
-        }
-      ]
-    },
-    "nonversioned": {
-      "type": "object",
-      "required": [
-        "_id"
-      ],
-      "additionalProperties": true,
-      "properties": {
-        "_id": {
-          "type": "string"
-        }
-      }
-    },
-    "versioned": {
-      "type": "object",
-      "required": [
-        "_rev",
-        "_id"
-      ],
-      "additionalProperties": true,
-      "properties": {
-        "_id": {
-          "type": "string"
-        },
-        "_rev": {
-          "type": "string",
-          "pattern": "^[0-9]+-.+"
-        }
-      }
-    },
-    "list": {
-      "versioned": {
-        "type": "object",
-        "additionalProperties": {
-          "$ref": "#/definitions/versioned"
-        }
-      },
-      "nonversioned": {
-        "type": "object",
-        "additionalProperties": {
-          "$ref": "#/definitions/nonversioned"
-        }
-      },
-      "list": {
-        "type": "object",
-        "additionalProperties": {
-          "$ref": "#/definitions/link"
-        }
-      }
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "_id": "akjf92jxcJds",
-  "_rev": "1-jxusuf3sc"
-}
-```
-
-# application/vnd.oada.oada-configuration.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.well-known.oada-configuration.1+json",
-  "description": "application/vnd.oada.well-known.oada-configuration.1+json",
-  "required": [
-    "oada_base_uri",
-    "authorization_endpoint",
-    "token_endpoint",
-    "registration_endpoint",
-    "client_assertion_signing_alg_values_supported"
-  ],
-  "additionalProperties": true,
-  "properties": {
-    "oada_base_uri": {
-      "type": "string",
-      "pattern": "^https://.*"
-    },
-    "authorization_endpoint": {
-      "type": "string",
-      "pattern": "^https://.*"
-    },
-    "token_endpoint": {
-      "type": "string",
-      "pattern": "^https://.*"
-    },
-    "registration_endpoint": {
-      "type": "string",
-      "pattern": "^https://.*"
-    },
-    "client_assertion_signing_alg_values_supported": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {
-        "type": "string"
-      }
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "well_known_version": "1.0.0",
-  "oada_base_uri": "https://oada.example.com",
-  "authorization_endpoint": "https://oada.example.com/auth",
-  "token_endpoint": "https://oada.example.com/token",
-  "registration_endpoint": "https://oada.example.com/register",
-  "client_assertion_signing_alg_values_supported": [
-    "RS256"
-  ],
-  "scopes_supported": [
-    {
-      "name": "oada.all.1",
-      "read+write": true
-    }
-  ]
-}
-```
-
-# application/vnd.oada.oauth-dyn-reg.register-response.1+json
-
-## Schema
-```json
-{
-  "id": "oada-formats://application/vnd.oada.oauth-dyn-reg.register-response.1+json",
-  "description": "application/vnd.oada.oauth-dny-reg.register-response.1+json",
-  "required": [
-    "client_id",
-    "client_id_issued_at",
-    "scopes",
-    "redirect_uris",
-    "token_endpoint_auth_method",
-    "grant_types",
-    "response_types",
-    "tos_uri",
-    "policy_uri",
-    "software_id"
-  ],
-  "additionalProperties": true,
-  "properties": {
-    "client_id": {
-      "type": "string"
-    },
-    "client_id_issued_at": {
-      "type": "number"
-    },
-    "scopes": {
-      "type": "string"
-    },
-    "redirect_uris": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^https://.*"
-      }
-    },
-    "token_endpoint_auth_method": {
-      "type": "string"
-    },
-    "grant_types": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {
-        "type": "string"
-      }
-    },
-    "response_types": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {
-        "type": "string"
-      }
-    },
-    "tos_uri": {
-      "type": "string",
-      "format": "uri"
-    },
-    "policy_uri": {
-      "type": "string",
-      "format": "uri"
-    },
-    "software_id": {
-      "type": "string"
-    }
-  }
-}
-```
-
-## Example
-```json
-{
-  "client_id": "3klaxu838akahf38acucaix73",
-  "client_id_issued_at": 1418423102,
-  "software_version": "1.0-ga",
-  "scopes": "read:planting.prescriptions write:fields",
-  "redirect_uris": [
-    "https://client.example.com/callback",
-    "https://client.example.com/cb"
-  ],
-  "token_endpoint_auth_method": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-  "grant_types": [
-    "implicit",
-    "authorization_code",
-    "refresh_token"
-  ],
-  "response_types": [
-    "token",
-    "code"
-  ],
-  "client_name": "Example OADA Client",
-  "client_uri": "http://example.com",
-  "logo_uri": "http://example.com/logo.png",
-  "contacts": [
-    "Clint Client <cclient@example.com>"
-  ],
-  "tos_uri": "http://example.com/tos.html",
-  "policy_uri": "http://example.com/policy.html",
-  "software_id": "djxkjau3n937xz7jakl3",
-  "registration_provider": "registration.example.com"
-}
-```
-
-[valleyix-formats]: http://github.com/oada/valleyix-formats
