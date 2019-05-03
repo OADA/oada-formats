@@ -9,6 +9,10 @@ module.exports = schemaUtil.oadaSchema({
 
     context: {},
 
+    trellisfw: versionedLink([
+      'application/vnd.trellis.1+json',
+    ]),
+
     planting: versionedLink([ 
       'application/vnd.oada.planting.1+json' 
     ]),
@@ -42,7 +46,7 @@ module.exports = schemaUtil.oadaSchema({
     ]),
 
     sales: versionedLink([
-      'application/vnd.oada-sales.1+json',
+      'application/vnd.oada.sales.1+json',
     ]),
   },
 });

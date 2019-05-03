@@ -9,17 +9,23 @@ module.exports = {
   // you get to a 'data' key.
   _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
 
-  context: {
-    // you must have these two keys:
-    'harvest': 'as-harvested',
-    'as-harvested': 'yield-moisture-dataset',
-    // In this case, these points are all for corn:
-    'crop-index': 'corn',
-    // and the size of the tile is a 7-character geohash:
-    'geohash-length-index': 'geohash-7',
-    // and only GPS points from inside this particular tile are included:
-    'geohash-index': '9j9j12f',
-  },
+  indexing: [
+    {
+      index: 'year-index',
+      value: '2018',
+      source: 'oada.vocab.year',
+    },
+    { 
+      index: 'crop-index',
+      value: 'corn',
+      source: 'oada.vocab.crop-type',
+    },
+    {
+      index: 'geohash-index',
+      value: '9j9j12f',
+      'geohash-length': '7',
+    },
+  ],
 
   // Templates are like object prototypes for data objects.  Any object which
   // refers to one of these keys from 'templates' should be merged

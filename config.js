@@ -1,13 +1,16 @@
 // Eliminating the original nconf here so it can compile to browser.
 
 var config = {
-  strict: true,
+  strict: false,
 };
 
 module.exports = {
   // adding 'get' for nconf compatibility in case we switch back later
   get: function(key) {
     return config[key];
+  },
+  set: function(key, val) {
+    config[key] = val;
   },
 };
 

@@ -1,5 +1,6 @@
 var schemaUtil = require('../../../../../../../../lib/schema-util.js');
 var      vocab = require('../../../../../../../../vocabs/oada');
+const _ = require('lodash');
 
 var versionedLink = schemaUtil.versionedLink;
 var  requireValue = schemaUtil.requireValue;
@@ -52,11 +53,9 @@ module.exports = schemaUtil.oadaSchema({
     // Keys are valid geohash-strings of a given length (from context):
     'geohash-data': restrictItemsTo({
       collection: vocab('geohash-data'),
-      restrictToSchema: vocabTermsToSchema([
+      restrictToSchema: _.merge(vocabTermsToSchema([
         'template', 'geohash', 'area', 'weight', 'moisture',
-      ],{
-        required: [ 'area', 'weight' ]
-      }),
+      ]),{ required: [ 'area', 'weight' ] }),
     }),
   },
 });

@@ -35,14 +35,29 @@
 
 var _ = require('lodash');
 var libvocab = require('../../lib/vocab')('trellis'); // vocab module is 'trellis'
+var oadaVocab = require('../oada'); // for links
 var register = libvocab.register;
 var enumSchema = libvocab.enumSchema;
 var vocab = libvocab.vocab;
 var sameAs = libvocab.sameAs;
 
+const randomStrKeyRegexp = libvocab.randomStrKeyRegexp;
+
 // Note that the 'vocab()' function is what this module exports.  It is
 // defined in libvocab, and is how you should interact with the vocab built
 // here.
+
+//-----------------------------------------------------------------------------
+//  Some core items borrowed from OADA:
+//-----------------------------------------------------------------------------
+
+register('_id', oadaVocab('_id'));
+register('_rev', oadaVocab('_rev'));
+register('_type', oadaVocab('_type'));
+register('_meta', oadaVocab('_meta'));
+register('link', oadaVocab('link'));
+register('versioned-link', oadaVocab('versioned-link'));
+
 
 //----------------------------------------------------------------------------
 // id's:
@@ -52,6 +67,7 @@ register('id', {
   description: 'An id is a string which should be reasonably unique to represent the '+
                ' object it belongs to.',
   type: 'string',
+  pattern: randomStrKeyRegexp, // just ensures that id's don't conflict with reserved keywords, *-index's, and context
 });
 
 register('id_source', {
@@ -151,6 +167,57 @@ register('scheme', {
 // Top-level key: certifying_body
 //----------------------------------------------------------------------------
 
+register('phone', {
+  description: 'phone describes the phone number with country code and area '+
+                'code.',
+  type: 'string',
+});
+
+register('fax', {
+  description: 'fax number for a person or organization',
+  type: 'string',
+});
+
+
+register('email', {
+  description: 'email address for an organization or contact',
+  type: 'string',
+});
+
+register('street_address', {
+  description: 'The street name and mailbox number of a postal address.',
+  type: 'string',
+});
+
+register('postal_code', {
+  description: 'postal_code is the postal code used in a postal address',
+  type: 'string',
+});
+
+register('city', {
+  description: 'The name of the city, usually in a postal address.',
+  type: 'string',
+});
+
+register('state', {
+  description: 'The name of the state or major region, usually in a postal address.',
+  type: 'string',
+});
+
+register('country', {
+  description: 'The name of the country, usually in a postal address.',
+  type: 'string',
+});
+
+register('location', {
+  description: 'location describes the postal address used to identify where '+
+                'something is.',
+  propertySchema: enumSchema([
+    'postal_code', 'street_address', 'city', 'state', 'country',
+    'name', // name was added for canadaGAP to refer to the "name of audited location (for multi-site certification)"
+  ]),
+});
+
 register('person', {
   description: 'person is a key that never appears anywhere, but anywhere a person-type '+
                 'of thing exists (auditor, contact, etc.) it is one of these things.',
@@ -161,17 +228,17 @@ register('conflict_of_interest', {
   description: 'conflict_of_interest indicates if a particular person (auditor) has a '+
                'known conflict of interest for creating a certification for an organization',
   type: 'boolean',
-);
+});
 register('number_prior_audits_this_organization', {
   description: 'Introduced for CanadaGAP, this is the auditor\'s attestation of how many '+
                'times they have audited this operation before.',
   type: 'string',
   pattern: '^[0-9]+$', // a string that is just a number
 });
-register('number_prior_consecutive_audits_this_organization', sameAs('number_prior_consecutive_audits_this_organization', {
+register('number_prior_consecutive_audits_this_organization', sameAs('number_prior_audits_this_organization', {
   description: 'Introduced for CanadaGAP, this is the auditor\'s attestation of how many '+
                'consecutive times they have audited this operation, excluding the current audit.',
-});
+}));
 
 register('auditor', sameAs('person', {
   description: '"auditor" is the person performing the audit for the certifying '+
@@ -185,7 +252,7 @@ register('auditor', sameAs('person', {
 register('reviewer', sameAs('person', {
   description: 'Introduced for CanadaGAP audit.  Represents the person who reviewed the audit '+
                'within the certifiation body.',
-});
+}));
 
 register('review_date', {
   description: 'Introduced for CanadaGAP.  Indicates when the review of the audit was performed.',
@@ -232,58 +299,6 @@ register('contacts', {
   items: vocab('contact'),
 });
 
-register('street_address', {
-  description: 'The street name and mailbox number of a postal address.',
-  type: 'string',
-});
-
-register('postal_code', {
-  description: 'postal_code is the postal code used in a postal address',
-  type: 'string',
-});
-
-register('city', {
-  description: 'The name of the city, usually in a postal address.',
-  type: 'string',
-});
-
-register('state', {
-  description: 'The name of the state or major region, usually in a postal address.',
-  type: 'string',
-});
-
-register('country', {
-  description: 'The name of the country, usually in a postal address.',
-  type: 'string',
-});
-
-register('phone', {
-  description: 'phone describes the phone number with country code and area '+
-                'code.',
-  type: 'string',
-});
-
-register('fax', {
-  description: 'fax number for a person or organization',
-  type: 'string',
-});
-
-
-register('email', {
-  description: 'email address for an organization or contact',
-  type: 'string',
-});
-
-
-register('location', {
-  description: 'location describes the postal address used to identify where '+
-                'something is.',
-  propertySchema: enumSchema([
-    'postal_code', 'street_address', 'city', 'state', 'country',
-    'name', // name was added for canadaGAP to refer to the "name of audited location (for multi-site certification)"
-  ]),
-});
-
 register('organizationid', sameAs('sourced_id', {
   description: 'organizationid identifies the organization which is the subject of the '+
                'audit/certification.',
@@ -326,7 +341,7 @@ register('orgchart_person', sameAs('person', {
   description: 'An orgchart_person has all the possible properties of a person, '+
                'but also can have job_title, job_description, and reports_to.',
   propertySchema: enumSchema(['job_title', 'job_description', 'reports_to' ]),
-});
+}));
 
 register('orgchart', {
   description: 'orgchart is a tricky one.  It is intended to represent the reporting '+
@@ -384,6 +399,9 @@ register('product', {
   description: 'product describes the particular type of item being evaluated in '+
                 'the audit. May describe the fruit, vegetable, etc. as well as other descriptors '+
                 'such as "chopped", "pitted", "organic", etc.',
+  // the "product" object has a name key (below), but also can have
+  // organic, area, and location keys (for GlobalGAP).  That is the difference
+  // between propertySchema and the regular properties.
   propertySchema: enumSchema([
     'organic', 'area', 'location' // from GlobalGAP
   ]),
@@ -392,8 +410,8 @@ register('product', {
       // these are just the known possible products and the set here should never
       // be considered exhaustive.  Pull requests welcome to build out this list.
       'tomatoes', 'peppers', 'zucchini',
-    ]),
-  }
+    ])),
+  },
 });
 
 register('products_observed', {
@@ -503,21 +521,6 @@ register('scope', {
 });
 
 
-////////////////////////////////////////////////////////////////////
-// Top-level key: previous_certification
-////////////////////////////////////////////////////////////////////
-
-register('previous_certification', {
-  description: 'Introduced for CanadaGAP.  This represents information about the previous certificate '+
-               'and audit that the operation/organization has on file.  For CanadaGAP, it is supposed '+
-               'to be the previous CanadaGAP certificate/audit info, not just any previous info.',
-  propertySchema: enumSchema([
-    'conditions_during_audit', 'certifying_body', 'certificationid', 'scheme', 'scope',
-  ]),
-});
-
-
-
 //------------------------------------------------------------------
 // Conditions at the time of audit:
 //------------------------------------------------------------------
@@ -557,23 +560,39 @@ register('operation_observed_date', {
   ]),
 });
 
-
 register('individuals_present', {
   description: 'List of people present during the audit (part of conditions_during_audit)',
   type: 'array',
   items: vocab('person'),
 });
+
 register('audit_duration_rationale', {
   description: 'Introduced for CanadaGAP, this is a free-form string explaining why '+
                'the duration of an audit does not meet the minimum duration requirements.',
   type: 'string',
 });
+
 register('conditions_during_audit', {
   description: 'describes conditions when the audit took place.  Date audit started/finished, etc.',
   propertySchema: enumSchema([ 
     'FSMS_observed_date', 'operation_observed_date', 'individuals_present', 'audit_duration_rationale',
   ]),
 });
+
+////////////////////////////////////////////////////////////////////
+// Top-level key: previous_certification
+////////////////////////////////////////////////////////////////////
+
+register('previous_certification', {
+  description: 'Introduced for CanadaGAP.  This represents information about the previous certificate '+
+               'and audit that the operation/organization has on file.  For CanadaGAP, it is supposed '+
+               'to be the previous CanadaGAP certificate/audit info, not just any previous info.',
+  propertySchema: enumSchema([
+    'conditions_during_audit', 'certifying_body', 'certificationid', 'scheme', 'scope',
+  ]),
+});
+
+
 
 register('compliance', {
   description: 'written description indicating the level of satisfaction of the '+
@@ -651,13 +670,13 @@ register('final', sameAs('datum', {
 register('canadagap_isautofail', {
   description: 'If the audit is scored as autofail, this key should be set to '+
                'true in the score section.  Otherwise it can either be missing '+
-               'or set to false.',
+               'or set to false.  Specific to CanadaGAP',
   type: 'boolean',
 });
 
 register('score_core', sameAs('datum', {
   description: 'Do not use score_core in an audit schema.  It exists to avoid '+
-               'recursive definition of score and subtotals.'
+               'recursive definition of score and subtotals.',
   propertySchema: enumSchema([
     'preliminary', 'final', 'value', 'units', 'possible', 'compliance',
     'globalgap_levels', 'canadagap_isautofail',
@@ -669,8 +688,10 @@ register('score_core', sameAs('datum', {
       'yes-no-n_a',     // yes | no | n_a
       'yes-no-n_a-inc', // yes | no | n_a | inc (incomplete)  introduced for CanadaGAP
       'count', 
-      'points',
-      '%',              
+      'number',         // must be a string (so signatures work across platforms), but the string is a number
+      'points',         // value with be a string number ('4.0') and can also be the string 'n/a'
+      '%',
+      'text',           // free-form text entry
     ]),
   },
 }));
@@ -682,10 +703,34 @@ register('weighting_factor', {
   pattern: '^-?[0-9]+(.[0-9]+)?', // formatted as a number
 });
 
+// Had to move sectionid up here above subtotals because the subtotal can contain the sectionid strings.
+register('sectionid', {
+  description:  'sectionid is the string id associated with a particular '+
+                 'section. sectionid is constructed by prefixing the id with any parent sections, '+
+                 'separated by periods (e.g., sectionid \'2.3\' is a section that is inside of a '+
+                 'parent section with sectionid \'2\').  Note that CanadaGAP also has '+
+                 'a special sectionid of "autofail" for their autofail items.  All other sectionids '+
+                 'that we have seen are of the form '+
+                 '<number_or_letter>.<number_or_letter>.<number_or_letter>... with 1 or more numbers',
+  type: 'string',
+});
+
+register('sectionids', {
+  description: 'An array of section id strings that '+
+               'belong to a subtotal or a sub-section.',
+  type: 'array',
+  items: vocab('sectionid'),
+});
+
+
+
 register('subtotals', {
   description: 'Introduced for CanadaGAP.  Represents the sub totals for various combinations '+
                'of sections as specified by CanadaGAP, as well as the weighting_factor for that '+
-               'combination of sections toward the overall score.',
+               'combination of sections toward the overall score.  This is needed because the '+
+               'subtotals do not perfectly match the sections, so it exists here as a separate '+
+               'key.  Other audits should just put the subtotal under the section that it goes '+
+               'with.',
   propertySchema: enumSchema([
     'name', 'sectionids', 'weighting_factor'
   ]),
@@ -704,7 +749,7 @@ register('score', sameAs('score_core', {
 register('certificate_validity_period', {
   description: 'certificate_validity_period denotes the period of time (beginning date'+
               ' to end date) through which the audit is valid.',
-  type: 'string,
+  type: 'string',
   pattern: '*',
 })
 
@@ -728,8 +773,26 @@ register('decision', {
   propertySchema: enumSchema([
     'value', 'units'                                                                                                  
   ]),   
-})    
-    
+})   
+
+
+register('url', {
+  description: 'a string representing a URL link',
+  type: 'string',
+});
+
+register('file', {
+  description: 'an object with a url at the moment, perhaps more complex later.',
+  propertySchema: enumSchema([ 'url' ]),
+});
+
+register('files', {
+  description: 'a list of file URL\'s that go with a particular control point',
+  type: 'array',
+  items: vocab('file'),
+});
+
+
 register('corrective_action', {                                                                                       
   description: 'corrective_action is the corrective action details associated with '+
                'a particular control point as found in the corrective actions report.',                               
@@ -753,30 +816,49 @@ register('control_pointids', {
   items: vocab('control_pointid'),
 });
 
-register('sectionid', {
-  description:  'sectionid is the string id associated with a particular '+
-                 'section. sectionid is constructed by prefixing the id with any parent sections, '+
-                 'separated by periods (e.g., sectionid \'2.3\' is a section that is inside of a '+
-                 'parent section with sectionid \'2\').  Note that CanadaGAP also has '+
-                 'a special sectionid of "autofail" for their autofail items.  All other sectionids '+
-                 'that we have seen are of the form '+
-                 '<number_or_letter>.<number_or_letter>.<number_or_letter>... with 1 or more numbers',
+register('supporting_pointid', {
+  description: 'A supporting_pointid is a string that uniquely identifies a '+
+               'supporting_point within a control point\'s list of supporting_points.  '+
+               'It should look something like "A.1.1".  It should be the control_pointid, '+
+               'then a period, then a number indicating the order of this supporting_point '+
+               'within this control_point',
   type: 'string',
+  pattern: '*',
 });
 
+register('supporting_point', {
+  description: 'A supporting point is a sub-point within a control point.  This was introduced '+
+               'for CanadaGAP to represent all the checkboxes under the control points.  It is '+
+               'just an object with a name and a score.',
+  propertySchema: enumSchema([
+    'name', 'score',
+  ]),
+});
 
-register('sectionids', {
-  description: 'An array of section id strings that '+
-               'belong to a subtotal.'
-  type: 'array',
-  items: vocab('sectionid'),
+register('supporting_points', {
+  description: 'supporting_points is just an object whose keys are supporting_pointids, and whose '+
+               'values are supporting_point objects.',
+  // since the pattern on supporting_pointid is '*', then the two lines below will essentially result
+  // in properties: { '*': vocab('supporting_point') }.  This way at least if supporting_pointid's pattern
+  // ever changes, at least the property schema here will change too.
+  propertySchema: vocab('supporting_pointid'),
+  propertySchemaDefault: vocab('supporting_point'),
+});
+
+register('auditor_comments', {
+  description: 'Free-form text comments from the auditor for a particular control point or section.',
+  type: 'string',
+  pattern: '*',
 });
 
 register('section', {
-  description: 'a section is a recursively defined partition of the audit, meaning '+
-                'that it may contain other "child" sections within it.',
+  description: 'A section is a recursively defined partition of the audit, meaning '
+              +'that it may contain other "child" sections within it.  If it is a specialized '
+              +'sub-section that does not follow a clean hierarchy, it may use the sectionids '
+              +'key to state which other sections belong to this section.  Introduced the sectionids '
+              +'for CanadaGAP to handle the sub-total sections of A1-3 and A4-5.',
   propertySchema: enumSchema([
-    'name', 'sectionid', 'score', 'control_pointids', 
+    'name', 'sectionid', 'score', 'sectionids', 'control_pointids', 'supporting_points', 'auditor_comments',
   ]),
   properties: {
     'sections': { }, // recursively defined, so it doesn't exist yet.
@@ -795,24 +877,6 @@ register('comments', {
   type: 'string',
 });
 
-register('url', {
-  description: 'a string representing a URL link',
-  type: 'string',
-});
-
-register('file', {
-  description: 'an object with a url at the moment, perhaps more complex later.',
-  propertySchema: enumSchema([
-    'url',
-  ]),
-});
-
-register('files', {
-  description: 'a list of file URL\'s that go with a particular control point',
-  type: 'array',
-  items: vocab('file'),
-});
-
 register('justification', {
   description: 'justification is an explanation by the auditor of why they scored a '+
                'control_point the way they did',
@@ -827,9 +891,10 @@ register('criteria', {
 
 register('control_point', {
   description: 'control_point is a single question/item to be addressed by the '+
-                'auditor.',
+                'auditor and represents the core set of scores which are used for the audit.',
   propertySchema: enumSchema([
-    'name', 'score', 'comments', 'files', 'justification', 'criteria', 'globalgap_level',
+    'name', 'score', 'comments', 'files', 'justification', 'criteria', 'globalgap_level', 
+    'auditor_comments', 'supporting_points',
   ]),
 });
 
@@ -843,5 +908,51 @@ register('control_points', {
   propertySchemaDefault: vocab('control_point'),
 });
 
+
+//-------------------------------------------------------------
+// Known indexing:
+//-------------------------------------------------------------
+
+register('id-index', {
+  description: 'An id-index is a means to split up a large set of id\'s into smaller sets. '+
+               'For example, if the id is "ki02fjkld", an id-index might organize that id '+
+               'with all ids that start with ki02.  There are no particular requirements on '+
+               'this schema: you should extend it in particular instances to set the schema '+
+               'type on the items.',
+// STOPPED HERE: is propertySchema and propertySchemaDefault really the 
+// most straightforward way to do this?  I know it let's id's pattern be reused
+// here, but propertySchemaDefault seems like it only matters at register() call time,
+// so the override in oada-formats/lib/schema-util.js#oadaSchema that merges
+// propertySchemaDefault doesn't seem right, because the register has already
+// evaluated the propertySchema and turned it into properties, unless that happens
+// at vocab() call time (hence the merge: key).  hmmm...
+// Then continue on looking through schema-util.  Still have to figure out how
+// to get rid of a lot of the allOf or anyOf fluff to make final schema
+// easier to understand and usable for a front-end
+
+propertySchema: vocab('id', enumSchema([ 'corn', 'beans', 'wheat' ]), // this means that the property strings themselves match the id pattern
+properties: {
+  //pattern from id: link([ '' ]),
+  propertySchemaDefault: vocab('link'), // this means that the properties with those patterns are of this type
+});
+
+register('context', {
+  description: '"context" is used for documents to describe their contents, regardless of '+
+                'their position in the bookmarks graph.  Typically a particular '+
+                'resource type will require a particular set of context items to '+
+                'exist.  You make a context object by "flattening" the '+
+                'logical bookmarks URL for a given type of data, and only including indexing '+
+                'schemes in the list.  Do not include the value of an index as a key in context, '+
+                'it should only be the value of it\'s indexing scheme\'s key.',
+  properties: {
+    'id-index': vocab('id-index').propertySchema, // i.e. what the properties of id-index look like (randomStrKeyRegexp in this case)
+  },
+}),
+
+
+
+
 vocab.enumSchema = enumSchema; // oadaSchema function needs access to enumSchema
+vocab.idPrefix = 'trellis'; // oadaSchema function needs idPrefix as well
+vocab.randomStrKeyRegexp = libvocab.randomStrKeyRegexp; // useful in schemas that need to represent indexable strings
 module.exports = vocab;
