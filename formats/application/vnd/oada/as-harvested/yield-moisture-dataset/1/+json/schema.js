@@ -1,10 +1,8 @@
-var schemaUtil = require('../../../../../../../../lib/schema-util');
 var      vocab = require('../../../../../../../../vocabs/oada');
+var schemaUtil = require('../../../../../../../../lib/oada-schema-util')(vocab);
 const _ = require('lodash');
 
-var restrictItemsTo = schemaUtil.restrictItemsTo;
-var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
-var requireValue = schemaUtil.requireValue;
+const {override,vocabToSchema,vocabToProperties,patterns} = vocab;
 
 module.exports = schemaUtil.oadaSchema({
   _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
@@ -23,11 +21,11 @@ module.exports = schemaUtil.oadaSchema({
     // like units that are repeated for most data points here.
     templates: override('templates', {
       patternProperties: {
-        [patterns.indexSafePropertyNames]: vocabTermsToSchema([
+        [patterns.indexSafePropertyNames]: vocabToSchema([
           'id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width' 
         ]),
       }
-    })
+    }),
 
 
     // Data holds the actual yield and moisture data points.  The properties listed
@@ -36,7 +34,7 @@ module.exports = schemaUtil.oadaSchema({
     data: override('data', {
       patternProperties: {
         [patterns.indexSafePropertyNames]: {
-          properties: vocabTermsToSchema([
+          properties: vocabToProperties([
             'id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width' 
           ]), 
           // mark some of the keys as required for every item:

@@ -19,6 +19,8 @@ var debug = require('debug');
 var Promise = require('bluebird');
 require('extend-error');
 
+
+
 module.exports = Formats;
 var Model = require('./model');
 module.exports.Model = Model;
@@ -27,6 +29,8 @@ var MediaTypeNotFoundError = Error.extend('MediaTypeNotFoundError');
 module.exports.MediaTypeNotFoundError = MediaTypeNotFoundError;
 var ModelTypeNotFoundError = Error.extend('ModelTypeNotFoundError');
 module.exports.ModelTypeNotFoundError = ModelTypeNotFoundError;
+var ModelTypeFailedToLoadError = Error.extend('ModelTypeFailedToLoadError');
+module.exports.ModelTypeFailedToLoadError = ModelTypeFailedToLoadError;
 
 /**
  * Maintains and builds OADA format models
@@ -115,10 +119,10 @@ Formats.prototype.model = function model(mediatype) {
                 this.debug(e);
                 throw e;
             } else {
-                this.error('Mediatype ' + mediatype + ' model not found');
+                this.error('Mediatype ' + mediatype + ' model failed to load. Error = ', e);
                 this.debug(e);
 
-                var error = new MediaTypeNotFoundError(mediatype);
+                var error = new ModelTypeFailedToLoadError (mediatype);
                 error.e = e;
                 throw error;
             }

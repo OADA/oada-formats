@@ -14,6 +14,8 @@
  */
 'use strict';
 
+process.env.DEBUG=process.env.DEBUG+",oada:formats:error";
+
 var Promise = require('bluebird');
 Promise.longStackTraces();
 var chai = require('chai');
@@ -23,12 +25,17 @@ var Formats = require('../formats.js');
 const _ = require('lodash');
 const config = require('../config');
 
+let formats = null;
+let types = null;
+let itemsToTest = [];
+
 describe('Examples', async () => {
 
   before(async () => {
-    const formats = new Formats();
-    const mediatypes = _.keys(formats.mediatypes);
-    await Promise.map(mediatypes, async (type) => {
+    formats = new Formats();
+    types = _.keys(formats.mediatypes);
+
+    await Promise.map(types, async (type) => {
 
       // The "strict" config is accessed when the model is loaded, so 
       // we need to load 2 copies of the model: strict form and non-strict form
@@ -37,17 +44,25 @@ describe('Examples', async () => {
       const mstrict = await formats.model(type);
       config.set('strict', false);
       const examples = await m.examples();
-      describe(type, async () => {
+
+      itemsToTest.push({ type, m, mstrict, examples });
+    });
+  });
+
+  it('should all compile and pass schemas under node', () => {
+    _.each(itemsToTest, t => {
+      describe(t.type, () => {
         it('should have default example', async () => {
-          expect(typeof m.example('default')).to.equal('object');
+          expect(typeof t.m.example('default')).to.equal('object');
         });
-        _.each(examples, (example,name) => {
+  
+        _.each(t.examples, (example,name) => {
           it('example '+name+' should validate against regular schema', async () => {
-            const isvalid = await m.validate(example);
+            const isvalid = await t.m.validate(example);
             expect(isvalid).to.equal(true);
           });
           it('example '+name+' should validate against strict schema', async () => {
-            const isvalid = await mstrict.validate(example);
+            const isvalid = await t.mstrict.validate(example);
             expect(isvalid).to.equal(true);
           });
         });
@@ -55,66 +70,5 @@ describe('Examples', async () => {
     });
   });
 
-  // Hack to get the tests to run when created in promises:
-  it('Should run the tests before this', () => {});
-
-/*
-    describe('Validate all examples against schemas', function() {
-
-      return Promise.map(mediatypes, function(type) {
-        describe('    checking mediatype: '+type, function() {
-          let model = await 
-          return formats.model(mediatype)
-          .then(function(m) {
-              return m.examples()
-            .then(function(examples) {
-              models[type] = {
-                model: m,
-                examples: examples,
-              };
-            });
-          });
-        // Then load all the models for strict mode:
-        }).then(function() {
-        });
-      });
-
-      _.each(mediatypes, function(type) {
-        it('all examples for '+mediatype+' should validate against schema in non-strict mode', function() {
-          return Promise.map(models[type].examples, function(example) {
-            return models[type].model.validate(example)
-            .then(function(isvalid) {
-              if (!isvalid) console.log('ERROR on example '+examplename+' for mediaType '+mediaType);
-              expect(isvalid).to.equal(true);
-            });
-          });
-        });
-      });
-    });
-
-    describe('application/vnd.oada.oada-configration.1+json', function() {
-
-        it('should support RS256', function() {
-            var key = 'token_endpoint_auth_signing_alg_values_supported';
-
-            return formats
-                .model('application/vnd.oada.oada-configuration.1+json')
-                .then(function(model) {
-                    return model
-                        .example('default')
-                        .then(function(example) {
-                            example[key] = [];
-
-                            return expect(model.validate(example))
-                                .to.eventually.be
-                                .rejectedWith(Formats.Model.ValidationError,
-                                '.' + key + ' should have "RS256" as an ' +
-                                'element');
-                        });
-                });
-        });
-
-    });
-*/
 });
 
