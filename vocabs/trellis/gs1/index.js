@@ -11,7 +11,8 @@ var libvocab = require('../../../lib/vocab')('gs1'); // vocab module is 'gs1'
 var register = libvocab.register;
 var enumSchema = libvocab.enumSchema;
 var vocab = libvocab.vocab;
-var sameAs = libvocab.sameAs;
+var vocabToProperties = libvocab.vocabToProperties;
+var override = libvocab.override;
 
 // Note that the 'vocab()' function is what this module exports.  It is
 // defined in libvocab, and is how you should interact with the vocab built
@@ -46,7 +47,7 @@ register('gln', {
   type: 'string',
 });
 
-register('event_location', sameAs('gln', {
+register('event_location', override('gln', {
   description: 'An event_location is the GLN which should be unique to represent an '+
   ' origin such as grower, supllier, plant/manufacturer, distributor, ' +
   ' or a retailor',
@@ -73,7 +74,7 @@ register('product_date', {
   type: 'string'
 });
 
-register('sell_by', sameAs('gln', {
+register('sell_by', override('gln', {
   description: 'orginating gln',
 }));
 
@@ -100,36 +101,36 @@ register('trading_items', {
 
 // business event related data:
 
-register('originator', sameAs('gln', {
+register('originator', override('gln', {
   description: 'gln of the data originator and the data owner',
 }));
 
-register('trading_partner', sameAs('gln', {
+register('trading_partner', override('gln', {
   description: 'gln of the trading partner',
 }));
 
-register('activity_type', {
+register('activity_type', enumSchema({
   description: 'defines the business process that taking place',
   type: 'string',
-  value: enumSchema(['purchase_order', 'production_work_order','bill_of_landing' ]),
-});
+  known: ['purchase_order', 'production_work_order','bill_of_landing' ],
+}));
 
 register('activity_no', {
   description: 'defines a unique identifer to implicate the transaction id of the business event - purchase order id etc',
   type: 'string'
 });
 
-register('trading_partner_type', {
+register('trading_partner_type', enumSchema({
   description: 'type of the partner: grower,supplier,manufacturer, processor, distributor, retailor',
   type: 'string',
-  value: enumSchema(['grower', 'supplier','manufacturer','processor','distributor','retailor' ]),
-});
+  known: ['grower', 'supplier','manufacturer','processor','distributor','retailor' ],
+}));
 
-register('originator_type', sameAs('trading_partner_type', {
+register('originator_type', override('trading_partner_type', {
   description: 'trading_partner_type of the originating trading partner',
 }));
 
-register('receiver_type', sameAs('trading_partner_type', {
+register('receiver_type', override('trading_partner_type', {
   description: 'trading_partner_type of the receiving trading partner',
 }));
 
@@ -143,39 +144,44 @@ register('activity_no', {
   type: 'string'
 }); 
 
-register('contents_of_receipt', sameAs('trading_items', {
+register('contents_of_receipt', override('trading_items', {
   description: 'all receiving trading items',
 }));
 
-register('contents_of_shipment', sameAs('trading_items', {
+register('contents_of_shipment', override('trading_items', {
   description: 'all shipping trading items',
 }));
 
 register('receiving_event', {
   description: 'business event of trading party receiving items',
-  propertySchema: enumSchema([ 'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
-                              'activity_no','contents_of_receipt'])
+  properties: vocabToProperties([ 
+    'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
+    'activity_no','contents_of_receipt'
+  ])
 });
 
 register('shipping_event', {
   description: 'business event of trading party shipping items',
-  propertySchema: enumSchema([ 'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
-                              'activity_no','contents_of_shipment'])
+  properties: vocabToProperties([ 
+    'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
+    'activity_no','contents_of_shipment'
+  ])
 });
 
-register('transformation_input', sameAs('trading_items', {
+register('transformation_input', override('trading_items', {
   description: 'all input trading items for a transformation',
 }));
 
-register('transformation_output', sameAs('trading_items', {
+register('transformation_output', override('trading_items', {
   description: 'all output new trading items after a transformation',
 }));
 
 register('transformation_event', {
   description: 'business event of trading party transforming trading items to produce new items=, i.e fresh to frozen',
-  propertySchema: enumSchema([ 'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
-                              'activity_no','transformation_input','transformation_output'])
+  properties: vocabToProperties([ 
+    'originator', 'trading_partner', 'activity_type','originator_type','receiver_type','timestamp',
+    'activity_no','transformation_input','transformation_output'
+  ])
 });
 
-vocab.enumSchema = enumSchema; // oadaSchema function needs access to enumSchema
-module.exports = vocab;
+module.exports = libvocab;

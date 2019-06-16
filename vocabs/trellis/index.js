@@ -35,54 +35,10 @@
 
 var _ = require('lodash');
 var libvocab = require('../../lib/vocab')('trellis'); // vocab module is 'trellis'
-const {register,enumSchema,vocab,override,patterns} = libvocab;
-
-const randomStrKeyRegexp = libvocab.randomStrKeyRegexp;
+const {register,enumSchema,vocab,vocabToProperties,override,patterns} = libvocab;
 
 //----------------------------------------------------------------------------
-// id's:
-//----------------------------------------------------------------------------
-
-register('id', { 
-  description: 'An id is a string which should be reasonably unique to represent the '+
-               ' object it belongs to.',
-  type: 'string',
-  pattern: patterns.indexSafePropertyNames, // just ensures that id's don't conflict with reserved keywords, *-index's, and context
-});
-
-register('id_source', {
-  description: 'An id_source is a representation of who assigned the id: i.e. who do you '+
-               'go ask to figure out what a particular ID goes to.',
-  enumSchema([ 'certifying_body', 'scheme' ]),                    // one of these strings
-});
-
-register('sourced_id', {
-  description: 'A sourced_id is not used directly, but rather is the template for '+
-               'things like organizationid and certificationid.',
-  propertySchema: enumSchema([
-    'id', 'id_source', 
-  ]),
-});
-
-register('certificationid', override('sourced_id', {
-  description: 'certificationid is an id which spans all documents for a single certification '+
-               'process.  i.e. the audit, corrective actions, and final certificate all share '+
-               'the same certificationid',
-}));
-
-// Basic data:
-register('value', {
-  description: 'a numeric or qualitative value, represented as a string',
-  type: 'string',
-});
-
-register('units', {
-  description: 'the units used to interpret the associated value.',
-  type: 'string',
-});
-
-//----------------------------------------------------------------------------
-// Top-level key: scheme
+// Top-level key: certifying_body
 //----------------------------------------------------------------------------
 
 register('name', {
@@ -90,62 +46,6 @@ register('name', {
                 'appears in.',
   type: 'string',
 });
-
-register('description', {
-  description: 'a string description of an object, usually longer than "name"',
-  type: 'string'
-});
-
-register('version', {
-  description: 'version is a string which describes the version of the schema '+
-                'used for the current audit.',
-  type: 'string',
-});
-
-register('option', {
-  description: 'option is used as an indicator of type of audit for a given '+
-                'audit version.  Introduced for GlobalGAP audit, also present '+
-                'in CanadaGAP audit.',
-  type: 'string',
-});
-register('options', {
-  description: 'If an audit covers multiple scheme options, you can make an array of them.',
-  type: 'string',
-});
-
-register('module', {
-  description: 'module is not a key that is used anywhere, but each item in '+
-               'the modules array should look like a module defined here.',
-  properties: {
-    name: override('name', enumSchema([
-      // These are the currently-known module names:
-      'All Farm Base', 'Crops Base', 'Fruit and Vegetables' 
-    ]
-  }
-});
-
-register('modules', {
-  description: 'modules is an array of object whose names describe the various modules '+
-               'of which this audit is comprised.  It currently is only known to exist '+
-               'in GlobalGAP audits.',
-  items: vocab('module'),
-});
-
-register('scheme', {
-  description: 'the set of descriptors for identifying the current audit scheme '+
-                'for this document.',
-  properties: vocabToProperties([ 'version', 'option', 'options' ], {
-    // known names of scheme owners:    
-    name: override('name', enumSchema([ 
-      'PrimusGFS', 'GlobalGAP', 'CanadaGAP', 'SQFI' 
-    ])),
-  }),
-});
-
-
-//----------------------------------------------------------------------------
-// Top-level key: certifying_body
-//----------------------------------------------------------------------------
 
 register('phone', {
   description: 'phone describes the phone number with country code and area '+
@@ -243,11 +143,112 @@ register('certifying_body', {
   description: 'specifies the credentials of the '+
                 'organization is performing the audit along with the specific individual '+
                 'performing the audit.',
-  properties: vocabToProperties([ 'name', 'auditor', 'reviewer', 'review_date' ],
+  properties: vocabToProperties([ 
+    'auditor', 'reviewer', 'review_date',
+  ], { 
     // known certifying_body names:
     name: override('name', enumSchema([ 'Primus Auditing Operations' ]) ),
-  ),
+  }),
 });
+
+//----------------------------------------------------------------------------
+// Top-level key: scheme
+//----------------------------------------------------------------------------
+
+register('description', {
+  description: 'a string description of an object, usually longer than "name"',
+  type: 'string'
+});
+
+register('version', {
+  description: 'version is a string which describes the version of the schema '+
+                'used for the current audit.',
+  type: 'string',
+});
+
+register('option', {
+  description: 'option is used as an indicator of type of audit for a given '+
+                'audit version.  Introduced for GlobalGAP audit, also present '+
+                'in CanadaGAP audit.',
+  type: 'string',
+});
+register('options', {
+  description: 'If an audit covers multiple scheme options, you can make an array of them.',
+  type: 'string',
+});
+
+register('module', {
+  description: 'module is not a key that is used anywhere, but each item in '+
+               'the modules array should look like a module defined here.',
+  properties: {
+    name: override('name', enumSchema([
+      // These are the currently-known module names:
+      'All Farm Base', 'Crops Base', 'Fruit and Vegetables' 
+    ])),
+  }
+});
+
+register('modules', {
+  description: 'modules is an array of object whose names describe the various modules '+
+               'of which this audit is comprised.  It currently is only known to exist '+
+               'in GlobalGAP audits.',
+  items: vocab('module'),
+});
+
+register('scheme', {
+  description: 'the set of descriptors for identifying the current audit scheme '+
+                'for this document.',
+  properties: vocabToProperties([ 'version', 'option', 'options' ], {
+    // known names of scheme owners:    
+    name: override('name', enumSchema([ 
+      'PrimusGFS', 'GlobalGAP', 'CanadaGAP', 'SQFI' 
+    ])),
+  }),
+});
+
+
+//----------------------------------------------------------------------------
+// id's:
+//----------------------------------------------------------------------------
+
+register('id', { 
+  description: 'An id is a string which should be reasonably unique to represent the '+
+               ' object it belongs to.',
+  type: 'string',
+  pattern: patterns.indexSafePropertyNames, // just ensures that id's don't conflict with reserved keywords, *-index's, and context
+});
+
+register('id_source', {
+  description: 'An id_source is a representation of who assigned the id: i.e. who do you '+
+               'go ask to figure out what a particular ID goes to.',
+  properties: vocabToProperties([ 'certifying_body', 'scheme' ]),                    // one of these strings
+});
+
+register('sourced_id', {
+  description: 'A sourced_id is not used directly, but rather is the template for '+
+               'things like organizationid and certificationid.',
+  properties: vocabToProperties([
+    'id', 'id_source', 
+  ]),
+});
+
+register('certificationid', override('sourced_id', {
+  description: 'certificationid is an id which spans all documents for a single certification '+
+               'process.  i.e. the audit, corrective actions, and final certificate all share '+
+               'the same certificationid',
+}));
+
+// Basic data:
+register('value', {
+  description: 'a numeric or qualitative value, represented as a string',
+  type: 'string',
+});
+
+register('units', {
+  description: 'the units used to interpret the associated value.',
+  type: 'string',
+});
+
 
 
 //----------------------------------------------------------------------------
@@ -366,7 +367,7 @@ register('area', {
   description: 'area describes a quantity of area such as acres or hectares.',
   properties: vocabToProperties(
     ['value'], // area has value and units, units restricted to acres, hectares
-    { units: override('units', enumSchema(['acres', 'ac', 'hectares', 'ha']) }
+    { units: override('units', enumSchema(['acres', 'ac', 'hectares', 'ha'])) }
   ),
 });
 
@@ -377,16 +378,15 @@ register('product', {
   // the "product" object has a name key (below), but also can have
   // organic, area, and location keys (for GlobalGAP).  That is the difference
   // between propertySchema and the regular properties.
-  properties: vocabToProperties(
-    [ 'organic', 'area', 'location' ] // from GlobalGAP
-    { 
-      name: override('name', enumSchema(
-        // these are just the known possible products and the set here should never
-        // be considered exhaustive.  Pull requests welcome to build out this list.
-        [ 'tomatoes', 'peppers', 'zucchini' ],
-      ))
-    },
-  },
+  properties: vocabToProperties([ 
+    'organic', 'area', 'location', // from GlobalGAP
+  ], { 
+    name: override('name', enumSchema(
+      // these are just the known possible products and the set here should never
+      // be considered exhaustive.  Pull requests welcome to build out this list.
+      [ 'tomatoes', 'peppers', 'zucchini' ],
+    ))
+  }),
 });
 
 register('products_observed', {
@@ -511,7 +511,11 @@ register('end', {
 register('duration', {
   description: 'duration describes how long an audit took to perform.  Introduced for '
               +'GlobalGAP audits since that is how they specify it instead of start/end.',
-  properties: vocabToProperties(['value'], { units: override('units', enumSchema(['hours'])} ), // hours are known units for duration
+  properties: vocabToProperties([
+    'value'
+  ], { 
+    units: override('units', enumSchema(['hours']))
+  }), // hours are known units for duration
 });
 
 register('FSMS_observed_date', {
@@ -611,6 +615,30 @@ register('n_a', override('datum', {
   }
 }, { mergePropertiesInsteadOfReplace: true }));
 
+register('major_must', override('datum', {
+  description: 'major_must is used to represent the summary count of "Major Must" answers '+
+               'in the audit',
+  properties: { 
+    units: override('units', enumSchema(['count']) ),
+  }
+}, { mergePropertiesInsteadOfReplace: true }));
+
+register('minor_must', override('datum', {
+  description: 'major_must is used to represent the summary count of "Minor Must" answers '+
+               'in the audit',
+  properties: { 
+    units: override('units', enumSchema(['count']) ),
+  }
+}, { mergePropertiesInsteadOfReplace: true }));
+
+register('recommended', override('datum', {
+  description: 'major_must is used to represent the summary count of "Minor Must" answers '+
+               'in the audit',
+  properties: { 
+    units: override('units', enumSchema(['count']) ),
+  }
+}, { mergePropertiesInsteadOfReplace: true }));
+
 register('globalgap_level', {
   description: 'globalgap_level is not actually a key that is used, but rather '+
                'describes a class of objects which represent a level\'s summary '+
@@ -668,8 +696,8 @@ register('score_core', override('datum', {
       '%',
       'text',           // free-form text entry
     ])),
-  },
-}, { mergePropertiesInsteadOfReplace: true }));
+  }),
+}));
 
 register('weighting_factor', {
   description: 'Introduced for CanadaGAP.  Represents the weight used to combine sections '+
