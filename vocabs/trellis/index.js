@@ -45,19 +45,18 @@ register('name', {
   description: 'name is a string, typically the name of the object the key '+
                 'appears in.',
   type: 'string',
+  pattern: patterns.indexSafePropertyNames, // just ensures that id's don't conflict with reserved keywords, *-index's, and context
 });
 
 register('phone', {
   description: 'phone describes the phone number with country code and area '+
                 'code.',
   type: 'string',
-});
 
 register('fax', {
   description: 'fax number for a person or organization',
   type: 'string',
 });
-
 
 register('email', {
   description: 'email address for an organization or contact',
