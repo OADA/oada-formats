@@ -35,29 +35,9 @@
 
 var _ = require('lodash');
 var libvocab = require('../../lib/vocab')('trellis'); // vocab module is 'trellis'
-var oadaVocab = require('../oada'); // for links
-var register = libvocab.register;
-var enumSchema = libvocab.enumSchema;
-var vocab = libvocab.vocab;
-var sameAs = libvocab.sameAs;
+const {register,enumSchema,vocab,override,patterns} = libvocab;
 
 const randomStrKeyRegexp = libvocab.randomStrKeyRegexp;
-
-// Note that the 'vocab()' function is what this module exports.  It is
-// defined in libvocab, and is how you should interact with the vocab built
-// here.
-
-//-----------------------------------------------------------------------------
-//  Some core items borrowed from OADA:
-//-----------------------------------------------------------------------------
-
-register('_id', oadaVocab('_id'));
-register('_rev', oadaVocab('_rev'));
-register('_type', oadaVocab('_type'));
-register('_meta', oadaVocab('_meta'));
-register('link', oadaVocab('link'));
-register('versioned-link', oadaVocab('versioned-link'));
-
 
 //----------------------------------------------------------------------------
 // id's:
@@ -67,16 +47,13 @@ register('id', {
   description: 'An id is a string which should be reasonably unique to represent the '+
                ' object it belongs to.',
   type: 'string',
-  pattern: randomStrKeyRegexp, // just ensures that id's don't conflict with reserved keywords, *-index's, and context
+  pattern: patterns.indexSafePropertyNames, // just ensures that id's don't conflict with reserved keywords, *-index's, and context
 });
 
 register('id_source', {
   description: 'An id_source is a representation of who assigned the id: i.e. who do you '+
                'go ask to figure out what a particular ID goes to.',
-  anyOf: [
-    enumSchema([ 'certifying_body', 'scheme' ]),                    // one of these strings
-    { propertySchema: enumSchema([ 'certifying_body', 'scheme' ]) } // or one of these objects
-  ],
+  enumSchema([ 'certifying_body', 'scheme' ]),                    // one of these strings
 });
 
 register('sourced_id', {
@@ -87,7 +64,7 @@ register('sourced_id', {
   ]),
 });
 
-register('certificationid', sameAs('sourced_id', {
+register('certificationid', override('sourced_id', {
   description: 'certificationid is an id which spans all documents for a single certification '+
                'process.  i.e. the audit, corrective actions, and final certificate all share '+
                'the same certificationid',
@@ -139,10 +116,12 @@ register('options', {
 register('module', {
   description: 'module is not a key that is used anywhere, but each item in '+
                'the modules array should look like a module defined here.',
-  propertySchema: enumSchema([ 'name' ], {  // each module should have a name
-    // and the known "name" values are one of these strings for Global GAP:
-    propertySchemaDefault: enumSchema[ 'All Farm Base', 'Crops Base', 'Fruit and Vegetables' ] 
-  }),
+  properties: {
+    name: override('name', enumSchema([
+      // These are the currently-known module names:
+      'All Farm Base', 'Crops Base', 'Fruit and Vegetables' 
+    ]
+  }
 });
 
 register('modules', {
@@ -155,11 +134,12 @@ register('modules', {
 register('scheme', {
   description: 'the set of descriptors for identifying the current audit scheme '+
                 'for this document.',
-  propertySchema: enumSchema([ 'name', 'version', 'option', 'options' ]),
-  properties: {
+  properties: vocabToProperties([ 'version', 'option', 'options' ], {
     // known names of scheme owners:    
-    name: vocab('name', enumSchema([ 'PrimusGFS', 'GlobalGAP', 'CanadaGAP', 'SQFI' ]) ),
-  },
+    name: override('name', enumSchema([ 
+      'PrimusGFS', 'GlobalGAP', 'CanadaGAP', 'SQFI' 
+    ])),
+  }),
 });
 
 
@@ -212,7 +192,7 @@ register('country', {
 register('location', {
   description: 'location describes the postal address used to identify where '+
                 'something is.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'postal_code', 'street_address', 'city', 'state', 'country',
     'name', // name was added for canadaGAP to refer to the "name of audited location (for multi-site certification)"
   ]),
@@ -221,7 +201,7 @@ register('location', {
 register('person', {
   description: 'person is a key that never appears anywhere, but anywhere a person-type '+
                 'of thing exists (auditor, contact, etc.) it is one of these things.',
-  propertySchema: enumSchema([ 'name', 'email', 'location', 'phone', 'fax' ])
+  properties: vocabToProperties([ 'name', 'email', 'location', 'phone', 'fax' ]),
 });
 
 register('conflict_of_interest', {
@@ -235,21 +215,21 @@ register('number_prior_audits_this_organization', {
   type: 'string',
   pattern: '^[0-9]+$', // a string that is just a number
 });
-register('number_prior_consecutive_audits_this_organization', sameAs('number_prior_audits_this_organization', {
+register('number_prior_consecutive_audits_this_organization', override('number_prior_audits_this_organization', {
   description: 'Introduced for CanadaGAP, this is the auditor\'s attestation of how many '+
                'consecutive times they have audited this operation, excluding the current audit.',
 }));
 
-register('auditor', sameAs('person', {
+register('auditor', override('person', {
   description: '"auditor" is the person performing the audit for the certifying '+
                 'body',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'conflict_of_interest', 'number_prior_audits_this_organization', // added all these for CanadaGAP
     'number_prior_consecutive_audits_this_organization',
   ]),
 }));
 
-register('reviewer', sameAs('person', {
+register('reviewer', override('person', {
   description: 'Introduced for CanadaGAP audit.  Represents the person who reviewed the audit '+
                'within the certifiation body.',
 }));
@@ -263,18 +243,16 @@ register('certifying_body', {
   description: 'specifies the credentials of the '+
                 'organization is performing the audit along with the specific individual '+
                 'performing the audit.',
-  propertySchema: enumSchema([ 'name', 'auditor', 'reviewer', 'review_date' ]),
-  properties: {
+  properties: vocabToProperties([ 'name', 'auditor', 'reviewer', 'review_date' ],
     // known certifying_body names:
-    name: vocab('name', enumSchema([ 'Primus Auditing Operations' ]) ),
-  },
+    name: override('name', enumSchema([ 'Primus Auditing Operations' ]) ),
+  ),
 });
 
 
 //----------------------------------------------------------------------------
 // Top-level key: organization
 //----------------------------------------------------------------------------
-
 register('contact_type', enumSchema({
   description: 'Indicates if this particular contact person has some special role '+
                'in the organization such as "Food Safety Program Coordinator" or '+
@@ -287,11 +265,12 @@ register('contact_types', {
   type: 'array',
   items: vocab('contact_type'),
 });
-register('contact', sameAs('person', {
+register('contact', override('person', {
   description: 'contact describes an individuals who may be contacted in '+
                 'reference to this audit.',
-  propertySchema: enumSchema([ 'contact_type', 'contact_types' ]), // adds contact_type and contact_types to the properties from 'Person'
-}));
+  // adds contact_type and contact_types to the properties from 'Person'
+  properties: vocabToProperties([ 'contact_type', 'contact_types' ]),
+}, { mergePropertiesInsteadOfReplace: true }));
 
 register('contacts', {
   description: 'contacts is a list of contact people for an organization.',
@@ -299,7 +278,7 @@ register('contacts', {
   items: vocab('contact'),
 });
 
-register('organizationid', sameAs('sourced_id', {
+register('organizationid', override('sourced_id', {
   description: 'organizationid identifies the organization which is the subject of the '+
                'audit/certification.',
 }));
@@ -337,10 +316,10 @@ register('reports_to', {
   items: vocab('id'),
 });
 
-register('orgchart_person', sameAs('person', {
+register('orgchart_person', override('person', {
   description: 'An orgchart_person has all the possible properties of a person, '+
                'but also can have job_title, job_description, and reports_to.',
-  propertySchema: enumSchema(['job_title', 'job_description', 'reports_to' ]),
+  properties: vocabToProperties(['job_title', 'job_description', 'reports_to' ]),
 }));
 
 register('orgchart', {
@@ -359,7 +338,7 @@ register('orgchart', {
 register('organization', {
   description: 'organization contains information about the organization under '+
                 'audit.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'organizationid', 'GLN', 'name', 'contacts', 'location', 'phone', 'fax', 'orgchart',
   ]),
 });
@@ -385,14 +364,10 @@ register('organic', {
 
 register('area', {
   description: 'area describes a quantity of area such as acres or hectares.',
-  allOf: [
-    { propertySchema: enumSchema(['value', 'units']), }, // has value and units
-    { 
-      properties: {                                      // and these are the known units
-        'units': enumSchema(['acres', 'ac', 'hectares', 'ha']),
-      },
-    },
-  ],
+  properties: vocabToProperties(
+    ['value'], // area has value and units, units restricted to acres, hectares
+    { units: override('units', enumSchema(['acres', 'ac', 'hectares', 'ha']) }
+  ),
 });
 
 register('product', {
@@ -402,15 +377,15 @@ register('product', {
   // the "product" object has a name key (below), but also can have
   // organic, area, and location keys (for GlobalGAP).  That is the difference
   // between propertySchema and the regular properties.
-  propertySchema: enumSchema([
-    'organic', 'area', 'location' // from GlobalGAP
-  ]),
-  properties: {
-    name: vocab('name', enumSchema([
-      // these are just the known possible products and the set here should never
-      // be considered exhaustive.  Pull requests welcome to build out this list.
-      'tomatoes', 'peppers', 'zucchini',
-    ])),
+  properties: vocabToProperties(
+    [ 'organic', 'area', 'location' ] // from GlobalGAP
+    { 
+      name: override('name', enumSchema(
+        // these are just the known possible products and the set here should never
+        // be considered exhaustive.  Pull requests welcome to build out this list.
+        [ 'tomatoes', 'peppers', 'zucchini' ],
+      ))
+    },
   },
 });
 
@@ -420,12 +395,12 @@ register('products_observed', {
   items: vocab('product'),
 });
 
-register('similar_products_not_observed', sameAs('products_observed', {
+register('similar_products_not_observed', override('products_observed', {
   description: 'array of products not under evaulation that may be similar to '+
                 'those observed in the audit.',
 }));
 
-register('products_applied_for_but_not_observed', sameAs('products_observed', {
+register('products_applied_for_but_not_observed', override('products_observed', {
   description: 'array of products that had been applied for but are not under '+
                'evaulation in this particular audit.',
 }));
@@ -442,15 +417,13 @@ register('operation_type', enumSchema({
 register('shipper', {
   description: 'shipper is the parent organization who will be responsible for '+
                 'moving the product(s) to their next destination.',
-  propertySchema: enumSchema([
-    'name',
-  ]),
+  properties: vocabToProperties(['name']),
 });
 
 register('operator', {
   description: 'operator is used to detail the information about the crew or on-site operators '+
                'for a given operation.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'contacts', 'name', 'location',
   ]),
 });
@@ -459,7 +432,7 @@ register('operation', {
   description: 'an object describing the operation that is under audit. '+
                'For GlobalGAP, this is just an object with a name.  For '+
                'PrimusGFS, this is holds description',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'operation_type', 'operator', 'shipper', 'location', 'name',
   ]),
 });
@@ -469,7 +442,7 @@ register('operations', {
   type: 'array',
   items: vocab('operation'),
 });
-register('operations_applied_for_but_not_observed', sameAs('operations', {
+register('operations_applied_for_but_not_observed', override('operations', {
   description: 'Introdued for CanadaGAP audit.  Refers to activities that the audit '+
                'will cover but were not observed during the audit.',
 }));
@@ -477,7 +450,7 @@ register('operations_applied_for_but_not_observed', sameAs('operations', {
 register('production_site', {
   description: 'A production_site is defined for GlobalGAP and describes the products '+
                'grown, harvested, or handled at multiple locations for the same audit.',
-  propertySchema: enumSchema([ 'name', 'id', 'products_observed' ]), // id is the Ranch ID in GlobalGAP
+  properties: vocabToProperties([ 'name', 'id', 'products_observed' ]), // id is the Ranch ID in GlobalGAP
 });
 
 register('production_sites', {
@@ -512,7 +485,7 @@ register('is_multisite', {
 register('scope', {
   description: 'scope describes the breadth of the audit in terms of operations, '+
                 'personnel, products, etc.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'description', 'notification', 'operation', 'products_observed',
     'similar_products_not_observed', 'products_applied_for_but_not_observed',
     'production_sites', 'parallel_production', 'parallel_ownership', // introduced for GlobalGAP
@@ -538,16 +511,13 @@ register('end', {
 register('duration', {
   description: 'duration describes how long an audit took to perform.  Introduced for '
               +'GlobalGAP audits since that is how they specify it instead of start/end.',
-  propertySchema: enumSchema(['value', 'units']),
-  properties: { 
-    units: enumSchema(['hours']), // known units for duration
-  }
+  properties: vocabToProperties(['value'], { units: override('units', enumSchema(['hours'])} ), // hours are known units for duration
 });
 
 register('FSMS_observed_date', {
   description: 'the period (beginning and ending times) of the FSMS portion of '+
                 'the audit.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'start', 'end', 'duration',
   ]),
 });
@@ -555,7 +525,7 @@ register('FSMS_observed_date', {
 register('operation_observed_date', {
   description: 'the period (beginning and ending times) of the '+
                 'walk-through/field operations portion of the audit.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'start', 'end', 'duration',
   ]),
 });
@@ -574,7 +544,7 @@ register('audit_duration_rationale', {
 
 register('conditions_during_audit', {
   description: 'describes conditions when the audit took place.  Date audit started/finished, etc.',
-  propertySchema: enumSchema([ 
+  properties: vocabToProperties([ 
     'FSMS_observed_date', 'operation_observed_date', 'individuals_present', 'audit_duration_rationale',
   ]),
 });
@@ -587,7 +557,7 @@ register('previous_certification', {
   description: 'Introduced for CanadaGAP.  This represents information about the previous certificate '+
                'and audit that the operation/organization has on file.  For CanadaGAP, it is supposed '+
                'to be the previous CanadaGAP certificate/audit info, not just any previous info.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'conditions_during_audit', 'certifying_body', 'certificationid', 'scheme', 'scope',
   ]),
 });
@@ -601,7 +571,7 @@ register('compliance', {
   type: 'string',
 });
 
-register('possible', sameAs('value', {
+register('possible', override('value', {
   description: 'Number of points possible for this control point',
 }));
 
@@ -609,7 +579,7 @@ register('datum', {
   description: 'A datum is not a key that likely appears anywhere, but other '+
                 'vocab terms all use the form of a datum: a thing with a value, '+
                 'units, and optionally a \'possible\' number of points',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'value', 'units', 'possible'
   ]),
 });
@@ -619,51 +589,57 @@ register('is_compliant', {
   type: 'boolean',
 });
 
-register('yes', sameAs('datum', {
+register('yes', override('datum', {
   description: 'yes is used to represent the summary count of "yes" answers in the audit',
-  properties: { units: enumSchema(['count']) },
-}));
+  properties: { 
+    units: override('units', enumSchema(['count']) ),
+  }
+}, { mergePropertiesInsteadOfReplace: true }));
 
-register('no', sameAs('datum', {
+register('no', override('datum', {
   description: 'no is used to represent the summary count of "no" answers in the audit',
-  properties: { units: enumSchema(['count']) },
-}));
+  properties: { 
+    units: override('units', enumSchema(['count']) ),
+  }
+}, { mergePropertiesInsteadOfReplace: true }));
 
-register('n_a', sameAs('datum', {
+register('n_a', override('datum', {
   description: 'n_a is used to represent the summary count of "Not Applicable" answers '+
                'in the audit',
-  properties: { units: enumSchema(['count']) },
-}));
+  properties: { 
+    units: override('units', enumSchema(['count']) ),
+  }
+}, { mergePropertiesInsteadOfReplace: true }));
 
 register('globalgap_level', {
   description: 'globalgap_level is not actually a key that is used, but rather '+
                'describes a class of objects which represent a level\'s summary '+
                'score',
   anyOf: [
-    { propertySchema: enumSchema(['yes', 'no', 'n_a', 'is_compliant' ]), },
-    enumSchema(['major_must', 'minor_must', 'recommended']),
+    { properties: vocabToProperties(['yes', 'no', 'n_a', 'is_compliant' ]), },
+    { properties: vocabToProperties(['major_must', 'minor_must', 'recommended']) },
   ],
 });
 
-register('minor_musts', sameAs('globalgap_level', {
+register('minor_musts', override('globalgap_level', {
   description: 'The summary score for all minor-must level questions',
 }));
 
-register('major_musts', sameAs('globalgap_level', {
+register('major_musts', override('globalgap_level', {
   description: 'The summary score for all major-must level questions',
 }));
 
 register('globalgap_levels', {
   description: 'GlobalGAP has particular levels of major_musts and minor_must that '+
                'are entirely unique to GlobalGAP, hence the name.',
-  propertySchema: enumSchema(['major_musts', 'minor_musts'])
+  properties: vocabToProperties(['major_musts', 'minor_musts'])
 });
 
-register('preliminary', sameAs('datum', {
+register('preliminary', override('datum', {
   description: 'A prelimiary score for an audit',
 }));
 
-register('final', sameAs('datum', {
+register('final', override('datum', {
   description: 'The final score for an audit',
 }));
 
@@ -674,15 +650,14 @@ register('canadagap_isautofail', {
   type: 'boolean',
 });
 
-register('score_core', sameAs('datum', {
+register('score_core', override('datum', {
   description: 'Do not use score_core in an audit schema.  It exists to avoid '+
                'recursive definition of score and subtotals.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'preliminary', 'final', 'value', 'units', 'possible', 'compliance',
     'globalgap_levels', 'canadagap_isautofail',
-  ]),
-  properties: {
-    units: enumSchema([ // known score audits:
+  ], {
+    units: override('units', enumSchema([ // known score audits:
       'n/a',            // n/a is only possible option if units are set to n/a
       'yes-no',         // yes | no
       'yes-no-n_a',     // yes | no | n_a
@@ -692,9 +667,9 @@ register('score_core', sameAs('datum', {
       'points',         // value with be a string number ('4.0') and can also be the string 'n/a'
       '%',
       'text',           // free-form text entry
-    ]),
+    ])),
   },
-}));
+}, { mergePropertiesInsteadOfReplace: true }));
 
 register('weighting_factor', {
   description: 'Introduced for CanadaGAP.  Represents the weight used to combine sections '+
@@ -731,20 +706,18 @@ register('subtotals', {
                'subtotals do not perfectly match the sections, so it exists here as a separate '+
                'key.  Other audits should just put the subtotal under the section that it goes '+
                'with.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'name', 'sectionids', 'weighting_factor'
-  ]),
-  properties: {
+  ], {
     score: vocab('score_core'), // avoids recursive definition
-  },
+  }),
 });
 
-register('score', sameAs('score_core', {
+register('score', override('score_core', {
   description: 'score presents the quanititative performance of a control point, '+
-                'section, or overall audit.',
-  propertySchema: enumSchema([ 'subtotals' ]), // adds subtotals to set of possible keys
-                                               // introduced for CanadaGAP.
-}));
+               'section, or overall audit.',
+  properties: vocabToProperties([ 'subtotals' ]), // adds subtotals to set of possible keys
+}, { mergePropertiesInsteadOfReplace: true }));   // introduced for CanadaGAP.
 
 register('certificate_validity_period', {
   description: 'certificate_validity_period denotes the period of time (beginning date'+
@@ -770,7 +743,7 @@ register('organization_comments', {
 register('decision', {                                                                                                
   description: 'decision is the certifying bodys determination for whether the organizations '+                        
                'corrective actions are satisfactory.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'value', 'units'                                                                                                  
   ]),   
 })   
@@ -783,7 +756,7 @@ register('url', {
 
 register('file', {
   description: 'an object with a url at the moment, perhaps more complex later.',
-  propertySchema: enumSchema([ 'url' ]),
+  properties: vocabToProperties([ 'url' ]),
 });
 
 register('files', {
@@ -796,17 +769,17 @@ register('files', {
 register('corrective_action', {                                                                                       
   description: 'corrective_action is the corrective action details associated with '+
                'a particular control point as found in the corrective actions report.',                               
-  propertySchema: enumSchema([                                                                                        
+  properties: vocabToProperties([                                                                                        
     'score', 'organization_response', 'organization_comments', 'decision', 'files',                                             
   ]), 
 }); 
 
-
+libvocab.setPattern('controlPointid', patterns.indexSafePropertyNames);
 register('control_pointid', {
   description: 'control_pointid is the id associated with a particular control '+
                 'point.',
   type: 'string',
-  pattern: '*',
+  pattern: patterns.controlPointid,
 });
 
 register('control_pointids', {
@@ -816,6 +789,7 @@ register('control_pointids', {
   items: vocab('control_pointid'),
 });
 
+libvocab.setPattern('supportingPointid', patterns.indexSafePropertyNames);
 register('supporting_pointid', {
   description: 'A supporting_pointid is a string that uniquely identifies a '+
                'supporting_point within a control point\'s list of supporting_points.  '+
@@ -823,14 +797,14 @@ register('supporting_pointid', {
                'then a period, then a number indicating the order of this supporting_point '+
                'within this control_point',
   type: 'string',
-  pattern: '*',
+  pattern: patterns.supportingPointid,
 });
 
 register('supporting_point', {
   description: 'A supporting point is a sub-point within a control point.  This was introduced '+
                'for CanadaGAP to represent all the checkboxes under the control points.  It is '+
                'just an object with a name and a score.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'name', 'score',
   ]),
 });
@@ -838,11 +812,9 @@ register('supporting_point', {
 register('supporting_points', {
   description: 'supporting_points is just an object whose keys are supporting_pointids, and whose '+
                'values are supporting_point objects.',
-  // since the pattern on supporting_pointid is '*', then the two lines below will essentially result
-  // in properties: { '*': vocab('supporting_point') }.  This way at least if supporting_pointid's pattern
-  // ever changes, at least the property schema here will change too.
-  propertySchema: vocab('supporting_pointid'),
-  propertySchemaDefault: vocab('supporting_point'),
+  patternProperties: {
+    [patterns.supportingPointid]: vocab('supporting_point'),
+  },
 });
 
 register('auditor_comments', {
@@ -857,12 +829,9 @@ register('section', {
               +'sub-section that does not follow a clean hierarchy, it may use the sectionids '
               +'key to state which other sections belong to this section.  Introduced the sectionids '
               +'for CanadaGAP to handle the sub-total sections of A1-3 and A4-5.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'name', 'sectionid', 'score', 'sectionids', 'control_pointids', 'supporting_points', 'auditor_comments',
-  ]),
-  properties: {
-    'sections': { }, // recursively defined, so it doesn't exist yet.
-  },
+  ], { sections: {} }), // sections is recursively defined, so it doesn't exist yet
 });
 
 register('sections', {
@@ -892,7 +861,7 @@ register('criteria', {
 register('control_point', {
   description: 'control_point is a single question/item to be addressed by the '+
                 'auditor and represents the core set of scores which are used for the audit.',
-  propertySchema: enumSchema([
+  properties: vocabToProperties([
     'name', 'score', 'comments', 'files', 'justification', 'criteria', 'globalgap_level', 
     'auditor_comments', 'supporting_points',
   ]),
@@ -904,8 +873,9 @@ register('control_points', {
                 'control_pointid. This key is a top level key for ease of accessing any/all control '+
                 'points. No prior knowledge of section structure is therefore necessary to look up '+
                 'a particular control point of interest.',
-  propertySchema: vocab('control_pointid'),
-  propertySchemaDefault: vocab('control_point'),
+  patternProperties: {
+    [patterns.controlPointid]: vocab('control_point'),
+  },
 });
 
 
@@ -919,40 +889,9 @@ register('id-index', {
                'with all ids that start with ki02.  There are no particular requirements on '+
                'this schema: you should extend it in particular instances to set the schema '+
                'type on the items.',
-// STOPPED HERE: is propertySchema and propertySchemaDefault really the 
-// most straightforward way to do this?  I know it let's id's pattern be reused
-// here, but propertySchemaDefault seems like it only matters at register() call time,
-// so the override in oada-formats/lib/schema-util.js#oadaSchema that merges
-// propertySchemaDefault doesn't seem right, because the register has already
-// evaluated the propertySchema and turned it into properties, unless that happens
-// at vocab() call time (hence the merge: key).  hmmm...
-// Then continue on looking through schema-util.  Still have to figure out how
-// to get rid of a lot of the allOf or anyOf fluff to make final schema
-// easier to understand and usable for a front-end
-
-propertySchema: vocab('id', enumSchema([ 'corn', 'beans', 'wheat' ]), // this means that the property strings themselves match the id pattern
-properties: {
-  //pattern from id: link([ '' ]),
-  propertySchemaDefault: vocab('link'), // this means that the properties with those patterns are of this type
+  patternProperties: {
+    [patterns.indexSafePropertyNames]: vocab('link'), // this means that the properties with those patterns are of this type
+  },
 });
 
-register('context', {
-  description: '"context" is used for documents to describe their contents, regardless of '+
-                'their position in the bookmarks graph.  Typically a particular '+
-                'resource type will require a particular set of context items to '+
-                'exist.  You make a context object by "flattening" the '+
-                'logical bookmarks URL for a given type of data, and only including indexing '+
-                'schemes in the list.  Do not include the value of an index as a key in context, '+
-                'it should only be the value of it\'s indexing scheme\'s key.',
-  properties: {
-    'id-index': vocab('id-index').propertySchema, // i.e. what the properties of id-index look like (randomStrKeyRegexp in this case)
-  },
-}),
-
-
-
-
-vocab.enumSchema = enumSchema; // oadaSchema function needs access to enumSchema
-vocab.idPrefix = 'trellis'; // oadaSchema function needs idPrefix as well
-vocab.randomStrKeyRegexp = libvocab.randomStrKeyRegexp; // useful in schemas that need to represent indexable strings
-module.exports = vocab;
+module.exports = libvocab;

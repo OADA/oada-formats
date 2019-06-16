@@ -77,56 +77,27 @@ const testSchemas = {
       key1: { type: 'string' },
     },
   },
+
+  // before-all hook will process this next one to get an object in there:
+  schemaMixIndexing: {
+    _type: 'application/vnd.oada.test.2+json',
+    indexing: [ 'to-be-replaced-in-before-hook', 'crop-index', 'geohash-index' ],
+    properties: {
+      key1: { type: 'string' },
+    },
+  },
 };
 
 describe('Library - lib/oada-schema-util.js', () => {
 
-  // Load the library in the before in case it has parse error:
+  // Load the library in the 'before' in case it has parse error:
   before(() => { 
     oadaVocab = require('../vocabs/oada');
     libSchema = require('../lib/oada-schema-util')(oadaVocab);
+
+    // replace 'year-index' with vocab('year-index'):
+    testSchemas.schemaMixIndexing.indexing[0] = oadaVocab.vocab('year-index');
   });
-
-  describe('versionedLink', () => {
-    it('should add a _type for a _type-less starting link for both functions', () => {
-      const expected = oadaVocab.vocab('versioned-link');
-      expected.properties._type = oadaVocab.enumSchema([ 'application/vnd.oada.test.1' ]);
-      expected.vocab = { parent: expected.vocab };
-      expect(libSchema.versionedLink([ 'application/vnd.oada.test.1' ]))
-      .to.deep.equal(expected);
-    });
-
-    it('should replace existing _type\'s on a link for both functions', () => {
-      const orig = oadaVocab.vocab('versioned-link');
-      orig.properties._type = oadaVocab.enumSchema([ 'application/vnd.oada.test.2', 'applicaiton/vnd.oada.test.3' ]);
-      const expected = _.cloneDeep(orig);
-      expected.vocab = { parent: expected.vocab };
-      expected.properties._type = oadaVocab.enumSchema([ 'application/vnd.oada.test.1' ]);
-      expect(libSchema.versionedLink([ 'application/vnd.oada.test.1' ]))
-      .to.deep.equal(expected);
-    });
-  });
-
-  describe('link', () => {
-    it('should add a _type for a _type-less starting link', () => {
-      const expected = oadaVocab.vocab('link');
-      expected.properties._type = oadaVocab.enumSchema([ 'application/vnd.oada.test.1' ]);
-      expected.vocab = { parent: expected.vocab };
-      expect(libSchema.link([ 'application/vnd.oada.test.1' ]))
-      .to.deep.equal(expected);
-    });
-
-    it('should replace existing _type\'s on a link', () => {
-      const orig = oadaVocab.vocab('link');
-      orig.properties._type = oadaVocab.enumSchema([ 'application/vnd.oada.test.2', 'applicaiton/vnd.oada.test.3' ]);
-      const expected = _.cloneDeep(orig);
-      expected.vocab = { parent: expected.vocab };
-      expected.properties._type = oadaVocab.enumSchema([ 'application/vnd.oada.test.1' ]);
-      expect(libSchema.link([ 'application/vnd.oada.test.1' ]))
-      .to.deep.equal(expected);
-    });
-  });
-
 
   describe('recursivelyChangeAllAdditionalProperties', () => {
     it('should set all additionalProperties on a deep tree', () => {
@@ -198,20 +169,60 @@ describe('Library - lib/oada-schema-util.js', () => {
       expect(schema.indexing).to.deep.equal(testSchemas.regularSchemaBeforeOADASchema.indexing);
     });
 
-    it('should include each possible index as a key in properties', () => {
-      const schema = libSchema.oadaSchema(testSchemas.regularSchemaBeforeOADASchema);
-      _.each(testSchemas.regularSchemaBeforeOADASchema.indexing, i => expect(schema.properties[i]).to.be.an('object') );
-    });
-
     it('should have property named indexing as an array describing index properties', () => {
       const schema = libSchema.oadaSchema(testSchemas.regularSchemaBeforeOADASchema);
       expect(schema.properties.indexing.type).to.equal('array');
       // each of the items in the array should represent one of the indexing terms
-      const expectedMembers = _.map(testSchemas.regularSchemaBeforeOADASchema.indexing, i => ({ [i]: vocab(i) }));
+      const expectedMembers = _.map(testSchemas.regularSchemaBeforeOADASchema.indexing, i => oadaVocab.vocab(i).indexingSchema);
       expect(schema.properties.indexing.items.anyOf).to.have.deep.members(expectedMembers);
     });
 
-    it('should have each pattern
+    it('should include each possible index term as a key in properties', () => {
+      const schema = libSchema.oadaSchema(testSchemas.regularSchemaBeforeOADASchema);
+      _.each(testSchemas.regularSchemaBeforeOADASchema.indexing, 
+        i => expect(schema.properties[i]).to.include.keys(_.keys(oadaVocab.vocab(i)))
+      );
+    });
 
+    it('should include the schema\'s _type in the vocab._type for all links in index schema', () => {
+      // test for both enum-style index (crop-type), and pattern-style index (year)
+      const schema = libSchema.oadaSchema(testSchemas.regularSchemaBeforeOADASchema);
+      // we know regularSchemaBeforeOADASchema contains crop-index and year-index
+      const cropIndex = oadaVocab.vocab('crop-index');
+      const yearIndex = oadaVocab.vocab('year-index');
+      const _type = testSchemas.regularSchemaBeforeOADASchema._type;
+      // Check the properties and the patternProperties:
+      _.each(cropIndex.properties, 
+        (link,key) => {
+          expect(schema.properties['crop-index'].properties[key].vocab._type).to.include(_type)
+        }
+      );
+      _.each(yearIndex.patternProperties, 
+        (link,key) => expect(schema.properties['year-index'].patternProperties[key].vocab._type).to.include(_type)
+      );
+    });
+
+    it('should allow a mix of vocab terms and manual schemas in indexing', () => {
+      const schema = libSchema.oadaSchema(testSchemas.schemaMixIndexing);
+      expect(schema.properties).to.include.key('year-index');
+    });
+
+    it('should throw when given term schema without indexingSchema', () => {
+      const schema = _.cloneDeep(testSchemas.schemaMixIndexing);
+      delete schema.indexing[0].indexingSchema;
+      let error = false;
+      try { libSchema.oadaSchema(schema) } catch(e) { error = e; }
+      expect(error).to.be.an.instanceof(libSchema.errors.NoIndexingSchemaKeyDefinedOnIndexError);
+    });
+
+    // should throw when non-vocab schema indexingSchema has no index key for property name
+    it('should throw when given non-vocab schema that has no enum index key to get the name', () => {
+      const schema = _.cloneDeep(testSchemas.schemaMixIndexing);
+      delete schema.indexing[0].indexingSchema.properties.index;
+      let error = false;
+      try { libSchema.oadaSchema(schema) } catch(e) { error = e; }
+      expect(error).to.be.an.instanceof(libSchema.errors.IndexingNonVocabSchemaLacksIndexKeyForItsName);
+    });
   });
 });
+
