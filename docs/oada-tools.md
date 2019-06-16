@@ -48,7 +48,7 @@ does not mean that vocaularies are not extremely useful: each individual context
 greatly from having a vocabulary.  It simply means that you should expect to need to perform
 translation when you cross context boundaries.
 
-#### Recommending Default Acceptance of Things You Don't Understand
+#### Recommending Default Acceptance of "Things You Don't Understand"
 Therefore, we recommend using `additionalProperties: true` (the default) for all objects
 in your json-schema's.   This means that every object will allow for non-pre-defined keys
 to exist, thus making any additive change to a schema inherently backwards-compatible.
@@ -192,6 +192,77 @@ different OADA services.  You can picture in your head two trees that interleave
 each other at the bottom without any of the leaves bumping into each other when you
 overlap the trees.
 
+## Constructing a tree with OADA Links
+
+Thus far most of our focus has been on how to define the schema for a single content
+type.  However, when solving any real problem, you typically don't just define one
+resource, you define a graph of content types that contain many kinds of resources.
+To accomplish this, the natural place to specify how the graph fits together is
+at the links within the schemas themselves.  In other words, a link schema can be
+understood as a link _to_ some other type of resource.
+
+Thsi library does not validate or test these link-type relationships currently as it
+is focused on validating a single resource at a time.  It should, however, contain
+enough information in it's schema tree to validate an entire OADA tree in the future
+if need be, or to construct an appropriate tree for the `oada-cache` library.  Therefore,
+we can use the OADA libraries to help us add these `_type` annotations to our 
+set of resources.
+
+We should not, however, constrain developers from being able to link resources in
+new ways.  To solve this issue, we can simply re-use the `known` concept for
+enumerated types defined earlier.  A schema therefore defines a set of _known_ resource
+types for the link, not necessarily an exclusive set.  A script to validate a tree
+could then treat the known types as exclusive when necessary.
+
+In many cases, there may be more than
+one possible `_type` for the linked document.  For example, in the case of a
+food safety certification, the list of all certifications may contain links to
+many different kinds of certification formats.  Therefore, `_type` for a `link`
+can either be a single string or an array of strings.  This `_type` only 
+lives under the `vocab` key in the schema that is added by the vocab library.
+Therefore, the resulting schema for a vocab term that is a typed link should look
+like this:
+
+```javascript
+{ 
+  description: 'an example of a typed link',
+  properties: {
+    // same as a link:
+    _id: { type: 'string' },
+  }
+  vocab: {
+    // _type can be a single string or an array of strings:
+    _type: [ 
+      'application/vnd.trellisfw.audit.globalgap.1+json',
+      'applicaiton/vnd.trellisfw.audit.primusgfs.1+json'
+    ],
+    // ... and the other vocab-defined keys ...
+  }
+```
+
+You can use the `libVocab.link()` function to simplify this when registering links:
+
+```javascript
+register('certification', libVocab.link([
+  'application/vnd.trellisfw.globalgap.1+json'
+  'application/vnd.trellisfw.audit.globalgap.1+json',
+  'application/vnd.trellisfw.audit.sqfi.1+json',
+  'applicaiton/vnd.trellisfw.audit.primusgfs.1+json',
+});
+```
+If you already have a vocab term defined that has some of the existing `_types`, and
+you'd just like to add a new `_type` or two to what's there already, you can pass
+an optional base schema for your link along with the new `_type`'s  to add:
+
+```javascript
+// Note how we can use override to replace the original description with our own:
+register('ourPrivateCertificationLink', libVocab.override(
+  libVocab.link('application/vnd.our.private.type.1+json', vocab('certification')),
+  { description: 'A link to any normal certification or one of our private ones' }
+));
+```
+
+
 
 ## Dynamic Graph Indexing and Traveling Context for API's
 
@@ -304,7 +375,7 @@ can lead to race conditions unless you can make use of OADA's ability to do oppo
 For that reason, one should attempt to design the domain model such that 
 dynamic adjustments are as rare as possible by picking well-sized indexing for core data models.
 
-### Traveling Context
+### Traveling Index Context
 
 There are many times that one could envision a particular resource being pulled out of an OADA
 service and used elsewhere.  In this case, the semantic information contained in it's URL
@@ -413,7 +484,7 @@ scale-related indexing intended to keep documents a manageable size should be pl
 document as a traveling context.
 
 Another way of differentiating between these two types of "indexing" (semantic vs. scale) 
-the scale-based indexing should always be a purely functional calculation from
+the scale-based indexing should be a purely functional calculation from
 the values of the data points themselves.  You cannot know what the correct scale-based
 indexing is for a data point unless you know the values contained in that data point.  This
 is different than the semantic indexing in which you need not know anything about the actual
@@ -423,7 +494,7 @@ it should live in the graph.
 Notice also that the content type of this document is the same as it was when `year-index`, `crop-index`,
 and `geohash-index` weren't a part of the URL.  This has been our convention to avoid ballooning
 the number of content types.  When you are indexing for scale, each level of indexing is the same 
-`_type` as if the data itself had lived at that level.  Therefore, in the scheme listed above, all of the 
+`_type` as if the data itself had lived at that level.  Therefore, in the schema listed above, all of the 
 following request/response pairs as we move down the URL graph have the same `_type` of 
 `application/vnd.oada.as-harvested.yield-moisture-dataset.1+json` (pay attention to the URL's themselves
 to see how they grow as you move through the graph):
@@ -552,9 +623,9 @@ all these possible responses based on whatever indexing is being used.  In addit
 we also need to augment the basic schema to have the appropriate indexing key added 
 at each level for the traveling context.
 
-As a developer, you would also like to know what is the accepted core indexing for this dataset.
-Therefore, it should be easy to see that this particular data should be indexed as year,crop,geohash
-when reading the schema and examples.  In addition, it should be possible to build a schema "viewer"
+Adding to this, as a developer, you would also like to know what is the accepted core indexing for this dataset.
+Therefore, it should be easy to see that this particular data should be indexed as `year/crop/geohash`
+rather than `crop/geohash/year` or `operator/lunar-cycle/crop`, etc.  It also should be possible to build a schema "viewer"
 that can read the schema and example definitions in `oada-formats` and present some navigable
 UI that lets them look around the data model.  We will discuss the current OADA solutions to these
 requirements in the next sections.
@@ -577,7 +648,7 @@ module.exports = oadaSchema({
   _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
   description: "Here is an example schema using indexing keyword",
 
-  // These are all vocab terms:
+  // These are all vocab terms, ordering specified by array order:
   indexing: [ 'year-index', 'crop-index', 'geohash-index' ],
 
   // And here is the regular schema for this content type:
@@ -606,11 +677,46 @@ it also does hide quite a bit of complexity behind convention which could confus
 that is not intimately familiar with this structure.  Ideally this model would allow one to
 gradually build up that knowledge as-needed.
 
+If you want to specify a non-vocab term in the indexing array for a resource schema,
+you need to make the schema look like this:
+```javascript
+import { oadaSchema } from '../lib/oada-schema-util';
+import { override, patterns } from '../lib/vocabs/oada';
+
+// Pass the main schema object through oadaSchema:
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
+  description: "Here is an example schema using indexing with manual schema",
+
+  // These are all vocab terms, ordering specified by array order:
+  indexing: [ 'year-index', {
+    indexing: { index: 'special-crop-index', 
+  }],
+
+  // And here is the regular schema for this content type:
+  properties: {
+    // start with the regular generic data object, and override to specify particular data:
+    data: override('data', {
+      // keys under "data" are random strings (hence patternProperties instead of properties):
+      patternProperties: {
+        // This is a handy regular expression string from the vocab lib that avoids matching
+        // keys that look like indexes, but does match any other random string.
+        [patterns.indexSafePropertyNames]: {
+          properties: arrayToProperties(['id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width']),
+          required: [ 'area', 'weight', 'moisture', 'location' ],
+        }
+      }
+    })
+  },
+};
+
+```
+
 ### Defining `*-index` Vocabulary Terms
 Within the vocabulary, you can define a term that is intended to act as an index by 
 using the same `indexing` extension to json-schema.  This should define what the object 
 looks like in the traveling context for any schema that is going to use that index.  We 
-recommend using a basic structure like `index`, `value`, `source` to indicate the name
+recommend using a basic set of keys like `index`, `value`, `source` to indicate the name
 of the index, the value chosen when navigating the index, and the source list identifier 
 from which the possible values have been derived.
 
@@ -619,15 +725,25 @@ Here are examples for the `year-index` and `crop-index` terms from the example a
 Note this code snippet is what would go inside your vocabulary definition file, 
 similar to `vocabs/oada/index.js`:
 ```javascript
+// Our convention is to save various regular expression strings in 
+global patterns variable
 patterns.year = '^[0-9]{4}$';
+
 register('year-index', {
   description: 'An index to split things up by year',
-  indexing: {
+  // Here is the json-schema extension describing the index
+  indexingSchema: {
     index: requireValue('year-index'),
     value: { type: 'string', pattern: patterns.year },
     source: 'oada.vocab.year',
   },
+  // The rest just is a normal schema for what this resource would look like
+  // at this level:
   patternProperties: {
+    // In this case, the resource would look like a bunch of 4-digit string keys
+    // that represent a year, and each one's value is a link to the same content type.
+    // Note that the extension handilng code will fill in the `_type` for the link 
+    // to at least go to the same content type.
     [patterns.year]: vocab('link'),
   },
 });
@@ -650,12 +766,14 @@ register('crop-type', enumSchema({
 
 register('crop-index', {
   description: 'An index to split things up by crop-type',
-  indexing: {
+  // Here is what the traveling index context object should look like:
+  indexingSchema: {
     index: requireValue('crop-index'),
-    value: vocab('crop-type'),
+    value: vocab('crop-type'), // this gets the list of known crop types in here
     source: requireValue('oada.vocab.crop-type'),
   },
-  properties: vocab.arrayToProperties(vocab('crop-type').known, vocab('link')),
+  // and here is what the actual contents of a crop-index should look like:
+  properties: libVocab.arrayToProperties(vocab('crop-type').known, libVocab.vocab('link')),
   // The arrayToProperties function just returns an object whose keys are from the first
   // argument, and whose values are all the same schema from the second argument.
   // In this case, it will produce an object that is the same as if you did this:
@@ -668,7 +786,7 @@ register('crop-index', {
 ```
 
 In this case, we have a defined vocab term named `crop-type` that already contains a set of known
-possible values.  The `crop-index` want to use that vocab term for indexing.  Therefore,
+possible values.  The `crop-index` wants to use that vocab term for indexing.  Therefore,
 it specifies it's traveling context with a value that looks the same as a `crop-type`, and a source
 of `oada.vocab.crop-type`.  Then, since each of the known values can be keys that link to another
 resource, it specifies each of the known values of `crop-type` as a possible key on the resource.
@@ -680,89 +798,25 @@ and therefore two identical values will merge together as a single value at the 
 if this is not the case, then you should be aware that the merging will occur.
 
 
-**Example 3: index sourced from another resource**
-A third possibility is an index whose possible values are sourced from another resource within that
-user's local OADA cloud.  For example, a `fields-index` might index values by the names of fields
-that a farmer assigns.  Since those names are made up by the farmer, there is no globally-agreed
-upon `source` string to represent the possible field values.  However, the list of fields and their
-names likely exists elsewhere in the graph, so the source can just be a link to that list:
+### `vocab._type` filled in automatically for index links by `schemaUtils.oadaSchema`
 
+Recall that our convention for indexing is that intermediate indexing documents will
+all have the same content type as the underlying resource that is being indexed in order
+to avoid needing to define too many content types.  That means the schema for any of
+the intermediate indexing resources will contain links that should say they point to the
+same content type as the underlying resource.  
 
+However, when you define a general vocabulary term, you don't know what resource 
+types it is going to be used in: those will be defined in the resource schemas that
+use the vocab term.  Therefore, the `schemaUtils.oadaSchema` function has a handy
+feature that when you put a term in the `indexing` array, it will search through
+that term's schema (properties or patternProperties) for any keys that look like 
+a link and append the current schema's content type to the set of `vocab._type`'s 
+on the link.
 
-```javascript
-
-patterns.fieldName = '^.+$'; // Field name has 1 or more characters of any kind
-register('fields-index', {
-  description: 'An index to split things up by farmer-defined field names',
-  indexing: {
-    index: requireValue('fields-index'),
-    value: 'Back40',
-    source: vocab.link('application/vnd.oada.fields-index.1+json'),
-    ),
-  },
-  patternProperties: {
-    [patterns.fieldName]:
-      vocab('link'),
-  },
-});
-
-register('field', {
-  description: 'A field has a name, boundary, and possibly an index of other child fields '
-              +'which comprise that field.',
-  
-
-});
-
-
-```
-
-### Defining a Resource Schema with a Recursive Index
-You may have reason to recursively define an index.  Using the `fields-index` example
-above, one `field` may contain other, smaller `fields`.  In that case, it is not known ahead of
-time exactly how many levels of indexing you will encounter because that depends on the farmer's
-choice of organizing principles for his fields.  What _is_ known is that the traveling context
-array's items will be of type `fields-index`, but you don't know how many there will be.
-
-This doesn't affect the definition of the `fields-index` vocabulary term above in Example 3, 
-but it does affect the schema defintiion for the overall resource that can use it.
-
-```javascript
-import { oadaSchema } from '../lib/oada-schema-util';
-import { override, patterns } from '../lib/vocabs/oada';
-
-// Pass the main schema object through oadaSchema:
-module.exports = oadaSchema({
-  _type: 'application/vnd.oada.fields.1+json',
-  description: "Here is an example schema with a recursive index",
-
-  // Even though there may be many fields-index's, oadaSchema just puts this as one
-  // of the possible items on the schema
-// ...STOPPED HERE...
-  indexing: [ 'fields-index' ],
-
-  // And here is the regular schema for this content type:
-  properties: {
-    // start with the regular generic data object, and override to specify particular data:
-    data: override('data', {
-      // keys under "data" are random strings (hence patternProperties instead of properties):
-      patternProperties: {
-        // This is a handy regular expression string from the vocab lib that avoids matching
-        // keys that look like indexes, but does match any other random string.
-        [patterns.indexSafePropertyNames]: {
-          properties: arrayToProperties(['id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width']),
-          required: [ 'area', 'weight', 'moisture', 'location' ],
-        }
-      }
-    })
-  },
-};
-
-
-```
-
-### `_types` filled in for links by `schemaUtils.oadaSchema`
-
-### Small indexes vs. indexes big enough to need their own resource
-
+The index names themselves also appear in a tree as keys which link to the same resource
+type.  If you pass either an index term or a schema with an "index" property in it in
+the `indexing` array, the library will make sure each of those terms are present
+in the schema's properties and that they link to the same resource type.
 
 

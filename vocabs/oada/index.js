@@ -26,18 +26,9 @@
 
 var _ = require('lodash');
 var libvocab = require('../../lib/vocab')('oada');
-var register = libvocab.register;
-var enumSchema = libvocab.enumSchema;
-var vocabToProperties = libvocab.vocabToProperties;
-var arrayToProperties = libvocab.arrayToProperties;
-var vocab = libvocab.vocab;
-var override = libvocab.override;
-var patterns = libvocab.patterns;
+const {register, enumSchema, requireValue, vocabToProperties, copySchemaToKeys,
+       vocab, override, patterns} = libvocab;
 
-// Note that the 'vocab()' function is what this module exports.  It is 
-// defined in libvocab, and is how you should interact with the vocab built here.
-
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 // Basic terms.  Generally used to build up other terms so they need to be 
 // defined here first.
@@ -127,7 +118,7 @@ register('datum', {
       required: ['type', 'properties'], 
       properties: {
         // two valid keys in epsg object as 'properties' and 'type'.  Confusing, I know.
-        type: { type: 'string', enum: [ 'EPSG' ] },
+        type: requireValue('EPSG'),
         properties: { 
           required: [ 'code' ], 
           properties: { code: { type: 'number' } },
@@ -274,68 +265,30 @@ register('geohash-data', {
 
 
 //-----------------------------------------------------------------------
-//-----------------------------------------------------------------------
-// The usual OADA API keys: _id, _rev, _type, _meta
-//-----------------------------------------------------------------------
-
-register('_id', { 
-    description: '_id identifies a resource in the OADA API.',
-    type: 'string',
-});
-
-register('_type', {
-    description: '_type identifies the content-type of a resource in the OADA API and  '+
-           'is required for all OADA-defined formats.  It usually looks like '+
-           'application/vnd.oada.something.1+json.',
-    type: 'string',
-});
-
-register('_rev', { 
-    description: '_rev is the revision string for a resource in the OADA API.',
-    type: 'string', 
-});
-
-// a link has an _id
-register('link', {
-  description: 'A link in OADA has at least an _id key and links one resource to another.',
-  properties: vocabToProperties(['_id']),
-  required: [ '_id' ],
-});
-
-// vocab terms you should use elsewhere for links:
-register('versioned-link', {
-  description: 'A versioned link in OADA has _id an _rev in the link in order '+
-               'allow changes to bubble up from child to parents.',
-  // has 2 properties: _id and _rev
-  properties: vocabToProperties([
-    '_id', '_rev'
-  ]),
-  required: [ '_id', '_rev' ],
-}); 
-
-// _meta is a versioned link:
-register('_meta', override('versioned-link', {
-  description: '_meta is a link to the meta document for a resources.',
-}));
-
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 // Indexes: documents that help partition a large document into smaller ones
 //---------------------------------------------------------------------------
 
-libvocab.setPattern('yearIndex', '^[0-9]{4}$');
+libvocab.setPattern('year', '^[0-9]{4}$');
 register('year-index', {
   description: 'year-index splits things up by a 4-digit year',
   patternProperties: {
-    [patterns.yearIndex]: vocab('link'),
+    [patterns.year]: vocab('link'),
   },
   // This is a specially-added key for oada-schema: since this is an index,
   // it's keys will also become values in the indexing array that tracks
   // which indexes have been applied at a given level, so we need a schema 
   // to match those values as well.  It should agree with the matching of the
   // properties above.
-  indexPropertySchema: { type: 'string', pattern: patterns.yearIndex },
+  indexingSchema: { 
+    properties: {
+      index: requireValue('year-index'),
+      source: 'oada.vocab.year-index',
+      value: { type: 'string', pattern: patterns.year },
+    }
+  },
 });
 
 // crop-index is one of those keys that embeds it's content right inside the document itself
@@ -347,26 +300,17 @@ register('crop-index', {
                'also not considered part of the OADA vocabulary and therefore do '+
                'not appear as vocabulary terms even though they will be in OADA URLs.  This '+
                'is standard for indexes.',
-  // merge together all the known crop types as possible properties, along with the
-  // special "source" property that shows from which list the crop types come from
-  properties: _.mergeDeep(
-    { 
-      // the source of possible crop-index keys is the crop-type oada vocab term.
-      source: enumSchema(['oada.vocab.crop-type']),
-    },
-    // This returns an object with all the known crop types as keys, and each value 
-    // is a generic link:
-    arrayToProperties(vocab('crop-type').known, vocab('link')),
-  ),
-  // indexing helps the library to construct the schema for the indexing key
-  // in any document that was on a path that included this index.  For example,
-  // if a document was down a branch for just "corn" crop-index, then it can contain
-  // a key named "indexing" under which you'll find an object that records that
-  // this is just for a "corn" crop-index in case you send that documetn around elsewhere
-  // which would divorce it from the API context.
-  indexing: { 
+  // This will look like;
+  //   corn: { link },
+  //   beans: { link },
+  //   wheat: { link },
+  properties: copySchemaToKeys({ 
+    keys: vocab('crop-type').known, 
+    schema: vocab('link')
+  }),
+  indexingSchema: { 
     properties: {
-      index: 'crop-index',
+      index: requireValue('crop-index'),
       value: enumSchema(vocab('crop-type').known),
       source: enumSchema(['oada.vocab.crop-type']),
     },
@@ -383,65 +327,15 @@ register('geohash-length-index', {
   patternProperties: {
     [patterns.geohashLengthIndex]: vocab('link'),
   },
-  indexing: {
+  indexingSchema: {
     properties: {
-      index: 'geohash-length-index',
+      index: requireValue('geohash-length-index'),
       value: { type: 'string', pattern: patterns.geohashLengthIndex },
       source: enumSchema(['oada.vocab.geohash-length-index']),
     },
   },
 });
 
-
-// Checking how this looks in indexing for top-level first 1st level linking:
-{
-  _id, _rev, _type, _meta,
-  indexing: [
-    {
-      index: 'crop-index',
-      value: 'corn',
-      source: 'oada.vocab.crop-type',
-    },
-  ],
-  geohash-length-index: {
-    // NO INDEXING KEY HERE BECAUSE INSIDE PARENT
-    // these are not big, keep in parent
-    source: 'oada.vocab.geohash-length-index',
-    geohash-7: { _id, _type },
-    geohash-8: { _id, _type },
-  },
-}
-
-{
-  _id, _rev, _type, _meta,
-  indexing: [
-    {
-      index: 'crop-index',
-      value: 'corn',
-      source: 'oada.vocab.crop-type',
-    },
-    {
-      index: 'geohash-length-index',
-      value: 'geohash-7',
-      source: 'oada.vocab.geohash-length-index',
-    },
-  ],
-  geohash-index: {
-    indexing: {
-      source:'oada.vocab.geohash',
-      geohash-length: 7
-    },
-    dkfj023k: { _id, _rev },
-    dkfj023j: { _id, _rev },
-    dkfj023l: { _id, _rev },
-    ...
-    ...really big...
-    ...that means this can ONLY be in a resource by itself...
-    ...we therefore cannot have a geohash-index at a top-level
-    ...so we COULD have this just link to the actual index, in which case we
-    ...would need to fill in the indexing array with the partial geohash-index at the bottom
-  },
-}
 
 register('geohash-index', {
   description: 'geohash-index is a key that holds under it a set of geohash keys of a particular '+
@@ -454,9 +348,9 @@ register('geohash-index', {
   patternProperties: {
     [patterns.geohash]: vocab('link'),
   },
-  indexing: {
+  indexingSchema: {
     properties: {
-      index: 'geohash-index',
+      index: requireValue('geohash-index'),
       value: vocab('geohash'),
       source: enumSchema(['oada.vocab.geohash']),
     },

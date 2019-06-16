@@ -31,7 +31,7 @@ let testSchemas = {
     properties: { _id: { type: 'string' }, },
   },
   testlink2: {
-    description: 'a test term that looks like an oada link',
+    description: 'a second test term that looks like an oada link',
     properties: { _id: { type: 'string' }, },
   },
   peopleIKnow: {
@@ -130,6 +130,13 @@ describe('Library - lib/vocab.js', () => {
         peopleIKnow: testVocab.vocab('peopleIKnow'),
       });
     });
+    it('should return object with terms as keys and retain base keys', () => {
+      expect(testVocab.vocabToProperties(['testlink'], { starter: 'ishere' }))
+      .to.deep.equal({
+        testlink: testVocab.vocab('testlink'),
+        starter: 'ishere',
+      });
+    });
   });
 
   describe('vocabToSchema', () => {
@@ -140,16 +147,6 @@ describe('Library - lib/vocab.js', () => {
           testlink: testVocab.vocab('testlink'),
           peopleIKnow: testVocab.vocab('peopleIKnow'),
         },
-      });
-    });
-  });
-
-  describe('arrayToProperties', () => {
-    it('should properly zip together an array of 2 key names', () => {
-      expect(testVocab.arrayToProperties(['firstone', 'secondone'], { theschema: true }))
-      .to.deep.equal({
-        firstone: { theschema: true},
-        secondone: { theschema: true},
       });
     });
   });
@@ -244,6 +241,12 @@ describe('Library - lib/vocab.js', () => {
       .to.deep.equal(expected);
     });
 
+    it('should allow a schema object instead of a vocab term as first argument', () => {
+      const orig = _.cloneDeep(testSchemas.testlink);
+      const merge = { description: 'changed description' };
+      expect(testVocab.override(orig, merge).description).to.equal(merge.description);
+    });
+
   });
 
   describe('vocab', () => {
@@ -263,33 +266,61 @@ describe('Library - lib/vocab.js', () => {
   });
 
   describe('link', () => {
-    it('should return empty vocab._types if no argument is passed', () => {
+    it('should return empty vocab._type if no argument is passed', () => {
       const result = testVocab.link();
-      expect(result.vocab._types).to.be.an('array');
-      expect(result.vocab._types.length).to.equal(0);
+      expect(result.vocab._type).to.be.an('array');
+      expect(result.vocab._type.length).to.equal(0);
     });
 
     it('should successfully add a single type to a link', () => {
       const type = 'application/oada.test.1+json';
       const result = testVocab.link(type);
-      expect(result.vocab._types).to.deep.equal([type]);
+      expect(result.vocab._type).to.deep.equal([type]);
     });
 
-    it('should successfully add multiple _types to a link', () => {
+    it('should successfully add multiple _type to a link', () => {
       const types = ['application/oada.test.1+json', 'application/oada.test.2+json']
       const result = testVocab.link(types);
-      expect(result.vocab._types).to.deep.equal(types);
+      expect(result.vocab._type).to.deep.equal(types);
     });
 
     it('should concatenate a type onto existing types for optional base link schema', () => {
       const base = testVocab.vocab('testlink');
-      base.vocab._types = [ 'application/oada.test.1+json', 'application/oada.test.2+json' ];
+      base.vocab._type = [ 'application/oada.test.1+json', 'application/oada.test.2+json' ];
       const types = [ 'application/oada.test.3+json', 'application/oada.test.4+json' ];
       const result = testVocab.link(types, base);
-      base.vocab._types = _.concat(base.vocab._types, types);
-      expect(result.vocab._types).to.deep.equal(base.vocab._types);
+      base.vocab._type = _.concat(base.vocab._type, types);
+      expect(result.vocab._type).to.deep.equal(base.vocab._type);
     });
 
+  });
+
+  describe('versionedLink', () => {
+    it('should return a link schema with an _rev property', () => {
+      const result = testVocab.versionedLink();
+      expect(result.properties).to.have.keys(['_id', '_rev']);
+      expect(result.properties._rev).to.deep.equal(testVocab.vocab('_rev'));
+    });
+
+    it('should concatentate a type onto existing types when base link schema is passed, and have _rev property', () => {
+      const base = testVocab.vocab('versioned-link');
+      base.vocab._type = [ 'application/oada.test.1+json', 'application/oada.test.2+json' ];
+      const types = [ 'application/oada.test.3+json', 'application/oada.test.4+json' ];
+      const result = testVocab.versionedLink(types, base);
+      base.vocab._type = _.concat(base.vocab._type, types);
+      expect(result.vocab._type).to.deep.equal(base.vocab._type);
+      expect(result.properties._rev).to.deep.equal(testVocab.vocab('_rev'));
+    });
+  });
+
+  describe('OADA reserved key pre-registration', () => {
+    it ('should have _id, _rev, _type, _meta, _changes, _stats', () => {
+      expect(testVocab._vocab).to.include.keys([ '_id', '_rev', '_type', '_meta', '_changes', '_stats' ]);
+    });
+
+    it('should have link and versioned-link pre-registered', () => {
+      expect(testVocab._vocab).to.include.keys(['link', 'versioned-link']);
+    });
   });
 
 });
