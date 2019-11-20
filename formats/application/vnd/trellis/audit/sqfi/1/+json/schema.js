@@ -1,82 +1,66 @@
-var schemaUtil = require('../../../../../../../../lib/schema-util');
-var      vocab = require('../../../../../../../../vocabs/trellis');
+const libvocab = require('vocabs/trellis');
+const {vocab,vocabToProperties,requireValue,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-var restrictItemsTo = schemaUtil.restrictItemsTo;
-var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
-var requireValue = schemaUtil.requireValue;
-
-module.exports = schemaUtil.oadaSchema({
+module.exports = oadaSchema({
+  _type: 'application/vnd.trellis.audit.sqfi.1+json',
   description:
 
 'A PrimusGFS audit is like a generic audit, but more restrictive.  Certain keys '+
 'are marked as "required" here that should always exist if you have a PrimusGFS '+
 'audit.',
 
-  properties: {
-    // oadaSchema requires this _type on the schema it produces
-    _type: 'application/vnd.trellis.audit.sqfi.1+json',
-
+  properties: vocabToProperties([
     // certificationid is the same across audit, corrective actions, and certificate
-    certificationid: vocab('certificationid'),
-
-    // scheme: info about the type of audit
-    scheme: vocab('scheme', {
-      // PrimusGFS must be a valid 'scheme',
-      // also it must have name set to 'PrimusGFS' and have a version
-      also: {
-        required: ['name','version'],
-        properties: {
-          name: requireValue('SQFI'),
-        },
-      }
-    }),
-
-    // certifying body: info about who performed the audit
-    certifying_body: vocab('certifying_body', {
-      also: {
-        required: ['name', 'auditor'],
-      }
-    }),
-
-    // Organization contains information about the party being audited.
-    organization: vocab('organization', {
-      also: {
-        required: [ 'organizationid', 'name' ],
-      }
-    }),
-
-    // Scope: what sorts of things does this audit cover (operation, products, etc.)
-    scope: vocab('scope', {
-      also: {
-        required: [ 'description', 'operation', 'products_observed' ],
-      },
-    }),
-
-    conditions_during_audit: vocab('conditions_during_audit', {
-      also: {
-        required: [ 'FSMS_observed_date', 'operation_observed_date' ],
-        properties: {
-          'FSMS_observed_date': vocab('FSMS_observed_date', {
-            required: [ 'start', 'end' ],
-          }),
-          'operation_observed_date': vocab('operation_observed_date', {
-            required: [ 'start', 'end' ],
-          }),
-        },
-      },
-    }),
+    'certificationid',
 
     // Total score (preliminary and final) for this audit
-    score: vocab('score'),
+    'score',
 
     // This part describes the overall structure of the document.  Odds are good that all PrimusGFS harvest crew reports
     // have the same sections and control points.  Note that a section may contain other sections, or it may contain control pointids.
-    sections: vocab('sections'),
+    'sections',
 
     // All the control points, regardless of section, go in this part.  Key is the
     // control_pointid for that question
-    control_points: vocab('control_points'),
+    'control_points',
+  ], {
+    // scheme: info about the type of audit
+    scheme: override('scheme', {
+      // PrimusGFS must be a valid 'scheme',
+      // also it must have name set to 'PrimusGFS' and have a version
+      properties: {
+        name: requireValue('SQFI'),
+      },
+      required: ['name','version'],
+    }, { mergePropertiesInsteadOfReplace: true }),
 
-  },
+    // certifying body: info about who performed the audit
+    certifying_body: override('certifying_body', {
+      required: ['name', 'auditor'],
+    }),
+
+    // Organization contains information about the party being audited.
+    organization: override('organization', {
+      required: [ 'organizationid', 'name' ],
+    }),
+
+    // Scope: what sorts of things does this audit cover (operation, products, etc.)
+    scope: override('scope', {
+      required: [ 'description', 'operation', 'products_observed' ],
+    }),
+
+    conditions_during_audit: override('conditions_during_audit', {
+      properties: {
+        FSMS_observed_date: override('FSMS_observed_date', {
+          required: [ 'start', 'end' ],
+        }),
+        operation_observed_date: override('operation_observed_date', {
+          required: [ 'start', 'end' ],
+        }),
+      },
+      required: [ 'FSMS_observed_date', 'operation_observed_date' ],
+    }),
+  }),
 });
 

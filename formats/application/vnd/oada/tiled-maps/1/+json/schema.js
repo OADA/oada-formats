@@ -1,9 +1,11 @@
-var schemaUtil = require('../../../../../../../lib/schema-util.js');
 
-var versionedLink = schemaUtil.versionedLink;
-var  requireValue = schemaUtil.requireValue;
+const libvocab = require('vocabs/oada');
+const {vocab,vocabToProperties,link} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = schemaUtil.oadaSchema({
+
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.as-harvested.tiled-maps.1+json',
   description: 'tiled-maps is used for visualization and statistical calculations, '+
                'and just generally for making arbitrary geospatial queries. '+
                'A tiled map is generated from the as-harvested source data which is  '+
@@ -17,20 +19,11 @@ module.exports = schemaUtil.oadaSchema({
                'In reality, the value for a given "pixel" in a tile is just the stats object '+
                'of the much smaller geohash that sits on that pixel.',
   properties: {
-    _type: 'application/vnd.oada.as-harvested.tiled-maps.1+json',
-
-    context: {
-      required: ['harvest'], additionalProperties: true,
-      properties: {
-        harvest: requireValue('tiled-maps'),
-      },
-    },
-
-    'dry-yield-map': versionedLink([
+    'dry-yield-map': link([
       'application/vnd.oada.as-harvested.tiled-maps.dry-yield-map.1+json',
     ]),
 
-    'moisture-map': versionedLink([
+    'moisture-map': link([
       'application/vnd.oada.as-harvested.tiled-maps.moisture-map.1+json',
     ]),
   },

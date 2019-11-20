@@ -226,6 +226,16 @@ describe('Library - lib/vocab.js', () => {
       .to.deep.equal(expected);
     });
 
+    it('should retain non-overlapping properties of both schemas if mergePropertiesInsteadOfReplace is set', () => {
+      const orig = _.cloneDeep(testVocab.vocab('peopleIKnow'));
+      const merge = { properties: { newkey: { type: 'string' } } };
+      const expected = _.cloneDeep(testSchemas.peopleIKnow);
+      expected.properties.newkey = merge.properties.newkey;
+      expected.vocab = { parent: orig.vocab };
+      expect(testVocab.override('peopleIKnow', merge, { mergePropertiesInsteadOfReplace: true } ))
+      .to.deep.equal(expected);
+    });
+
     it('should replace all properties of items under patternProperties if mergePropertiesInsteadOfReplace is NOT set', () => {
       const orig = _.cloneDeep(testVocab.vocab('oneWithPatternProperties'));
       const merge = {

@@ -1,10 +1,8 @@
-var      vocab = require('../../../../../../../../vocabs/oada');
-var schemaUtil = require('../../../../../../../../lib/oada-schema-util')(vocab);
-const _ = require('lodash');
+const libvocab = require('vocabs/oada');
+const {vocab,vocabToProperties,patterns,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-const {override,vocabToSchema,vocabToProperties,patterns} = vocab;
-
-module.exports = schemaUtil.oadaSchema({
+module.exports = oadaSchema({
   _type: 'application/vnd.oada.as-harvested.yield-moisture-dataset.1+json',
 
   description: 'The "yield-moisture" document contains as-harvested yield-moisture data. '+
@@ -21,9 +19,11 @@ module.exports = schemaUtil.oadaSchema({
     // like units that are repeated for most data points here.
     templates: override('templates', {
       patternProperties: {
-        [patterns.indexSafePropertyNames]: vocabToSchema([
-          'id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width' 
-        ]),
+        [patterns.indexSafePropertyNames]: override('data-point', {
+          properties: vocabToProperties([
+            'id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width' 
+          ]),
+        }),
       }
     }),
 
@@ -33,13 +33,13 @@ module.exports = schemaUtil.oadaSchema({
     // the test to only these properties (no extras), but none of them become required.
     data: override('data', {
       patternProperties: {
-        [patterns.indexSafePropertyNames]: {
+        [patterns.indexSafePropertyNames]: override('data-point', {
           properties: vocabToProperties([
             'id', 'template', 'time', 'area', 'weight', 'moisture', 'location', 'width' 
           ]), 
           // mark some of the keys as required for every item:
           required: [ 'area', 'weight', 'moisture', 'location' ],
-        },
+        }),
       },
     }),
 

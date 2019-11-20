@@ -1,18 +1,14 @@
-var schemaUtil = require('../../../../../../../lib/schema-util');
-var      vocab = require('../../../../../../../vocabs/oada');
+const libvocab = require('vocabs/oada');
+const {vocab,versionedLink} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-var versionedLink = schemaUtil.versionedLink;
-
-module.exports = schemaUtil.oadaSchema({
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.harvest.1+json',
   description: 
 
-'A harvest document holds links to information related to harvest.',
+'A harvest document holds links to information related to harvest activites or data.',
 
   properties: {
-    _type: 'application/vnd.oada.harvest.1+json',
-
-    context: { },
-
     'as-harvested': versionedLink([
       'application/vnd.oada.as-harvested.1+json'
     ]),

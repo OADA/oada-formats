@@ -1,7 +1,7 @@
 module.exports = {
-  _id: 'k2fjo23lf3',
-  _rev: '9-9034i2f3n33f',
-  _type: 'application/vnd.oada.tiled-maps.moisture-map.1+json',
+  _id: 'resources/k2fjo23lf3',
+  _rev: '9',
+  _type: 'application/vnd.oada.tiled-maps.dry-yield-map.1+json',
 
   // All OADA-designed resources have the context key to describe the
   // type of data in this resource as well as indexing contraints used
@@ -10,23 +10,34 @@ module.exports = {
   // This means that this resource contains data for corn whose GPS coordinates
   // fall within the geohash '39jk7'.
 
-  context: {
-    // required keys:
-    'harvest': 'tiled-maps',
-    'tiled-maps': 'moisture-map',
-
-    // optional keys based on indexing scheme that determined
-    // which data is included in this tile:
-    'crop-index': 'corn',
-    'geohash-length-index': 'geohash-5',
-    'geohash-index': '39jk7'
-  },
+  indexing: [
+    {
+      index: 'year-index',
+      source: 'oada.vocab.year-index',
+      value: '2019'
+    },
+    {
+      index: 'crop-index',
+      source: 'oada.vocab.year-index',
+      value: 'corn',
+    },
+    {
+      index: 'geohash-length-index',
+      source: 'oada.vocab.geohash-length-index',
+      value: '7',
+    },
+    {
+      index: 'geohash-index',
+      source: 'oada.vocab.geohash-index',
+      value: 'dpq78df',
+    },
+  ],
 
   // stats holds sum/count information representing the data points in
   // this document.
   stats: {
-    weight: {
-      units: 'bushels',
+    moisture: {
+      units: '%H2O',
       sum: 123123.4124,
       'sum-of-squares': 1412413.234234,
       count: 1243,
@@ -42,11 +53,8 @@ module.exports = {
     '123': {
       // known units for area: ac, ha, or valid UUCM units
       area: { units: 'ac', },
-      // known units for weight: bu, bushels, lbs, kg, or valid UUCM unit
-      weight: { units: 'bu' },
       // known units for moisture: %H2O or valid UUCM unit
       moisture: { 
-        value: 15.0,
         units: '%H2O',
       },
     },
@@ -81,9 +89,9 @@ module.exports = {
       template: '123',
       // which geohash goes with this weight and area.  Same as key.
       geohash: '023jf2d',
-      // stats for weight of crop harvested in this tile.  Units above in
+      // stats for moisture of crop harvested in this tile.  Units above in
       // the template.
-      weight: {
+      moisture: {
         sum: 123123.4124,
         'sum-of-squares': 1412413.234234,
         count: 1243,
@@ -100,7 +108,7 @@ module.exports = {
     '023jf2e': {
       template: '123',
       geohash: '023jf2e',
-      weight: {
+      moisture: {
         sum: 123123.4124,
         'sum-of-squares': 1412413.234234,
         count: 1243,

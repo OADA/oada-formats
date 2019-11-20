@@ -6,17 +6,8 @@
 //---------------------------------------------------------------------------------
 
 
-var _ = require('lodash');
-var libvocab = require('../../../lib/vocab')('gs1'); // vocab module is 'gs1'
-var register = libvocab.register;
-var enumSchema = libvocab.enumSchema;
-var vocab = libvocab.vocab;
-var vocabToProperties = libvocab.vocabToProperties;
-var override = libvocab.override;
-
-// Note that the 'vocab()' function is what this module exports.  It is
-// defined in libvocab, and is how you should interact with the vocab built
-// here.
+const libvocab = require('../../../lib/vocab')('gs1'); // vocab module is 'gs1'
+const { register, enumSchema, vocab, vocabToProperties, override } = libvocab;
 
 //----------------------------------------------------------------------------
 // Identifiers

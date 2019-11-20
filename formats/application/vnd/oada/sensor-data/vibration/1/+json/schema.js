@@ -1,48 +1,28 @@
-var refs = require('../../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {vocab,vocabToProperties,patterns,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
 module.exports = {
-    id: refs.OADA_SENSOR_DATA_VIBRATION_ID,
-    description: 'application/vnd.oada.sensor-data.vibration.1+json',
+  _type: 'application/vnd.oada.sensor-data.vibration.1+json',
 
-    additionalProperties: true,
-
-    allOf: [{
-        $ref: refs.OADA_SENSOR_DATA_GENERIC_ID
-    },
-    {
-        properties: {
-            dataType: {
-                properties: {
-                    definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats',
-                    },
-                    name: {
-                        pattern: '^vibration$'
-                    }
-                }
-            },
-            templates: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            units: {
-                                type: 'string',
-                            }
-                        }
-                    }
-                }
-            },
-            data: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            value: {
-                                type: 'string'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }]
+  // vibration can be listed in quantization instead of raw values
+  properties: {
+    templates: override('templates', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', {
+          properties: vocabToProperties(['sensor', 'units', 'quantization']),
+        })
+      },
+    }),
+    data: override('data', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', {
+          properties: vocabToProperties([
+            'id', 'template', 'time', 'value', 
+            'sensor', 'units', 'quantization'
+          ]),
+        })
+      },
+    }),
+  },
 };

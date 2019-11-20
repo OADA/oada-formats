@@ -52,6 +52,7 @@ register('phone', {
   description: 'phone describes the phone number with country code and area '+
                 'code.',
   type: 'string',
+});
 
 register('fax', {
   description: 'fax number for a person or organization',

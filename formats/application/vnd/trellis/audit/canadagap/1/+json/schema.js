@@ -1,48 +1,42 @@
-var schemaUtil = require('../../../../../../../../lib/schema-util');
-var      vocab = require('../../../../../../../../vocabs/trellis');
+const libvocab = require('vocabs/trellis');
+const {vocab,vocabToProperties,requireValue,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-var restrictItemsTo = schemaUtil.restrictItemsTo;
-var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
-var requireValue = schemaUtil.requireValue;
 
 module.exports = schemaUtil.oadaSchema({
+  _type: 'application/vnd.trellis.audit.canadagap.1+json',
   description: 
   
 'This is the scehma for a CanadaGAP audit.  Please refer to the example and '+
 'the accompanying spreadsheet for how this translates into an actual audit'.
 
-  properties: {
-    // oadaSchema requires this _type on the schema it produces
-    _type: 'application/vnd.trellis.audit.canadagap.1+json',
-
+  properties: vocabToProperties([
     // certificationid is the same across audit, corrective actions, and certificate
     // CanadaGAP does not define a scheme-wide identification scheme, so this
     // will be assigned by the certification body
-    certificationid: vocab('certificationid'),
-  
+    'certificationid',
+
+  ], {
     // scheme: info about the type of audit
-    scheme: vocab('scheme', {
-      also: {
-        required: ['name','version', 'options'],
-        properties: {
-          name: requireValue('CanadaGAP'),
-        },
-      }
+    scheme: override('scheme', {
+      properties: {
+        name: requireValue('CanadaGAP'),
+      },
+      required: ['name','version', 'options'],
     }),
 
     // certifying body: info about who performed the audit
-    certifying_body: vocab('certifying_body', {
-      also: {
-        required: ['name', 'auditor'],
-        // The line below means that of all the keys possible under
-        // certifying_body, canadagap is known to have name, auditor, 
-        // and reviewer keys.  The line above (require:) means that
-        // of those, the auditor and the name are required.
-        patternProperties: enumSchema([ 'name', 'auditor', 'reviewer' ], {
-          also: {
-            properties: {
+    certifying_body: override('certifying_body', {
+      required: ['name', 'auditor'],
+      // The line below means that of all the keys possible under
+      // certifying_body, canadagap is known to have name, auditor, 
+      // and reviewer keys.  The line above (require:) means that
+      // of those, the auditor and the name are required.
 // STOPPED HERE: reviewing how I intended to use the "known" keyword to distinguish
 // CanadaGAP typical audit from others...
+      patternProperties: enumSchema([ 'name', 'auditor', 'reviewer' ], {
+          also: {
+            properties: {
               auditor: { 
             }
           }

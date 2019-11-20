@@ -1,18 +1,18 @@
 module.exports = {
-  _id: 'd0f2hfhhf9qh23233',
-  _rev: '4-kdjf02if32jof3l',
-  _meta: { _metaid: 'd0f2hfhhf9qh23233', _rev: '2-dkfj023if2jfjwlf' },
   _type: 'application/vnd.oada.sensor-data.rainfall.1+json',
 
-  dataType: {
-    definition: 'https://github.com/oada-formats',
-    name: 'rainfall',
-  },
-
-  context: {
-    'timehash-4': 1456370000,
-    'sensor-hub': { _id: '9f84u9f' },
-  },
+  indexing: [
+    { 
+      name: 'day-index',
+      source: 'oada.vocab.day-index',
+      value: '2019-05-04',
+    },
+    {
+      name: 'hour-index',
+      source: 'oada.vocab.hour-index',
+      value: '22:00',
+    },
+  ],
 
   templates: {
     '1': {
@@ -24,10 +24,7 @@ module.exports = {
     },
   },
 
-  // Samples are incuded in this timehash based on their start time
-  // Wind speeds are generally statistics over a time window, so 
-  // data samples with have time-start/time-end/max/mean rather than
-  // time/value.
+  // Samples are incuded in this time window based on their start time
   data: {
 
     'lsdfj02ifjwlsdoif2j3': {
@@ -41,7 +38,7 @@ module.exports = {
       rate: {
         max: 10.902938, // maximum rate of rainfal recorded in this window
       },
-      freezing: true, // true/false if rain is freezing or frozen during window
+      'is-freezing': true, // true/false if rain is freezing or frozen during window
     },
 
   },

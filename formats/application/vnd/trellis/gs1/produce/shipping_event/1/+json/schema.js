@@ -1,43 +1,23 @@
-var schemaUtil = require('../../../../../../../../../lib/schema-util');
-var      vocab = require('../../../../../../../../../vocabs/trellis/gs1');
+const libvocab = require('vocabs/trellis/gs1');
+const {vocab,vocabToProperties} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-var restrictItemsTo = schemaUtil.restrictItemsTo;
-var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
-var requireValue = schemaUtil.requireValue;
+module.exports = oadaSchema({ //reusing OADA schema validation logic
+  // gs1 receiving event requires this _type on the schema it produces
+  _type: 'application/trellis.vnd.gs1.produce.shipping_event.1+json',
 
-module.exports = schemaUtil.oadaSchema({ //reusing OADA schema validation logic
-  description:  
-  
-'GS1 receiving event has certain required fields and and array element',
+  description:  'GS1 receiving event has certain required fields and and array element',
 
-
-  properties: {
-    // gs1 receiving event requires this _type on the schema it produces
-    _type: 'application/trellis.vnd.gs1.produce.shipping_event.1+json',
-
-    // originator is the GLN of the orginating party
-    originator: vocab('originator'),
-     
-    // originator is the GLN of the orginating party
-    trading_partner: vocab('trading_partner'),
-
-    // activity_type is the business function: purchase_order', 'production_work_order','bill_of_landing'
-    activity_type: vocab('activity_type'),
-
-    // originator_type is the type of the orignating trading partner : Manufacturer, Processor, Distributor, Retailor etc
-    originator_type: vocab('originator_type'),
-
-    // receiver_type is the type of the receving trading partner : Manufacturer, Processor, Distributor, Retailor etc
-    receiver_type: vocab('receiver_type'),
-
-    // timestamp is the date-time of the data capturing 
-    timestamp: vocab('timestamp'),
-  
-    // activity_no is the activity_no of the purchase_order, shipment etc
-    activity_no: vocab('activity_no'),
-
-    // contents_of_shipment: details of the trading items: each item includs 'gtin', 'batch_or_lot_serial', 'product_date','sell_by','quantity','unit_of_measure'
-    contents_of_shipment: vocab('contents_of_shipment')
-  },
+  properties: vocabToProperties([
+    'originator',      // originator is the GLN of the orginating party
+    'trading_partner', // trading_partner is the GLN of the trading partner party
+    'activity_type',   // activity_type is the business function: 'purchase_order', 'production_work_order','bill_of_landing'
+    'originator_type', // originator_type is the type of the orignating trading partner : Manufacturer, Processor, Distributor, Retailor etc
+    'receiver_type',   // receiver_type is the type of the receving trading partner : Manufacturer, Processor, Distributor, Retailor etc
+    'timestamp',       // timestamp is the date-time of the data capturing 
+    'activity_no',     // activity_no is the activity_no of the purchase_order, shipment etc
+    'contents_of_shipment' // contents_of_shipment: details of the trading items: each item includes 
+                           // 'gtin', 'batch_or_lot_serial', 'product_date','sell_by','quantity','unit_of_measure'
+  ])
 });
             

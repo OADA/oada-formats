@@ -1,110 +1,27 @@
-var refs = require('../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {vocabToProperties,link} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
-    id: refs.OADA_SENSOR_HUB_ID,
-    description: 'application/vnd.oada.sensor-data.sensor-hub.1+json',
 
-    additionalProperties: true,
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.sensor-hub.1+json',
 
-    properties: {
-        name: {
-            type: 'string'
-        },
-        context: {
-            $ref: refs.TYPE_CONTEXT_ID
-        },
-        location: {
-            $ref: refs.TYPE_LOCATION_ID
-        },
-        sensors: {
-            type: 'object',
-            patternProperties: {
-                '.': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_ID
-                    }]
-                }
-            }
-        },
-        data: {
-            type: 'object',
-            properties: {
-                'air-temperature': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_AIR_TEMPERATURE_ID
-                    }]
-                },
-                'soil-moisture': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_SOIL_MOISTURE_ID
-                    }]
-                },
-                'barometric-pressure': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_BAROMETRIC_PRESSURE_ID
-                    }]
-                },
-                'dew-point': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_DEW_POINT_ID
-                    }]
-                },
-                'relative-humidity': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_RELATIVE_HUMIDITY_ID
-                    }]
-                },
-                'wind-speed': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_WIND_SPEED_ID
-                    }]
-                },
-                'wind-direction': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_WIND_DIRECTION_ID
-                    }]
-                },
-                'cloud-cover': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_CLOUD_COVER_ID
-                    }]
-                },
-                'solar-radiation': {
-                    anyOf: [{
-                        $ref: refs.OADA_VERSIONED_LINK
-                    },
-                    {
-                        $ref: refs.OADA_SENSOR_DATA_SOLAR_RADIATION_ID
-                    }]
-                }
-            }
-        }
-    }
-};
+  properties: vocabToProperties([
+    // Things about the sensor hub:
+    'name', 'location', 'sensors', 
+  ], {
+    // Kinds of data records available (linked from here):
+        'air-temperature': link(['application/vnd.oada.sensor-data.air-temperature']),
+          'soil-moisture': link(['application/vnd.oada.sensor-data.soil-moisture']),
+       'soil-temperature': link(['application/vnd.oada.sensor-data.soil-temperature']),
+    'barometric-pressure': link(['application/vnd.oada.sensor-data.barometric-pressure']),
+              'dew-point': link(['application/vnd.oada.sensor-data.dew-point']),
+      'relative-humidity': link(['application/vnd.oada.sensor-data.relative-humidity']),
+             'wind-speed': link(['application/vnd.oada.sensor-data.wind-speed']),
+         'wind-direction': link(['application/vnd.oada.sensor-data.wind-direction']),
+            'cloud-cover': link(['application/vnd.oada.sensor-data.cloud-cover']),
+               'rainfall': link(['application/vnd.oada.sensor-data.rainfall']),
+        'solar-radiation': link(['application/vnd.oada.sensor-data.solar-radiation']),
+             'vibrations': link(['application/vnd.oada.sensor-data.vibration']),
+  }),
+});

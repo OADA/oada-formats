@@ -1,38 +1,21 @@
-var schemaUtil = require('../../../../../../../../lib/schema-util.js');
-var      vocab = require('../../../../../../../../vocabs/oada');
-const _ = require('lodash');
 
-var versionedLink = schemaUtil.versionedLink;
-var  requireValue = schemaUtil.requireValue;
-var vocabTermsToSchema = schemaUtil.vocabTermsToSchema;
-var restrictItemsTo = schemaUtil.restrictItemsTo;
+const libvocab = require('vocabs/oada');
+const {vocab,vocabToProperties,patterns,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = schemaUtil.oadaSchema({
-  description: 
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada-tiled-maps.moisture-map.1+jspn',
+  description: 'The "moisture-map" document contains harvested moisture readings'+
+               'trade moisture, aggregated at various zoom levels for mapping and '+
+               'fast statistical calculation',
 
-'The "moisture-map" document contains harvest data at the given crop\'s '+
-'trade moisture, aggregated at various zoom levels for mapping and '+
-'fast statistical calculation',
-
-  indexing: [ 'crop-index', 'geohash-length-index', 'geohash-index' ],
+  indexing: [ 'year-index', 'crop-index', 'geohash-length-index', 'geohash-index' ],
 
   properties: {
-
-    _type: 'application/vnd.oada-tiled-maps.moisture-map.1+jspn',
-
-    // context must be at least this (can have more keys):
-    context: {
-      required: [ 'harvest', 'tiled-maps' ], additionalProperties: true,
-      properties: {
-        harvest: 'tiled-maps',
-        'tiled-maps': 'moisture-map',
-      }
-    },
-
     datum: vocab('datum'),
 
-    stats: vocab('stats', {
-      also: vocabTermsToSchema([
+    stats: override('stats', {
+      properties: vocabToProperties([
         'template', 'geohash', 'area', 'moisture',
       ]),
     }),
@@ -40,23 +23,28 @@ module.exports = schemaUtil.oadaSchema({
     // templates are object prototypes for data points: i.e. a full data point
     // is a merge of it's template with the data point itself.  Put things
     // like units that are repreated for most data points here.
-    templates: restrictItemsTo({
-      collection: vocab('templates'),
-      restrictToSchema: vocabTermsToSchema([
-        'template', 'geohash', 'area', 'moisture',
-      ]),
+    templates: override('templates', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', {
+          properties: vocabToProperties([
+            'template', 'geohash', 'area', 'moisture',
+          ]),
+        }),
+      },
     }),
-
 
     // geohash-data holds the actual yield and moisture stats for each tile.
     // Keys are valid geohash-strings of a given length (from context):
-    'geohash-data': restrictItemsTo({
-      collection: vocab('geohash-data'),
-      restrictToSchema: _.merge(vocabTermsToSchema([
-        'template', 'geohash', 'area', 'weight', 'moisture',
-      ],{ required: [ 'area', 'moisture' ]}),
+    'geohash-data': override('geohash-data', {
+      patternProperties: {
+        [patterns.geohash]: override('data-point', {
+          properties: vocabToProperties([
+            'template', 'geohash', 'area', 'moisture',
+          ]),
+          required: [ 'area', 'moisture' ],
+        }),
+      },
     }),
-
   },
 });
 

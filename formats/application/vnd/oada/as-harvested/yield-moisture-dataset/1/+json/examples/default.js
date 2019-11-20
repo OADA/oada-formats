@@ -21,9 +21,14 @@ module.exports = {
       source: 'oada.vocab.crop-type',
     },
     {
+      index: 'geohash-length-index',
+      source: 'oada.vocab.geohash-length-index',
+      value: '7',
+    },
+    {
       index: 'geohash-index',
       value: '9j9j12f',
-      'geohash-length': '7',
+      source:'oada.vocab.geohash-index',
     },
   ],
 
@@ -34,8 +39,6 @@ module.exports = {
   templates: {
     // the key is just any random string distinguishing between templates:
     'k20ifkj': {
-      // Known list of crop types maintained at https://github.com/oada/oada-formats
-      'crop-type': 'corn',
       // List of known units for each type of data maintained at https://github.com/oada/oada-formats
       time: { units: 'unix-timestamp' },
       area: { units: 'acres', },

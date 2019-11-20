@@ -1,7 +1,5 @@
-var refs = require('../../../../../../refs.js');
 
 module.exports = {
-    id: refs.OADA_CONFIGURATION_ID,
     description: 'application/vnd.oada.well-known.oada-configuration.1+json',
 
     required: [

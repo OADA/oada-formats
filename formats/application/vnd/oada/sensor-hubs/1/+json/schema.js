@@ -1,17 +1,17 @@
-var refs = require('../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {link,override,patterns} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
-    id: refs.OADA_SENSOR_HUBS_ID,
-    description: 'application/vnd.oada.sensor-hubs.1+json',
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.sensor-hubs.1+json',
+  description: 'Holds a listing of links to various sensor hubs (each hub may '+
+                 'have many sensors it is responsible for',
 
-    additionalProperties: true,
-
-    properties: {
-        'serial-numbers': {
-            $ref: refs.OADA_LINK_VERSIONED_LIST
-        }
-    },
-    required: [
-        'serial-numbers'
-    ]
-};
+  properties: {
+    'serial-numbers': override('serial-numbers', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: link(['application/vnd.oada.sensor-hub.1+json']),
+      }
+    }),
+  },
+});

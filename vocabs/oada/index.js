@@ -27,12 +27,17 @@
 var _ = require('lodash');
 var libvocab = require('../../lib/vocab')('oada');
 const {register, enumSchema, requireValue, vocabToProperties, copySchemaToKeys,
-       vocab, override, patterns} = libvocab;
+       link, versionedLink, vocab, override, patterns} = libvocab;
 
 //---------------------------------------------------------------------------
 // Basic terms.  Generally used to build up other terms so they need to be 
 // defined here first.
 //---------------------------------------------------------------------------
+
+register('name', {
+  description: 'A generic name for something',
+  type: 'string',
+});
 
 // Data:
 register('value', {
@@ -53,6 +58,33 @@ register('units', {
   type: 'string',
 });
 
+
+register('quantization-level', {
+  description: 'An object describing a numeric range, to be used in a quantization-levels array. '+
+               'This is not intended to be a term that actually appears as a key, just a descriptor for '+
+               'the range objects in the array of levels',
+  properties: {
+    start: vocab('value'),
+    end: vocab('value'),
+  },
+});
+
+register('quantization-levels', {
+  description: 'An array of objects describing a series of numeric ranges that represent a quantization '+
+               'scheme.  Belongs inside of a "quantization" object.',
+  type: 'array',
+  items: vocab('quantization-level'),
+});
+
+register('quantization', {
+  description: 'quantization is an object describing a quantization scheme: i.e. a set of numeric ranges '+
+               'into which a data point\'s value will fall.  It has an underlying unit (i.e. like "Hz" for '+
+               'vibration), and then an array of levels.  The data point should then refer to the array index '+
+               'of the quantization level its value falls within.  See vibration sensor data for example.',
+  properties: vocabToProperties(['units', 'quantization-levels']),
+  required: [ 'units', 'quanitzation-levels' ],
+});
+
 // Stats:
 register('sum', {
   description: 'sum represents a sum of numbers.  Used in a stats object.',
@@ -70,6 +102,21 @@ register('sum-of-squares', {
   type: 'number',
 });
 
+register('max', {
+  description: 'A numeric maximum value',
+  type: 'number',
+});
+
+register('min', {
+  description: 'A numeric minimum value',
+  type: 'number',
+});
+
+register('ave', {
+  description: 'A numeric average value',
+  type: 'number',
+});
+
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
@@ -81,6 +128,32 @@ register('id', {
            'perhaps across documents which simply re-index the same data.',
     type: 'string',
 });
+
+register('timestamp', {
+  description: 'A unix timestamp in timezone GMT',
+  type: 'number',
+});
+
+register('time-start', override('timestamp', {
+  description: 'A unix timestamp in timezone GMT of when a data reading was started.',
+}));
+
+register('time-end', override('timestamp', {
+  description: 'A unix timestamp in timezone GMT of when a data reading was completed.',
+  type: 'number',
+}));
+
+register('rate', {
+  description: 'A numeric rate of some measurement, such as rainfall rate.  Can be expressed '+
+               'as either a max, min, ave, or a value.',
+  properties: vocabToProperties(['units', 'max', 'min', 'ave', 'value']),
+});
+
+register('is-freezing', {
+  description: 'A true/false indicator of whether current rainfall is freezing into ice or not',
+  type: 'boolean',
+});
+
 
 // doesn't use characters a, i, l, and o
 libvocab.setPattern('geohash', '^[0-9bcdefghjkmnpqrstuvwxyz]+$');
@@ -262,7 +335,25 @@ register('geohash-data', {
     }
 });
 
+register('sensor', {
+  description: 'A link to a sensor document',
+  properties: link('application/vnd.oada.sensor.1+json'),
+});
 
+register('sensors', {
+  description: 'sensors is a generic list of links to sensors, keyed by a unique string',
+  patternProperties: {
+    [patterns.indexSafePropertyNames]: vocab('sensor'),
+  }
+});
+
+register('serial-numbers', {
+  description: 'serial-numbers is an object whose keys represent serial numbers of '+
+               'something (i.e. a sensor hub), and each key just links to that thing',
+  patternProperties: {
+    [patterns.indexSafePropertyNames]: link(),
+  }
+});
 
 //-----------------------------------------------------------------------
 
@@ -357,6 +448,9 @@ register('geohash-index', {
   },
 });
 
+register('geohash12-index', {
+
+});
 //------------------------------------------------------------------------
 // End of known terms, here are helpful functions used above:
 //------------------------------------------------------------------------

@@ -690,7 +690,7 @@ module.exports = oadaSchema({
 
   // These are all vocab terms, ordering specified by array order:
   indexing: [ 'year-index', {
-    indexing: { index: 'special-crop-index', 
+    indexing: { index: 'special-crop-index', value: { type: 'string' } }
   }],
 
   // And here is the regular schema for this content type:

@@ -1,6 +1,6 @@
 module.exports = {
-  _id: 'k2fjo23lf3',
-  _rev: '9-9034i2f3n33f',
+  _id: 'resources/k2fjo23lf3',
+  _rev: '9',
   _type: 'application/vnd.oada.tiled-maps.dry-yield-map.1+json',
 
   // All OADA-designed resources have the context key to describe the
@@ -10,17 +10,28 @@ module.exports = {
   // This means that this resource contains data for corn whose GPS coordinates
   // fall within the geohash '39jk7'.
 
-  context: {
-    // required keys:
-    'harvest': 'tiled-maps',
-    'tiled-maps': 'dry-yield-map',
-
-    // optional keys based on indexing scheme that determined
-    // which data is included in this tile:
-    'crop-index': 'corn',
-    'geohash-length-index': 'geohash-5',
-    'geohash-index': '39jk7'
-  },
+  indexing: [
+    {
+      index: 'year-index',
+      source: 'oada.vocab.year-index',
+      value: '2019'
+    },
+    {
+      index: 'crop-index',
+      source: 'oada.vocab.year-index',
+      value: 'corn',
+    },
+    {
+      index: 'geohash-length-index',
+      source: 'oada.vocab.geohash-length-index',
+      value: '7',
+    },
+    {
+      index: 'geohash-index',
+      source: 'oada.vocab.geohash-index',
+      value: 'dpq78df',
+    },
+  ],
 
   // stats holds sum/count information representing the data points in
   // this document.
