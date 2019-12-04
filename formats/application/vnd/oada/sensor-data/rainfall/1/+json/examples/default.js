@@ -2,6 +2,10 @@ module.exports = {
   _type: 'application/vnd.oada.sensor-data.rainfall.1+json',
 
   indexing: [
+    {
+      name: 'year-index',
+      source: 'oada.vocab.year-index',
+      value: '2019',
     { 
       name: 'day-index',
       source: 'oada.vocab.day-index',

@@ -2,7 +2,7 @@ const libvocab = require('vocabs/oada');
 const {vocab,vocabToProperties,patterns,override} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
+module.exports = oadaSchema({
   _type: 'application/vnd.oada.sensor-data.vibration.1+json',
 
   // vibration can be listed in quantization instead of raw values
@@ -25,4 +25,4 @@ module.exports = {
       },
     }),
   },
-};
+});

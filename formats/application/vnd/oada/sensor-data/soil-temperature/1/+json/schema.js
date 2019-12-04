@@ -1,26 +1,14 @@
-var refs = require('../../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {vocab,vocabToProperties,patterns,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
-    id: refs.OADA_SENSOR_DATA_SOIL_TEMPERATURE_ID,
-    description: 'application/vnd.oada.sensor-data.soil-temperature.1+json',
 
-    additionalProperties: true,
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.sensor-data.soil-temperature.1+json',
+  properties: {
 
-    allOf: [{
-        $ref: refs.OADA_SENSOR_DATA_GENERIC_ID
-    },
-    {
-        properties: {
-            dataType: {
-                properties: {
-                    definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats',
-                    },
-                    name: {
-                        pattern: '^soil-temperature$'
-                    }
-                }
-            },
+// XXX STOPPED HERE...
+
             templates: {
                 patternProperties: {
                     '.': {
@@ -55,4 +43,4 @@ module.exports = {
             }
         }
     }]
-};
+});

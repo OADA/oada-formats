@@ -376,7 +376,7 @@ register('year-index', {
   indexingSchema: { 
     properties: {
       index: requireValue('year-index'),
-      source: 'oada.vocab.year-index',
+      source: requireValue('oada.vocab.year-index'),
       value: { type: 'string', pattern: patterns.year },
     }
   },
@@ -448,9 +448,39 @@ register('geohash-index', {
   },
 });
 
-register('geohash12-index', {
-
+// 2019-05-07
+libvocab.setPattern('day', '^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+register('day-index', {
+  description: 'day-index splits things up by days, with full year-month-day string for keys',
+  patternProperties: {
+    [patterns.day]: vocab('link'),
+  },
+  indexingSchema: { 
+    properties: {
+      index: requireValue('day-index'),
+      source: requireValue('oada.vocab.day-index'),
+      value: { type: 'string', pattern: patterns.day },
+    }
+  },
 });
+
+// 23:44
+libvocab.setPattern('hour', '^[0-9]{2}:[0-9]{2}$');
+register('hour-index', {
+  description: 'hour-index splits things up by hours, 24-hour time string in GMT like 06:07 or 23:44',
+  patternProperties: {
+    [patterns.hour]: vocab('link'),
+  },
+  indexingSchema: { 
+    properties: {
+      index: requireValue('hour-index'),
+      source: requireValue('oada.vocab.hour-index'),
+      value: { type: 'string', pattern: patterns.hour },
+    }
+  },
+});
+
+
 //------------------------------------------------------------------------
 // End of known terms, here are helpful functions used above:
 //------------------------------------------------------------------------
