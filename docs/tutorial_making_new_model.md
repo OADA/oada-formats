@@ -44,12 +44,12 @@ that has `productname` keys in general.  This lets your models evolve and add ke
 over time while minimizing problems with backward compatibility.
 
 `oada-formats` has a set of handy functions to help you define a vocabulary and schemas.
-You can find example vocabularies in (vocabs/oada/index.js)[../vocabs/oada/index.js].  
+You can find example vocabularies in [vocabs/oada/index.js](../vocabs/oada/index.js).  
 You can copy that to your own folder under `vocabs/` and replace the terms defined in it
 with your own terms.  
 
 Schemas are defined with JSON Schema, if you're not familiar this resource is handy:
-(https://json-schema.org/)[https://json-schema.org/]
+[https://json-schema.org/](https://json-schema.org/)
 
 In our case for this tutorial, it looks like these are the total set of keys that we 
 defined:
@@ -184,4 +184,4 @@ or if your example uses a "known" list-type term like `productname` above,
 but tries to use a string that is not in the known list.
 
 ## Advanced concepts
-To continue with more advanced concepts, please [refer to this explanation](./docs/oada-tools.md).
+To continue with more advanced concepts, please [refer to this explanation](./oada-tools.md).
