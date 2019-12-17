@@ -10,7 +10,7 @@
     "lint": "jshint --reporter node_modules/jshint-stylish .",
     "style": "jscs .",
     "clean": "rm -rf ./coverage",
-    "postinstall" : "node -e \"var s=['../vocabs','../lib'],d=['node_modules/vocabs','node_modules/lib'],fs=require('fs');fs.exists(d[0],function(e){e||fs.symlinkSync(s[0],d[0],'dir')});fs.exists(d[1],function(e){e||fs.symlinkSync(s[1],d[1],'dir')});\" && echo \"Created node_modules/vocabs and node_modules/lib symlink for easy requires\""
+    "postinstall": "node -e \"var s=['../vocabs','../lib'],d=['node_modules/vocabs','node_modules/lib'],fs=require('fs');fs.exists(d[0],function(e){e||fs.symlinkSync(s[0],d[0],'dir')});fs.exists(d[1],function(e){e||fs.symlinkSync(s[1],d[1],'dir')});\" && echo \"Created node_modules/vocabs and node_modules/lib symlink for easy requires\""
   },
   "directories": {
     "test": "test"

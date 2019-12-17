@@ -9,6 +9,8 @@ module.exports = oadaSchema({
   properties: vocabToProperties([
     // Things about the sensor hub:
     'name', 'location', 'sensors', 
+
+    // The things below will be added to the properties object:
   ], {
     // Kinds of data records available (linked from here):
         'air-temperature': link(['application/vnd.oada.sensor-data.air-temperature']),

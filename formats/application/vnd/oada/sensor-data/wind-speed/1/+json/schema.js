@@ -1,37 +1,30 @@
-var refs = require('../../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {vocab,vocabToSchema,patterns,override,enumSchema} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
-    id: refs.OADA_SENSOR_DATA_WIND_SPEED_ID,
-    description: 'application/vnd.oada.sensor-data.wind-speed.1+json',
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.sensor-data.wind-speed.1+json',
 
-    additionalProperties: true,
+  indexing: [ 'year-index', 'day-index', 'hour-index' ],
 
-    allOf: [{
-        $ref: refs.OADA_SENSOR_DATA_GENERIC_ID
-    },
-    {
-        properties: {
-            dataType: {
-                properties: {
-                    definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats',
-                    },
-                    name: {
-                        pattern: '^wind-speed$'
-                    }
-                }
-            },
-            templates: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            units: {
-                                type: 'string',
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }]
-};
+  properties: {
+    templates: override('templates', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([ 
+          'sensor', 'units' 
+        ], {
+          units: override('units', enumSchema(['m/s', 'ft/s', 'mph'])),
+        })),
+      },
+    }),
+    data: override('data', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
+          'id', 'template', 'time-start', 'time-end', 
+          'max', 'mean', 'min', 'std', 'inst'
+        ])),
+      },
+    }),
+  },
+
+});

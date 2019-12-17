@@ -6,6 +6,7 @@ module.exports = {
       name: 'year-index',
       source: 'oada.vocab.year-index',
       value: '2019',
+    },
     { 
       name: 'day-index',
       source: 'oada.vocab.day-index',

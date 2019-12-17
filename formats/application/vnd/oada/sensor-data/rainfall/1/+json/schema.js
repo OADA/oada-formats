@@ -1,5 +1,5 @@
 const libvocab = require('vocabs/oada');
-const {vocab,vocabToProperties,patterns,override} = libvocab;
+const {vocab,vocabToSchema,patterns,override} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
 module.exports = oadaSchema({
@@ -10,9 +10,16 @@ module.exports = oadaSchema({
   properties: {
     templates: override('templates', {
       patternProperties: {
-        [patterns.indexSafePropertyNames]: override('data-point', vocabToProperties([
-          'sensor', 'units', 'rate'
-        ])),
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
+          'sensor', 'units', 'rate',
+        ],{
+          units: override('units', enumSchema(['m', 'in']),
+          rate: override('rate', { 
+            properties: {
+              units: enumSchema(['m/s', 'in/s', 'in/h']),
+            }
+          }),
+        })),
       },
     }),
     data: override('data', {

@@ -112,8 +112,22 @@ register('min', {
   type: 'number',
 });
 
-register('ave', {
+register('mean', {
+  description: 'A numeric mean value', 
+  type: 'number',
+});
+
+register('ave', override('mean', {
   description: 'A numeric average value',
+}));
+
+register('std', {
+  description: 'A numeric standard deviation value',
+  type: 'number',
+});
+
+register('inst', {
+  description: 'An instantanteous measurement value',
   type: 'number',
 });
 
@@ -152,6 +166,17 @@ register('rate', {
 register('is-freezing', {
   description: 'A true/false indicator of whether current rainfall is freezing into ice or not',
   type: 'boolean',
+});
+
+register('depth', {
+  description: 'A depth measurement or recording, usually for specifying soil depth for a soil '+
+               'moisture sensor.',
+  properties: {
+    units: override('units', enumSchema([
+      'm', 'cm', 'mm', 'ft', 'in'
+    ])),
+    value: vocab('value'),
+  }
 });
 
 
