@@ -520,7 +520,6 @@ register('hour-index', {
   },
 });
 
-//require('../isoblue/index.js')
 
 //------------------------------------------------------------------------
 // End of known terms, here are helpful functions used above:
