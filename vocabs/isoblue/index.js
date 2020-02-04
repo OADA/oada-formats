@@ -37,7 +37,7 @@ register('dlc', override('generic-data-value', {
 }))
 
 register('payload', override('generic-data-value', {
-    description: 'String representaiton of the payload',
+    description: 'String representaiton can frame payload in hexadecimal',
     type: String,
 }))
 
