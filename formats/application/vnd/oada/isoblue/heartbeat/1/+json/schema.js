@@ -31,7 +31,7 @@ require('vocabs/isoblue');
 module.exports = oadaSchema({
   _type: 'application/vnd.oada.isoblue.heartbeat.1+json',
 
-  description: 'Hearbeat data from the ISOBlue device. Contains information such as network ' +
+  description: 'Heartbeat data from the ISOBlue device. Contains information such as network ' +
                'strength, upload backlog, and other debugging information.', 
     
   indexing: [ 'year-index', 'day-index', 'hour-index' ],

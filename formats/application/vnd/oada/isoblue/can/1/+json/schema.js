@@ -24,7 +24,7 @@ module.exports = {
 */
 
 const libvocab = require('vocabs/oada');
-const {vocab,vocabToSchema,vocabToProperties,patterns,override} = libvocab;
+const {vocabToSchema,vocabToProperties,patterns,override} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 // Import custom isoblue definitions
 require('vocabs/isoblue');
@@ -33,7 +33,7 @@ require('vocabs/isoblue');
 module.exports = oadaSchema({
   _type: 'application/vnd.oada.isoblue.can.1+json',
 
-  description: 'CAN fram collected form machine attached to ISOBlue (or similar) device',
+  description: 'CAN frame collected from machine attached to ISOBlue (or similar) device',
     
   indexing: [ 'year-index', 'day-index', 'hour-index' ],
 

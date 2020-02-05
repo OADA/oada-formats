@@ -1,17 +1,18 @@
-var _ = require('lodash');
 var libvocab = require('../../lib/vocab')('oada');
-const {register, enumSchema, requireValue, vocabToProperties, copySchemaToKeys,
-       link, versionedLink, vocab, override, patterns} = libvocab;
+
+// Only importing the essentials, more complext definitions may need more imports
+// similar to the main oada index.js this is based off of
+const {register,  override} = libvocab;
 
 // Custom location schema
 register('lat', override('latitude', {
-    description: 'Short form of latitude term, otherwise the same. '
-                +'Used in ISOBlue CAN data.'
+    description: 'Short form of latitude term, otherwise the same. ' +
+                 'Used in ISOBlue CAN data.'
 }));
   
 register('lng', override('longitude', {
-    description: 'Short form of longitude term, otherwise the same. '
-                +'Used in ISOBlue CAN data.'
+    description: 'Short form of longitude term, otherwise the same. ' +
+                 'Used in ISOBlue CAN data.'
 }));
 
 
@@ -19,32 +20,32 @@ register('lng', override('longitude', {
 register('is_error_frame', override('generic-data-value', {
     description: 'Error frame flag for can frame',
     type: Boolean,
-}))
+}));
 
 register('is_extended_frame', override('generic-data-value', {
     description: 'Extended fram flag for can frame',
     type: Boolean,
-}))
+}));
 
 register('arbitration_id', override('generic-data-value', {
     description: 'CAN ID portion of extended can frame',
     type: Number,
-}))
+}));
 
 register('dlc', override('generic-data-value', {
     description: 'Data Length Code portion of extended can frame',
     type: Number,
-}))
+}));
 
 register('payload', override('generic-data-value', {
     description: 'String representaiton can frame payload in hexadecimal',
     type: String,
-}))
+}));
 
 register('is_remote_frame', override('generic-data-value', {
     description: 'Remote frame flag from can frame',
     type: Boolean,
-}))
+}));
 
 // Custom heartbeat schema
 register('backlog', override('generic-data-value', {
