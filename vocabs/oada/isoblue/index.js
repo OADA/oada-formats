@@ -1,7 +1,7 @@
 var libvocab = require('../../../lib/vocab')('oada');
 // Only importing the essentials, more complex definitions may need more imports
 // similar to the main oada index.js this is based off of
-const {register,  override, enumSchema} = libvocab;
+const {register, override, enumSchema} = libvocab;
 
 // Custom location schema
 register('lat', override('latitude', {
