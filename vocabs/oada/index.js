@@ -127,7 +127,7 @@ register('std', {
 });
 
 register('inst', {
-  description: 'An instantanteous measurement value',
+  description: 'An instantaneous measurement value',
   type: 'number',
 });
 
@@ -289,16 +289,15 @@ register('time', override('generic-data-value', {
   },
 }));
 
-register('led-status', override('generic-data-value', {
+register('led-status', {
   description: 'Status of LED light. Typically used for debugging applications ' +
       'Could be used to represent on/off status or red/green status, etc',
   type: Boolean,
-}));
+});
 
 register('network-strength', override('generic-data-value', {
   description: 'Strength of wireless network connection in -dBm ' +
       'ranging from ~-10dBm to ~-100dBm',
-  type: Number,
   properties: {
     'units': enumSchema( [ 'dBm' ] ),
   },
@@ -524,5 +523,8 @@ register('hour-index', {
 //------------------------------------------------------------------------
 // End of known terms, here are helpful functions used above:
 //------------------------------------------------------------------------
+
+// Import custom isoblue definitions
+require('vocabs/oada/isoblue');
 
 module.exports = libvocab;

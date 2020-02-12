@@ -1,31 +1,6 @@
-/* Example:
-module.export = {
-  "key": {
-    "iafdn1efrs": {
-	    "time": 1574056800,
-      "lat": 40.42966078,
-      "lng": -86.912286476
-    },
-    "1pasdjfenw": {
-      "time": 1574056801,
-      "lat": 40.429661482,
-      "lng": -86.91228494
-    },
-    "893rhifjnd": {
-      "time": 157056802,
-      "lat": 40.42966198,
-      "lng": -86.912284562
-    },
-  }
-}
-*/
-
 const libvocab = require('vocabs/oada');
 const {vocab,vocabToSchema,vocabToProperties,patterns,override} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
-// Import custom isoblue definitions
-require('vocabs/isoblue');
-
 
 module.exports = oadaSchema({
   _type: 'application/vnd.oada.isoblue.location.1+json',

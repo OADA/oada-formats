@@ -15,5 +15,6 @@ module.exports = oadaSchema({
            fields: versionedLink(['application/vnd.oada.fields.1+json']),
           clients: versionedLink(['application/vnd.oada.clients.1+json']),
     'sensor-hubs': versionedLink(['application/vnd.oada.sensor-hubs.1+json']),
+          isoblue: versionedLink(['application/vnd.oada.isoblue.1+json']),
   },
 });

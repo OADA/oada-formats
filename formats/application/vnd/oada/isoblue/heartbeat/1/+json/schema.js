@@ -1,32 +1,6 @@
-/* Example:
-module.export = {
-  "key": {
-    "ghuenwpmrm": {
-      "time": 1574107208.016281,
-      "cell_ns": -79,
-      "wifi_ns": -70,
-      "backlog": 311536,
-      "netled": 1,
-      "statled": 1
-	 },
-    "acd4nn6eaf": {
-      "time": 1574107238.016302,
-      "cell_ns": -79,
-      "wifi_ns": -70,
-      "backlog": 308537,
-      "netled": 1,
-      "statled": 1
-    },
-  }
-}
-*/
-
 const libvocab = require('vocabs/oada');
 const {vocab,vocabToSchema,vocabToProperties,patterns,override} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
-// Import custom isoblue definitions
-require('vocabs/isoblue');
-
 
 module.exports = oadaSchema({
   _type: 'application/vnd.oada.isoblue.heartbeat.1+json',
