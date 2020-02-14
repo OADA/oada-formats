@@ -30,7 +30,7 @@ module.exports = {
       },
     },
   
-    key: {
+    data: {
         ghuenwpmrm: {
           time: 1574107208.016281,
           cell_ns: -79,

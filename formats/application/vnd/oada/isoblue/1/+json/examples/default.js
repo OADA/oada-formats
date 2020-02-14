@@ -1,7 +1,5 @@
 module.exports = {
-  _id: '290fijklf3',
-  _rev: '7-9ijkljf0j2ifkl3f',
-  _type: 'application/vnd.oada.harvest.1+json',
+  _type: 'application/vnd.oada.isoblue.1+json',
 
   context: {},
 
@@ -9,8 +7,6 @@ module.exports = {
   'can': {
     _id: 'kfj20ikejldss',
     _rev: '9-kfjo2i3jfelkfas',
-
-    _type: 'application/vnd.oada.isoblue.can.1+json',
   },       
 
   // heartbeat provides numerous debugging information about the current status
@@ -21,7 +17,6 @@ module.exports = {
   'heartbeat': {
     _id: '92jfkjfe0fdi',
     _rev: '8-92fjkflkj492',
-    _type: 'application/vnd.oada.isoblue.heartbeat.1+json',
   },
 
 
@@ -30,6 +25,5 @@ module.exports = {
   'location': {
     _id: '92jfkjfe0fdi',
     _rev: '8-92fjkflkj492',
-    _type: 'application/vnd.oada.isoblue.1+json',
   },
 };

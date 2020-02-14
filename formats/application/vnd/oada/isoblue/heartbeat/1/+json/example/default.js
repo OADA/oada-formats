@@ -27,7 +27,7 @@ module.exports = {
       },
     },
   
-    key: {
+    data: {
         iafdn1efrs: {
 	        time: 1574056800,
             lat: 40.42966078,

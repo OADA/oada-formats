@@ -1,5 +1,5 @@
 const libvocab = require('vocabs/oada');
-const {versionedLink} = libvocab;
+const {link} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
 module.exports = oadaSchema({
@@ -8,13 +8,13 @@ module.exports = oadaSchema({
                ' the ISOBlue device',
 
   properties: {
-    'can': versionedLink([
+    'can': link([
       'application/vnd.oada.isoblue.can.1+json'
     ]),
-    'heartbeat': versionedLink([
+    'heartbeat': link([
       'application/vnd.oada.isoblue.heartbeat.1+json'
     ]),
-    'location': versionedLink([
+    'location': link([
       'application/vnd.oada.isoblue.location.1+json'
     ]),
   },

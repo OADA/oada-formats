@@ -37,7 +37,7 @@ register('dlc',  {
 });
 
 register('payload', {
-    description: 'String representation can frame payload in hexadecimal',
+    description: 'String representation can frame payload in base64',
     type: String,
 });
 

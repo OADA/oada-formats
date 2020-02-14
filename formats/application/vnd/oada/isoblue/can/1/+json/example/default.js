@@ -21,33 +21,33 @@ module.exports = {
  
     templates: {
       '1': {
-        time: 123456.789,
+        time: 123456,
         is_error_frame: false,
         is_extended_frame: false,
         arbitration_id: 1234,
         dlc: 1234,
-        payload: 0x0102030405060708090A0B0C0D0E0F,
+        payload: 'AQIDBAUGBwgJCgsMDQ4P',
         is_remote_frame: false
       },
     },
   
-    key: {
+    data: {
       afdniji12non: {
-        time: 123456.789,
+        time: 123456,
         is_error_frame: false,
         is_extended_frame: false,
         arbitration_id: 1234,
         dlc: 1234,
-        payload: 0x0102030405060708090A0B0C0D0E0F,
+        payload: 'AQIDBAUGBwgJCgsMDQ4P',
         is_remote_frame: false
       },
       jnbj31knpo3i: {
-        time: 7891011.121314,
+        time: 7891011,
         is_error_frame: false,
         is_extended_frame: true,
         arbitration_id: 9876,
         dlc: 54321,
-        payload: 0xFFFEFDFCFBFA,
+        payload: '//79/Pv6',
         is_remote_frame: 0
       },
     }
