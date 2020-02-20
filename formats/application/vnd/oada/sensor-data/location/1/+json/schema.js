@@ -1,56 +1,28 @@
-var refs = require('../../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {enumSchema,vocabToSchema,patterns,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
-    id: refs.OADA_SENSOR_DATA_LOCATION_ID,
-    description: 'application/vnd.oada.sensor-data.location.1+json',
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.sensor-data.location.1+json',
 
-    additionalProperties: true,
+  properties: {
+    templates: override('templates', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
+          'sensor', 'location',
+        ], {
+          // specifically, template should have the datum under the location:
+          location: override('location', vocabToSchema(['datum'])),
+        })),
+      },
+    }),
+    data: override('data', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
+          'id', 'template', 'time', 'location',
+        ])),
+      },
+    }),
+  },
+});
 
-    allOf: [{
-        $ref: refs.OADA_SENSOR_DATA_GENERIC_ID
-    },
-    {
-        properties: {
-            dataType: {
-                properties: {
-                    definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats',
-                    },
-                    name: {
-                        pattern: '^location$'
-                    }
-                }
-            },
-            templates: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            units: {
-                                type: 'object',
-                                properties: {
-                                    datum: {
-                                        type: 'string'
-                                    }
-                                },
-                                required: [
-                                    'datum'
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
-            data: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            value: {
-                                type: 'object'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }]
-};

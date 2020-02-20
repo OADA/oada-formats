@@ -1,18 +1,5 @@
 module.exports = {
-  _id: 'd0f2hfhhf9qh23233',
-  _rev: '4-kdjf02if32jof3l',
-  _meta: { _metaid: 'd0f2hfhhf9qh23233', _rev: '2-dkfj023if2jfjwlf' },
   _type: 'application/vnd.oada.sensor-data.cloud-cover.1+json',
-
-  dataType: {
-    definition: 'https://github.com/oada-formats',
-    name: 'cloud-cover',
-  },
-
-  context: {
-    'timehash-4': 1456370000,
-    'sensor-hub': { _id: '9f84u9f' },
-  },
 
   templates: {
     '1': {

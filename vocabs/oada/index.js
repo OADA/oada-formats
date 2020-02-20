@@ -190,20 +190,38 @@ register('geohash', {
   pattern: patterns.geohash
 });
 
+-.9
+0.9
+1.9
+// numericString is positive or negative, doesn't need leading digit prior to decimal point,
+// plain old integers match too, no commas: -.9, 0.9, 1.9, 92039843.9208943, 198283
+libvocab.setPattern('numericString', '^-?([0-9]*[.])[0-9]+');
 register('latitude', {
-  description: 'latitude is a number',
-  type: 'number',
+  description: 'latitude is a string in the format of a number',
+  type: 'string',
+  pattern: patterns.numericString,
 });
 
 register('longitude', {
-  description: 'longitude is a number',
-  type: 'number',
+  description: 'longitude is a string in the format of a number',
+  type: 'string',
+  pattern: patterns.numericString,
 });
 
 register('altitude', {
-  description: 'altitude is a number',
+  description: 'altitude is a string in the format of a number',
   type: 'number',
+  pattern: patterns.numericString,
 });
+register('lat', override('latitude', {
+  description: 'lat is shorthand for latitude'
+}));
+register('lon', override('latitude', {
+  description: 'lon is shorthand for longitude'
+}));
+register('alt', override('altitude', {
+  description: 'alt is shorthand for altitude'
+}));
 
 register('datum', {
   description: 'datum describes the model of the earth used for GPS coordinates.  It can be from a '+
@@ -229,7 +247,7 @@ register('datum', {
 register('location', {
     description: 'location represents a point in space, usually a GPS coordinate or geohash',
     properties: vocabToProperties([
-      'datum', 'latitude', 'longitude', 'altitude', 'geohash' 
+      'datum', 'latitude', 'longitude', 'altitude', 'lat', 'lon', 'alt', 'geohash' 
     ]),
 });
 

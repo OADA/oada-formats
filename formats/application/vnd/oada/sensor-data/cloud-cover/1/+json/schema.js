@@ -1,48 +1,29 @@
-var refs = require('../../../../../../../refs.js');
+const libvocab = require('vocabs/oada');
+const {enumSchema,vocabToSchema,patterns,override} = libvocab;
+const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
-module.exports = {
-    id: refs.OADA_SENSOR_DATA_CLOUD_COVER_ID,
-    description: 'application/vnd.oada.sensor-data.cloud-cover.1+json',
+module.exports = oadaSchema({
+  _type: 'application/vnd.oada.sensor-data.cloud-cover.1+json',
 
-    additionalProperties: true,
+  properties: {
+    templates: override('templates', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
+          'sensor', 'units',
+        ], {
+          // known units are '%', although precision could be oktas (i.e. eighths)
+          units: override('units', enumSchema(['%'])),
+        })),
+      },
+    }),
+    data: override('data', {
+      patternProperties: {
+        [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
+          'id', 'template', 'time', 'value',
+        ])),
+      },
+    }),
+  },
+});
 
-    allOf: [{
-        $ref: refs.OADA_SENSOR_DATA_GENERIC_ID
-    },
-    {
-        properties: {
-            dataType: {
-                properties: {
-                    definition: {
-                        pattern: '^https\\:\\/\\/github.com/oada-formats'
-                    },
-                    name: {
-                        pattern: '^cloud-cover$'
-                    }
-                }
-            },
-            templates: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            units: {
-                                type: 'string',
-                            }
-                        }
-                    }
-                }
-            },
-            data: {
-                patternProperties: {
-                    '.': {
-                        properties: {
-                            value: {
-                                type: 'number'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }]
-};
+
