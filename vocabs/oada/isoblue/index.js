@@ -3,18 +3,6 @@ var libvocab = require('../../../lib/vocab')('oada');
 // similar to the main oada index.js this is based off of
 const {register, override, enumSchema} = libvocab;
 
-// Custom location schema
-register('lat', override('latitude', {
-    description: 'Short form of latitude term, otherwise the same. ' +
-                 'Used in ISOBlue CAN data.'
-}));
-  
-register('lng', override('longitude', {
-    description: 'Short form of longitude term, otherwise the same. ' +
-                 'Used in ISOBlue CAN data.'
-}));
-
-
 // Custom CAN schema
 register('is_error_frame',  {
     description: 'Error frame flag for can frame',
@@ -49,7 +37,7 @@ register('is_remote_frame', {
 // Custom heartbeat schema
 register('backlog', override('generic-data-value', {
     description: "Length of backlog in computer systems. Used in ISOBlue"+
-                 " to send amount of unsent messages",
+                 " to count the number of unsent messages",
     properties: {
         'units': enumSchema( [ 'count' ] ),
     },

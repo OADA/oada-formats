@@ -1,5 +1,5 @@
 module.exports = {
-    _type: 'application/vnd.oada.isoblue.location.1+json',
+    _type: 'application/vnd.oada.isoblue.heartbeat.1+json',
   
     indexing: [
       {
@@ -18,31 +18,36 @@ module.exports = {
         value: '22:00',
       },
     ],
-  
-    templates: {
-      '1': {
-        time: 1574056800,
-        lat: 40.42966078,
-        lng: -86.912286476
+    template: {
+      '1':{
+        time: { units: 'unix-timestamp',},
+        cell_ns: { units: 'dBm',},
+        wifi_ns: { units: 'dBm',},
+        backlog: { units: 'count',},
       },
     },
-  
+
+
     data: {
-        iafdn1efrs: {
-	        time: 1574056800,
-            lat: 40.42966078,
-            lng: -86.912286476
+        'ghuenwpmrm': {
+          id: 'ghuenwpmrm',
+          template: '1',
+          time: {value: 1574107208.016281},
+          cell_ns: {value: -79},
+          wifi_ns: {value: -70},
+          backlog: {value: 311536},
+          netled: 1,
+          statled: 1,
         },
-        ypasdjfenw: {
-            time: 1574056801,
-            lat: 40.429661482,
-            lng: -86.91228494
-        },
-        aferrhifjn: {
-            time: 157056802,
-            lat: 40.42966198,
-            lng: -86.912284562
+        'acd4nn6eaf': {
+          id: 'acd4nn6eaf',
+          template: '1',
+          time: {value: 1574107238.016302},
+          cell_ns: {value: -79},
+          wifi_ns: {value: -70},
+          backlog: {value: 308537},
+          netled: 1,
+          statled: 1
         },
     }
 }
-  

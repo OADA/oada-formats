@@ -5,7 +5,7 @@ const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 module.exports = oadaSchema({
   _type: 'application/vnd.oada.isoblue.location.1+json',
 
-  description: 'Location data of the machine. Contains time, latitude, and longitude.', 
+  description: 'Location data of the machine. Contains time and location', 
     
   indexing: [ 'year-index', 'day-index', 'hour-index' ],
 
@@ -18,8 +18,11 @@ module.exports = oadaSchema({
     templates: override('templates', {
       patternProperties: {
         [patterns.indexSafePropertyNames]: override('data-point', vocabToSchema([
-          'id', 'time', 'lat', 'lng',
-        ])),
+          'id', 'time', 'location',
+        ], {
+          // specifically, template should have the datum under the location:
+          location: override('location', vocabToSchema(['datum'])),
+        })),
       },
     }),
 
@@ -29,10 +32,10 @@ module.exports = oadaSchema({
       patternProperties: {
         [patterns.indexSafePropertyNames]: override('data-point', {
           properties: vocabToProperties([
-            'id', 'time', 'lat', 'lng' 
+            'id', 'time', 'location' 
           ]), 
           // mark some of the keys as required for every item:
-          required: [ 'id', 'time', 'lat', 'lng' ],
+          required: [ 'id', 'time', 'location' ],
         }),
       },
     }),

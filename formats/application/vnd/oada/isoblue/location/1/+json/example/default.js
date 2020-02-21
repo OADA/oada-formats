@@ -1,5 +1,5 @@
 module.exports = {
-    _type: 'application/vnd.oada.isoblue.heartbeat.1+json',
+    _type: 'application/vnd.oada.isoblue.location.1+json',
   
     indexing: [
       {
@@ -18,34 +18,41 @@ module.exports = {
         value: '22:00',
       },
     ],
-  
     templates: {
       '1': {
-        time: 1574107208.016281,
-        cell_ns: -79,
-        wifi_ns: -70,
-        backlog: 311536,
-        netled: 1,
-        statled: 1
+        time: { units: 'unix-timestamp',},
+        location: { datum: 'WGS84',},
       },
     },
-  
+
+
     data: {
-        ghuenwpmrm: {
-          time: 1574107208.016281,
-          cell_ns: -79,
-          wifi_ns: -70,
-          backlog: 311536,
-          netled: 1,
-          statled: 1
+        'iafdn1efrs': {
+            id: 'iafdn1efrs',
+	          time: {value: 1574056800},
+            location: {
+              lat: 40.42966078,
+              lng: -86.912286476
+            },
         },
-        acd4nn6eaf: {
-          time: 1574107238.016302,
-          cell_ns: -79,
-          wifi_ns: -70,
-          backlog: 308537,
-          netled: 1,
-          statled: 1
+        'ypasdjfenw': {
+            id: 'ypasdjfenw',
+            template: '1',
+            time: {value: 1574056801},
+            location: {
+              lat: 40.429661482,
+              lng: -86.91228494,
+            },
+        },
+        'aferrhifjn': {
+            id: 'aferrhifjn',
+            template: '1',
+            time: {value: 157056802},
+            location: {
+              lat: 40.42966198,
+              lng: -86.912284562,
+            },
         },
     }
 }
+  

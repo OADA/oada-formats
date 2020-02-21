@@ -18,22 +18,17 @@ module.exports = {
         value: '22:00',
       },
     ],
- 
+    
     templates: {
       '1': {
-        time: 123456,
-        is_error_frame: false,
-        is_extended_frame: false,
-        arbitration_id: 1234,
-        dlc: 1234,
-        payload: 'AQIDBAUGBwgJCgsMDQ4P',
-        is_remote_frame: false
+        time: { units: 'unix-timestamp',},
       },
     },
-  
+
     data: {
-      afdniji12non: {
-        time: 123456,
+      'afdniji12non': {
+        id: 'afdniji12non',
+        time: {value: 123456},
         is_error_frame: false,
         is_extended_frame: false,
         arbitration_id: 1234,
@@ -41,8 +36,9 @@ module.exports = {
         payload: 'AQIDBAUGBwgJCgsMDQ4P',
         is_remote_frame: false
       },
-      jnbj31knpo3i: {
-        time: 7891011,
+      'jnbj31knpo3i': {
+        id: 'jnbj31knpo3i',
+        time: {value: 7891011},
         is_error_frame: false,
         is_extended_frame: true,
         arbitration_id: 9876,
