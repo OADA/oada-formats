@@ -1,5 +1,5 @@
 const libvocab = require('vocabs/oada');
-const {vocab,versionedLink} = libvocab;
+const {vocab,link,versionedLink} = libvocab;
 const { oadaSchema } = require('lib/oada-schema-util.js')(libvocab);
 
 module.exports = oadaSchema({
@@ -15,5 +15,6 @@ module.exports = oadaSchema({
            fields: versionedLink(['application/vnd.oada.fields.1+json']),
           clients: versionedLink(['application/vnd.oada.clients.1+json']),
     'sensor-hubs': versionedLink(['application/vnd.oada.sensor-hubs.1+json']),
+          isoblue: link(['application/vnd.oada.isoblue.1+json']),
   },
 });
