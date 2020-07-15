@@ -47,7 +47,7 @@
     "debug": "^2.2.0",
     "extend-error": "0.0.2",
     "glob": "^5.0.14",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.19",
     "lodash.clonedeep": "^4.3.1",
     "nconf": "^0.8.4",
     "object-assign": "^4.0.1",
